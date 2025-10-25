@@ -14,15 +14,12 @@ public:
     DatabaseManager(const string& name= "zoo.db");
 
     bool open();
-
     void close();
 
     bool execute(const string& sql);
     bool prepare(const string& sql, sqlite3_stmt** stmt);
 
     sqlite3* getDB() const;
-
-
     ~DatabaseManager();
 };
 

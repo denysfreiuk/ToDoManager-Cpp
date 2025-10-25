@@ -1,7 +1,9 @@
 #include "mainWindow/mainwindow.h"
 #include "databaseManager/accountRepository.h"
 #include "logger/globalLogger.h"
-#include "logger/logger.h"
+#include "databaseManager/TaskRepository.h"
+#include "tasks/TaskManager.h"
+#include <QApplication>
 #ifdef _WIN32
 #include <windows.h>
 void enableANSI() {
@@ -13,26 +15,24 @@ void enableANSI() {
 }
 #endif
 
-#include <QApplication>
-
 int main(int argc, char *argv[]) {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
-    DatabaseManager db("toDo.db");
+    DatabaseManager db("todo.db");
     AccountRepository accRepo(db);
     AuthManager auth(accRepo);
 
-    while (true) {
-        auto session = auth.authenticate(nullptr);
-        if (!session.has_value()) break;
-
-        MainWindow w;
-        w.setWindowTitle(QString::fromStdString("Welcome, " + session.value()));
-        w.show();
-
-        a.exec();
-        break;
+    auto loggedUser = auth.authenticate(nullptr);
+    if (!loggedUser.has_value()) {
+        return 0;
     }
 
-    return 0;
+    TaskRepository taskRepo(db);
+    TaskManager taskManager(taskRepo);
+    taskManager.setCurrentUser(loggedUser.value());
+
+    MainWindow mainWin(taskManager);
+    mainWin.show();
+
+    return app.exec();
 }

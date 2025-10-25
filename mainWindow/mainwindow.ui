@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>860</width>
-    <height>628</height>
+    <width>1109</width>
+    <height>760</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,212 +16,350 @@
   <property name="layoutDirection">
    <enum>Qt::LayoutDirection::LeftToRight</enum>
   </property>
+  <property name="styleSheet">
+   <string notr="true">/* === 🌈 GLOBAL === */
+QWidget {
+    background-color: #f6f8fb;
+    font-family: &quot;Segoe UI&quot;, &quot;Roboto&quot;, sans-serif;
+    font-size: 14px;
+    color: #222;
+}
+
+/* === 🧭 QToolBox === */
+QToolBox::tab {
+    background-color: #e9eef6;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-weight: 600;
+    color: #2b3a55;
+}
+QToolBox::tab:selected {
+    background-color: #d7e4fb;
+    border: 1px solid #aac4ff;
+}
+QToolBox::tab:hover {
+    background-color: #dfe8f9;
+}
+
+/* === 📋 QListWidget === */
+QListWidget {
+    background-color: #ffffff;
+    border: 1px solid #d0d7e4;
+    border-radius: 6px;
+    padding: 4px;
+}
+QListWidget::item {
+    margin: 2px;
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+QListWidget::item:selected {
+    background-color: #e8f2ff;
+    border: 1px solid #aac8ff;
+}
+
+/* === 🧾 QLineEdit === */
+QLineEdit {
+    background-color: #ffffff;
+    border: 1px solid #cdd6e1;
+    border-radius: 6px;
+    padding: 6px 10px;
+    selection-background-color: #cfe2ff;
+}
+QLineEdit:focus {
+    border: 1px solid #6ea8fe;
+    background-color: #fefeff;
+}
+
+/* === 🔘 QPushButton === */
+QPushButton {
+    background-color: #e9eef6;
+    color: #1b2838;
+    border: 1px solid #c6d4ef;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+QPushButton:hover {
+    background-color: #d7e4fb;
+}
+QPushButton:pressed {
+    background-color: #c6d4ef;
+}
+QPushButton:disabled {
+    background-color: #e0e4ec;
+    color: #999;
+}
+
+/* === ⚙️ QComboBox (View Filter) === */
+QComboBox {
+    background-color: #ffffff;
+    border: 1px solid #cdd6e1;
+    border-radius: 6px;
+    padding: 6px 10px;
+    min-width: 130px;
+}
+QComboBox:hover {
+    border: 1px solid #6ea8fe;
+}
+QComboBox::drop-down {
+    border: none;
+    width: 24px;
+}
+QComboBox::down-arrow {
+    image: url(:/icons/down-arrow.png);
+    width: 10px;
+    height: 10px;
+}
+
+/* === 📦 QGroupBox / Панелі === */
+QGroupBox {
+    border: 1px solid #d0dae7;
+    border-radius: 6px;
+    margin-top: 8px;
+    background-color: #fdfdff;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 8px;
+    padding: 0 4px;
+    color: #3b4b65;
+}
+
+/* === 🪟 QScrollBar (красивий) === */
+QScrollBar:vertical {
+    background: #f0f4fa;
+    width: 10px;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical {
+    background: #c3d4ee;
+    min-height: 25px;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #a9c3f2;
+}
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0;
+}
+
+/* === ✅ Checkboxes / RadioButtons === */
+QCheckBox {
+    spacing: 6px;
+}
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+}
+QCheckBox::indicator:unchecked {
+    border: 1px solid #aabbd5;
+    border-radius: 4px;
+    background: #ffffff;
+}
+QCheckBox::indicator:checked {
+    background-color: #6ea8fe;
+    border: 1px solid #6ea8fe;
+    image: url(:/icons/checkmark.png);
+}
+</string>
+  </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonStyle::ToolButtonIconOnly</enum>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>0</y>
-      <width>259</width>
-      <height>309</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="2,5,5">
-     <property name="spacing">
-      <number>40</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="MainText">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>20</pointsize>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="lineWidth">
-        <number>1</number>
-       </property>
-       <property name="midLineWidth">
-        <number>0</number>
-       </property>
-       <property name="text">
-        <string>ToDo Program</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,1,1">
-       <item>
-        <widget class="QLineEdit" name="lineEditInput">
-         <property name="tabletTracking">
-          <bool>false</bool>
-         </property>
-         <property name="inputMask">
-          <string/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="frame">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButtonShow">
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    background-color: #495867;
-    color: #FFE5D4;
-    padding: 6px 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    background-color: #C94277;
-	color: #EFC7C2:
-}
-QPushButton:pressed {
-    background-color: #C94277;
-	color: #EFC7C2:
-}</string>
-         </property>
-         <property name="text">
-          <string>show</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButtonClear">
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    background-color: #495867;
-    color: #FFE5D4;
-    padding: 6px 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    background-color: #44525F;
-}
-QPushButton:pressed {
-    background-color: #C94277;
-	color: #EFC7C2:
-}</string>
-         </property>
-         <property name="text">
-          <string>Clear</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QToolBox" name="toolBoxTasks">
-       <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LayoutDirection::LeftToRight</enum>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Shape::NoFrame</enum>
-       </property>
-       <property name="lineWidth">
-        <number>1</number>
-       </property>
-       <property name="currentIndex">
-        <number>2</number>
-       </property>
-       <widget class="QWidget" name="page_1">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>257</width>
-          <height>69</height>
-         </rect>
+   <layout class="QVBoxLayout" name="verticalLayout_7">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <item>
+       <widget class="QLabel" name="labelTitle">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <attribute name="icon">
-         <iconset>
-          <normaloff>../resources/icons/right-arrow.png</normaloff>../resources/icons/right-arrow.png</iconset>
-        </attribute>
-        <attribute name="label">
-         <string>Page 1</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>TextLabel</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="page_2">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>257</width>
-          <height>69</height>
-         </rect>
+        <property name="font">
+         <font>
+          <family>Segoe UI</family>
+          <pointsize>-1</pointsize>
+          <fontweight>Medium</fontweight>
+         </font>
         </property>
-        <attribute name="icon">
-         <iconset>
-          <normaloff>../resources/icons/right-arrow.png</normaloff>../resources/icons/right-arrow.png</iconset>
-        </attribute>
-        <attribute name="label">
-         <string>Page 2</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>TextLabel</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+        <property name="midLineWidth">
+         <number>0</number>
+        </property>
+        <property name="text">
+         <string>ToDo Program</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
        </widget>
-       <widget class="QWidget" name="page_3">
-        <attribute name="icon">
-         <iconset>
-          <normaloff>../resources/icons/right-arrow.png</normaloff>../resources/icons/right-arrow.png</iconset>
-        </attribute>
-        <attribute name="label">
-         <string>Page 3</string>
-        </attribute>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="settingsButton">
+          <property name="text">
+           <string>Settings</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="detailsButton">
+          <property name="text">
+           <string>PushButton</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="viewFilterBox"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="taskInput">
+          <property name="placeholderText">
+           <string>Quick task name…</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="quickAddButton">
+          <property name="text">
+           <string>Quick Add</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addTaskButton">
+          <property name="text">
+           <string>Add Task</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QToolBox" name="toolBox">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="page_1">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1085</width>
+           <height>404</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>Today</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QListWidget" name="todayList">
+            <property name="itemAlignment">
+             <set>Qt::AlignmentFlag::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_2">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1085</width>
+           <height>404</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>This Week</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QListWidget" name="weekList"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1085</width>
+           <height>404</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>This Month</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QListWidget" name="monthList"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_4">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1085</width>
+           <height>404</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>Later</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QListWidget" name="laterList"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_5">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1085</width>
+           <height>404</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>Other</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QListWidget" name="otherList"/>
+          </item>
+         </layout>
+        </widget>
        </widget>
-      </widget>
-     </item>
-    </layout>
-   </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>860</width>
-     <height>22</height>
+     <width>1109</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>

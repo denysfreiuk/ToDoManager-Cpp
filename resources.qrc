@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/todoApp">
+        <file>resources/icons/to-do-list.png</file>
+    </qresource>
+    <qresource prefix="/loginAndReg"/>
+</RCC>

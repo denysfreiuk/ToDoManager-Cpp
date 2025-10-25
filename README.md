@@ -5,6 +5,7 @@ ToDo Manager is a cross-platform desktop application developed in C++ with Qt 6.
 To run application you need to add CMakeLists.txt and compile with CMake
 
 CMakeLists.txt:
+
 ```cmake
 cmake_minimum_required(VERSION 3.16)
 
@@ -28,8 +29,8 @@ set(PROJECT_SOURCES
         mainWindow/mainwindow.cpp
         mainWindow/mainwindow.h
         mainWindow/mainwindow.ui
-        tasks/tasks.h
-        tasks/tasks.cpp
+        tasks/task.h
+        tasks/task.cpp
         accounts/account.h
         accounts/account.cpp
         accounts/authManager.h
@@ -44,51 +45,51 @@ set(PROJECT_SOURCES
         logger/logger.cpp
         logger/globalLogger.h
         logger/globalLogger.cpp
-        authWindow/accountWindow.h
-        authWindow/accountWindow.cpp
-        authWindow/accountWindow.ui
+        authWindow/loginWindow.h
+        authWindow/loginWindow.cpp
+        authWindow/loginWindow.ui
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QtEx
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
+            MANUAL_FINALIZATION
+            ${PROJECT_SOURCES}
     )
-else()
-    if(ANDROID)
+else ()
+    if (ANDROID)
         add_library(QtEx SHARED
-            ${PROJECT_SOURCES}
+                ${PROJECT_SOURCES}
         )
-    else()
+    else ()
         add_executable(QtEx
-            ${PROJECT_SOURCES}
+                ${PROJECT_SOURCES}
         )
-    endif()
-endif()
+    endif ()
+endif ()
 
 target_link_libraries(QtEx PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.QtEx)
-endif()
+if (${QT_VERSION} VERSION_LESS 6.1.0)
+    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.QtEx)
+endif ()
 set_target_properties(QtEx PROPERTIES
-    ${BUNDLE_ID_OPTION}
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
+        ${BUNDLE_ID_OPTION}
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+        MACOSX_BUNDLE TRUE
+        WIN32_EXECUTABLE TRUE
 )
 
 include(GNUInstallDirs)
 install(TARGETS QtEx
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        BUNDLE DESTINATION .
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if(QT_VERSION_MAJOR EQUAL 6)
+if (QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(QtEx)
-endif()
+endif ()
 
 target_include_directories(QtEx PUBLIC
         ${SQLITE_PATH}

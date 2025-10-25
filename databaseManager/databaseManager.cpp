@@ -25,7 +25,6 @@ bool DatabaseManager::open() {
     }
 
     return true;
-
 }
 
 void DatabaseManager::close() {
@@ -50,22 +49,7 @@ bool DatabaseManager::execute(const string& sql) {
     logger.debug("SQL executed OK: " + sql);
     return true;
 }
-/*
-bool DatabaseManager::prepare(const string& sql, sqlite3_stmt** stmt) {
-    int rc = sqlite3_open(dbName.c_str(), &db);
-    if (rc != SQLITE_OK) {
-        logger.error("Failed to open database: " + string(sqlite3_errmsg(db)));
-    } else {
-        logger.debug("Database opened successfully: " + string(dbName.c_str()));
-    }
-    logger.debug("Executing SQL: " + sql);
-    if (sqlite3_prepare_v2(db, sql.c_str(), -1, stmt, nullptr) != SQLITE_OK) {
-        logger.error("SQL prepare failed: " + string(sqlite3_errmsg(db)));
-        return false;
-    }
-    return true;
-}
-*/
+
 bool DatabaseManager::prepare(const string& sql, sqlite3_stmt** stmt) {
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, stmt, nullptr);
     if (rc != SQLITE_OK) {
@@ -75,11 +59,5 @@ bool DatabaseManager::prepare(const string& sql, sqlite3_stmt** stmt) {
     return true;
 }
 
-
-
 sqlite3* DatabaseManager::getDB() const { return db; }
-
-
-DatabaseManager::~DatabaseManager() {
-    close();
-}
+DatabaseManager::~DatabaseManager() { close(); }
