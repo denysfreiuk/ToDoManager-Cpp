@@ -79,90 +79,6 @@ void TaskItemWidget::updateStyle() {
         ui->doneButton->setEnabled(true);
         ui->doneButton->setToolTip("Mark task as done");
     }
-
-    setStyleSheet(R"(
-
-/* === Повна ізоляція від глобальних стилів === */
-* {
-    font-family: 'Segoe UI', 'Roboto', sans-serif;
-    font-weight: 500;
-    color: #1e293b;
-    background: transparent;
-    border: none;
-}
-
-/* === Контейнер TaskItemWidget === */
-TaskItemWidget {
-    background-color: #ffffff;
-    border: 1px solid #d0d7e2;
-    border-radius: 8px;
-    padding: 8px 12px;
-}
-
-/* === Hover на весь віджет === */
-TaskItemWidget:hover {
-    background-color: #eaf2ff;
-    border: 1px solid #aac4ff;
-}
-
-/* === Основний текст === */
-#titleLabel {
-    font-weight: 600;
-    font-size: 15px;
-    color: #1e293b;
-    qproperty-alignment: 'AlignVCenter | AlignLeft';
-}
-
-/* === Completed === */
-.completed #titleLabel {
-    color: #2e7d32;
-    text-decoration: line-through;
-    font-weight: 600;
-}
-
-/* === Overdue === */
-.overdue #titleLabel {
-    color: #b71c1c;
-    font-weight: 600;
-}
-
-/* === Кнопки === */
-QPushButton {
-    font-size: 13px;
-    font-weight: 500;
-    color: #1f2937;
-    background-color: #f8fafc;
-    border: 1px solid #d0d7e2;
-    border-radius: 6px;
-    padding: 4px 10px;
-}
-
-/* 🚫 Вимикаємо hover та pressed для кнопок */
-QPushButton:hover,
-QPushButton:pressed,
-QPushButton:focus {
-    background-color: #f8fafc;
-    border: 1px solid #d0d7e2;
-    color: #1f2937;
-}
-
-/* === Без фокусу/selection для самого TaskItemWidget === */
-TaskItemWidget:focus,
-TaskItemWidget:selected {
-    outline: none;
-    background-color: #eaf2ff;
-}
-
-QListWidget::item:selected {
-    background: transparent;
-    border: none;
-}
-QListWidget::item:focus {
-    outline: none;
-}
-
-)");
-
 }
 
 
@@ -176,13 +92,11 @@ void TaskItemWidget::setButtonsVisible(bool visible) {
 
 void TaskItemWidget::enterEvent(QEnterEvent *event) {
     setButtonsVisible(true);
-    setStyleSheet("background-color: #e8f3ff; border-radius: 6px;");
     QWidget::enterEvent(event);
 }
 
 void TaskItemWidget::leaveEvent(QEvent *event) {
     setButtonsVisible(false);
-    setStyleSheet("background-color: #f5f5f5;");
     QWidget::leaveEvent(event);
 }
 

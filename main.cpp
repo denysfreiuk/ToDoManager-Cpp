@@ -4,7 +4,9 @@
 #include "databaseManager/TaskRepository.h"
 #include "tasks/TaskManager.h"
 #include <QApplication>
-#ifdef _WIN32
+#include <QStyleFactory>
+//Uncomment if there is work with the terminal
+/*#ifdef _WIN32
 #include <windows.h>
 void enableANSI() {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -13,16 +15,23 @@ void enableANSI() {
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(hOut, dwMode);
 }
-#endif
+#endif*/
 
 int main(int argc, char *argv[]) {
+/*#ifdef _WIN32
+    enableANSI();
+#endif*/
     QApplication app(argc, argv);
+
+    app.setStyle(QStyleFactory::create("Fusion"));
 
     DatabaseManager db("todo.db");
     AccountRepository accRepo(db);
     AuthManager auth(accRepo);
 
-    auto loggedUser = auth.authenticate(nullptr);
+    //auto loggedUser = auth.authenticate(nullptr);
+    optional<string> loggedUser = "1234";
+
     if (!loggedUser.has_value()) {
         return 0;
     }

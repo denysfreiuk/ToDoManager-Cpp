@@ -1,8 +1,9 @@
 #ifndef LOGGER_H
 #define LOGGER_H
-#define NOMINMAX
+//Sometimes it can make an error when copying to the console
+/*#define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
-#undef ERROR
+#undef ERROR*/
 #include <fstream>
 #include <string>
 using namespace std;

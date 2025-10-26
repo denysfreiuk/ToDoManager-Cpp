@@ -2,6 +2,9 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QDate>
+#include <QFile>
+#include <QTextStream>
+#include <QDebug>
 
 MainWindow::MainWindow(TaskManager& manager, QWidget *parent)
     : QMainWindow(parent),
@@ -10,6 +13,13 @@ MainWindow::MainWindow(TaskManager& manager, QWidget *parent)
 {
     ui->setupUi(this);
     setWindowTitle("ToDo Manager");
+    QFile file(":/styles/main.qss");
+    if (file.open(QFile::ReadOnly)) {
+        QString style = QLatin1String(file.readAll());
+        setStyleSheet(style);
+    } else {
+        qWarning() << "Could not open style file!";
+    }
 
     ui->todayList->setSelectionMode(QAbstractItemView::NoSelection);
     ui->weekList->setSelectionMode(QAbstractItemView::NoSelection);
@@ -18,7 +28,6 @@ MainWindow::MainWindow(TaskManager& manager, QWidget *parent)
     ui->otherList->setSelectionMode(QAbstractItemView::NoSelection);
 
     connect(ui->quickAddButton, &QPushButton::clicked, this, &MainWindow::addQuickTask);
-    connect(ui->detailsButton,  &QPushButton::clicked, this, &MainWindow::showTaskDetails);
     connect(ui->addTaskButton,  &QPushButton::clicked, this, &MainWindow::openTaskEditor);
 
     ui->viewFilterBox->clear();
@@ -81,25 +90,74 @@ void MainWindow::addTaskToToolBox(const Task& task) {
     QDate deadline = task.getDeadline();
 
     QListWidget *targetList = nullptr;
-    if (deadline < today) targetList = ui->otherList;
-    else if (deadline == today) targetList = ui->todayList;
-    else if (deadline <= today.addDays(7)) targetList = ui->weekList;
-    else if (deadline <= today.addMonths(1)) targetList = ui->monthList;
-    else if (deadline.isValid()) targetList = ui->laterList;
-    else targetList = ui->otherList;
+    int toolBoxIndex = -1;
 
-    QListWidgetItem *item = new QListWidgetItem();
+    if (deadline < today) {
+        targetList = ui->otherList;
+        toolBoxIndex = ui->toolBox->indexOf(ui->otherList);
+    } else if (deadline == today) {
+        targetList = ui->todayList;
+        toolBoxIndex = ui->toolBox->indexOf(ui->todayList);
+    } else if (deadline <= today.addDays(7)) {
+        targetList = ui->weekList;
+        toolBoxIndex = ui->toolBox->indexOf(ui->weekList);
+    } else if (deadline <= today.addMonths(1)) {
+        targetList = ui->monthList;
+        toolBoxIndex = ui->toolBox->indexOf(ui->monthList);
+    } else if (deadline.isValid()) {
+        targetList = ui->laterList;
+        toolBoxIndex = ui->toolBox->indexOf(ui->laterList);
+    } else {
+        targetList = ui->otherList;
+        toolBoxIndex = ui->toolBox->indexOf(ui->otherList);
+    }
+
+    auto *item = new QListWidgetItem(targetList);
     auto *taskWidget = new TaskItemWidget(task);
-    item->setSizeHint(taskWidget->sizeHint());
+
+    taskWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    taskWidget->setMinimumHeight(68);
+    item->setSizeHint(QSize(0, taskWidget->minimumHeight() + 8));
+
     targetList->addItem(item);
     targetList->setItemWidget(item, taskWidget);
+
+    targetList->setUniformItemSizes(false);
+    targetList->setResizeMode(QListView::Adjust);
+    targetList->setSelectionMode(QAbstractItemView::NoSelection);
+    targetList->setFocusPolicy(Qt::NoFocus);
+    targetList->setSpacing(6);
+    targetList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    targetList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
     connect(taskWidget, &TaskItemWidget::requestEdit,    this, &MainWindow::handleTaskEdit);
     connect(taskWidget, &TaskItemWidget::requestDone,    this, &MainWindow::handleTaskDone);
     connect(taskWidget, &TaskItemWidget::requestDetails, this, &MainWindow::handleTaskDetails);
-    connect(taskWidget, &TaskItemWidget::requestDelete, this, &MainWindow::handleTaskDelete);
+    connect(taskWidget, &TaskItemWidget::requestDelete,  this, &MainWindow::handleTaskDelete);
 
+    updateToolBoxTitles();
 }
+
+void MainWindow::updateToolBoxTitles() {
+    auto updateTitle = [&](QWidget *page, const QString &baseName) {
+        int index = ui->toolBox->indexOf(page);
+        if (index == -1) return;
+
+        QListWidget *list = page->findChild<QListWidget *>();
+        if (!list) return;
+
+        int count = list->count();
+        QString title = QString("%1 (%2)").arg(baseName).arg(count);
+        ui->toolBox->setItemText(index, title);
+    };
+
+    updateTitle(ui->todayList,  "Today");
+    updateTitle(ui->weekList,   "This Week");
+    updateTitle(ui->monthList,  "This Month");
+    updateTitle(ui->laterList,  "Later");
+    updateTitle(ui->otherList,  "Other");
+}
+
 
 void MainWindow::addQuickTask() {
     QString text = ui->taskInput->text().trimmed();
@@ -205,6 +263,7 @@ void MainWindow::handleTaskDelete(const Task& task) {
     if (reply == QMessageBox::Yes) {
         if (taskManager.deleteTask(this, task.getTitle().toStdString())) {
             QMessageBox::information(this, "Deleted", "Task deleted successfully!");
+            updateToolBoxTitles();
             loadTasks();
         } else {
             QMessageBox::warning(this, "Error", "Failed to delete task!");

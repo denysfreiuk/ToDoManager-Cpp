@@ -3,4 +3,7 @@
         <file>resources/icons/to-do-list.png</file>
     </qresource>
     <qresource prefix="/loginAndReg"/>
+    <qresource prefix="/">
+        <file>styles/main.qss</file>
+    </qresource>
 </RCC>

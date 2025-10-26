@@ -38,6 +38,7 @@ private:
 
     void loadTasks();
     void addTaskToToolBox(const Task& task);
+    void updateToolBoxTitles();
     void clearAllLists();
 };
 #endif //MAINWINDOW_H
