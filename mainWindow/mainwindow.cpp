@@ -12,6 +12,8 @@ MainWindow::MainWindow(TaskManager& manager, QWidget *parent)
       taskManager(manager)
 {
     ui->setupUi(this);
+    initToolBoxSections();
+    updateToolBoxTitles();
     setWindowTitle("ToDo Manager");
     QFile file(":/styles/main.qss");
     if (file.open(QFile::ReadOnly)) {
@@ -20,6 +22,8 @@ MainWindow::MainWindow(TaskManager& manager, QWidget *parent)
     } else {
         qWarning() << "Could not open style file!";
     }
+    setAttribute(Qt::WA_Hover, true);
+    setMouseTracking(true);
 
     ui->todayList->setSelectionMode(QAbstractItemView::NoSelection);
     ui->weekList->setSelectionMode(QAbstractItemView::NoSelection);
@@ -83,6 +87,7 @@ void MainWindow::loadTasks() {
         addTaskToToolBox(t);
     }
     ui->toolBox->update();
+    updateToolBoxTitles();
 }
 
 void MainWindow::addTaskToToolBox(const Task& task) {
@@ -90,27 +95,13 @@ void MainWindow::addTaskToToolBox(const Task& task) {
     QDate deadline = task.getDeadline();
 
     QListWidget *targetList = nullptr;
-    int toolBoxIndex = -1;
 
-    if (deadline < today) {
-        targetList = ui->otherList;
-        toolBoxIndex = ui->toolBox->indexOf(ui->otherList);
-    } else if (deadline == today) {
-        targetList = ui->todayList;
-        toolBoxIndex = ui->toolBox->indexOf(ui->todayList);
-    } else if (deadline <= today.addDays(7)) {
-        targetList = ui->weekList;
-        toolBoxIndex = ui->toolBox->indexOf(ui->weekList);
-    } else if (deadline <= today.addMonths(1)) {
-        targetList = ui->monthList;
-        toolBoxIndex = ui->toolBox->indexOf(ui->monthList);
-    } else if (deadline.isValid()) {
-        targetList = ui->laterList;
-        toolBoxIndex = ui->toolBox->indexOf(ui->laterList);
-    } else {
-        targetList = ui->otherList;
-        toolBoxIndex = ui->toolBox->indexOf(ui->otherList);
-    }
+    if (deadline < today)                      {targetList = ui->otherList; }
+    else if (deadline == today)                targetList = ui->todayList;
+    else if (deadline <= today.addDays(7))     targetList = ui->weekList;
+    else if (deadline <= today.addMonths(1))   targetList = ui->monthList;
+    else if (deadline.isValid())               targetList = ui->laterList;
+    else                                       targetList = ui->otherList;
 
     auto *item = new QListWidgetItem(targetList);
     auto *taskWidget = new TaskItemWidget(task);
@@ -135,29 +126,9 @@ void MainWindow::addTaskToToolBox(const Task& task) {
     connect(taskWidget, &TaskItemWidget::requestDetails, this, &MainWindow::handleTaskDetails);
     connect(taskWidget, &TaskItemWidget::requestDelete,  this, &MainWindow::handleTaskDelete);
 
-    updateToolBoxTitles();
+    updateToolBoxTitleFor(targetList);
+    taskWidget->setStyleSheet(qApp->styleSheet());
 }
-
-void MainWindow::updateToolBoxTitles() {
-    auto updateTitle = [&](QWidget *page, const QString &baseName) {
-        int index = ui->toolBox->indexOf(page);
-        if (index == -1) return;
-
-        QListWidget *list = page->findChild<QListWidget *>();
-        if (!list) return;
-
-        int count = list->count();
-        QString title = QString("%1 (%2)").arg(baseName).arg(count);
-        ui->toolBox->setItemText(index, title);
-    };
-
-    updateTitle(ui->todayList,  "Today");
-    updateTitle(ui->weekList,   "This Week");
-    updateTitle(ui->monthList,  "This Month");
-    updateTitle(ui->laterList,  "Later");
-    updateTitle(ui->otherList,  "Other");
-}
-
 
 void MainWindow::addQuickTask() {
     QString text = ui->taskInput->text().trimmed();
@@ -275,3 +246,68 @@ void MainWindow::onFilterChanged(int index) {
     Q_UNUSED(index);
     loadTasks();
 }
+
+void MainWindow::initToolBoxSections() {
+    sections.clear();
+
+    const QVector<QPair<QWidget*, QListWidget*>> pairs = {
+        { ui->todayPage,  ui->todayList  },
+        { ui->weekPage,   ui->weekList   },
+        { ui->monthPage,  ui->monthList  },
+        { ui->laterPage,  ui->laterList  },
+        { ui->otherPage,  ui->otherList  }
+    };
+
+    for (const auto& p : pairs) {
+        Section s;
+        s.page  = p.first;
+        s.list  = p.second;
+        s.index = ui->toolBox->indexOf(s.page);
+        if (s.index < 0) continue;
+
+        s.baseTitle = ui->toolBox->itemText(s.index).trimmed();
+        if (s.baseTitle.isEmpty()) {
+            if (s.page == ui->todayPage) s.baseTitle = "Today";
+            else if (s.page == ui->weekPage) s.baseTitle = "This Week";
+            else if (s.page == ui->monthPage) s.baseTitle = "This Month";
+            else if (s.page == ui->laterPage) s.baseTitle = "Later";
+            else if (s.page == ui->otherPage) s.baseTitle = "Other";
+        }
+
+        sections.push_back(s);
+
+        if (s.list && s.list->model()) {
+            auto mdl = s.list->model();
+            connect(mdl, &QAbstractItemModel::rowsInserted, this,
+                    [this, lw=s.list](const QModelIndex&, int, int){ updateToolBoxTitleFor(lw); });
+            connect(mdl, &QAbstractItemModel::rowsRemoved, this,
+                    [this, lw=s.list](const QModelIndex&, int, int){ updateToolBoxTitleFor(lw); });
+            connect(mdl, &QAbstractItemModel::modelReset,  this,
+                    [this, lw=s.list](){ updateToolBoxTitleFor(lw); });
+        }
+    }
+}
+
+void MainWindow::updateToolBoxTitles() {
+    for (const auto& s : sections) {
+        if (!s.page || !s.list || s.index < 0) continue;
+        const int count = s.list->count();
+        ui->toolBox->setItemText(s.index, QString("%1 (%2)").arg(s.baseTitle).arg(count));
+    }
+}
+
+void MainWindow::updateToolBoxTitleFor(QListWidget* list) {
+    for (const auto& s : sections) {
+        if (s.list == list && s.index >= 0) {
+            ui->toolBox->setItemText(s.index, QString("%1 (%2)").arg(s.baseTitle).arg(list->count()));
+            break;
+        }
+    }
+}
+
+QWidget* MainWindow::toolBoxPageFor(QWidget* child) const {
+    QWidget* p = child;
+    while (p && p->parentWidget() != ui->toolBox) p = p->parentWidget();
+    return p;
+}
+

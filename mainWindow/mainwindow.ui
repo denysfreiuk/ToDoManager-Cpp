@@ -189,7 +189,7 @@
           <property name="tabSpacing">
            <number>0</number>
           </property>
-          <widget class="QWidget" name="page_1">
+          <widget class="QWidget" name="todayPage">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -204,14 +204,30 @@
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
              <widget class="QListWidget" name="todayList">
+              <property name="updateThreshold">
+               <number>200</number>
+              </property>
+              <property name="spacing">
+               <number>0</number>
+              </property>
               <property name="itemAlignment">
                <set>Qt::AlignmentFlag::AlignVCenter</set>
               </property>
+              <item>
+               <property name="text">
+                <string>Новий елемент</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Новий елемент</string>
+               </property>
+              </item>
              </widget>
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_2">
+          <widget class="QWidget" name="weekPage">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -229,7 +245,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_3">
+          <widget class="QWidget" name="monthPage">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -247,7 +263,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_4">
+          <widget class="QWidget" name="laterPage">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -265,7 +281,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_5">
+          <widget class="QWidget" name="otherPage">
            <property name="geometry">
             <rect>
              <x>0</x>

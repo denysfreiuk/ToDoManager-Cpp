@@ -4,7 +4,6 @@
 #include "databaseManager/TaskRepository.h"
 #include "tasks/TaskManager.h"
 #include <QApplication>
-#include <QStyleFactory>
 //Uncomment if there is work with the terminal
 /*#ifdef _WIN32
 #include <windows.h>
@@ -22,8 +21,6 @@ int main(int argc, char *argv[]) {
     enableANSI();
 #endif*/
     QApplication app(argc, argv);
-
-    app.setStyle(QStyleFactory::create("Fusion"));
 
     DatabaseManager db("todo.db");
     AccountRepository accRepo(db);

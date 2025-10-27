@@ -6,6 +6,7 @@
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 #include <QTimer>
+#include <QMap>
 #include "../tasks/TaskManager.h"
 #include "taskItemWidget.h"
 #include "taskEditorWindow.h"
@@ -33,6 +34,13 @@ public:
     void handleTaskDelete(const Task& task);
 
 private:
+    struct Section {
+        QWidget* page = nullptr;
+        QListWidget* list = nullptr;
+        int index = -1;
+        QString baseTitle;
+    };
+
     Ui::MainWindow *ui;
     TaskManager& taskManager;
 
@@ -40,5 +48,9 @@ private:
     void addTaskToToolBox(const Task& task);
     void updateToolBoxTitles();
     void clearAllLists();
+    QVector<Section> sections;
+    void initToolBoxSections();
+    void updateToolBoxTitleFor(QListWidget* list);
+    QWidget* toolBoxPageFor(QWidget* child) const;
 };
 #endif //MAINWINDOW_H

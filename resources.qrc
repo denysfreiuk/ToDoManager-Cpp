@@ -1,9 +1,14 @@
 <RCC>
-    <qresource prefix="/todoApp">
-        <file>resources/icons/to-do-list.png</file>
-    </qresource>
     <qresource prefix="/loginAndReg"/>
     <qresource prefix="/">
         <file>styles/main.qss</file>
+        <file>resources/icons/check.png</file>
+        <file>resources/icons/down-arrow.png</file>
+        <file>resources/icons/plus.png</file>
+        <file>resources/icons/priority_high.png</file>
+        <file>resources/icons/priority_low.png</file>
+        <file>resources/icons/priority_medium.png</file>
+        <file>resources/icons/right-arrow.png</file>
+        <file>resources/icons/to-do-list.png</file>
     </qresource>
 </RCC>

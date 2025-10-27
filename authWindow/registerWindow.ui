@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>272</width>
-    <height>328</height>
+    <height>345</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -176,7 +176,7 @@ QScrollBar::sub-line:vertical {
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../resources.qrc">:/todoApp/resources/icons/to-do-list.png</pixmap>
+        <pixmap resource="../resources.qrc">:/resources/icons/to-do-list.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -202,10 +202,7 @@ QScrollBar::sub-line:vertical {
         </font>
        </property>
        <property name="text">
-        <string>Register</string>
-       </property>
-       <property name="pixmap">
-        <pixmap>../resources/icons/to-do-list.png</pixmap>
+        <string>REGISTER</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignmentFlag::AlignCenter</set>

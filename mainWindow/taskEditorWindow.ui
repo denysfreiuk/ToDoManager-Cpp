@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>752</width>
-    <height>574</height>
+    <width>974</width>
+    <height>707</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,23 +70,8 @@
        <item>
         <widget class="QComboBox" name="priorityBox">
          <property name="currentText">
-          <string>Low</string>
+          <string/>
          </property>
-         <item>
-          <property name="text">
-           <string>Low</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Medium</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>High</string>
-          </property>
-         </item>
         </widget>
        </item>
       </layout>

@@ -1,6 +1,8 @@
 #ifndef TASKITEMWIDGET_H
 #define TASKITEMWIDGET_H
+
 #include <QWidget>
+#include <QLabel>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 #include "../tasks/task.h"
@@ -17,7 +19,7 @@ public:
     ~TaskItemWidget();
 
     Task getTask() const;
-    void updateStyle();
+    void updateDisplay();
 
     signals:
         void requestEdit(const Task& task);
@@ -26,15 +28,18 @@ public:
     void requestDelete(const Task& task);
 
 protected:
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
     void enterEvent(QEnterEvent *event) override;
     void leaveEvent(QEvent *event) override;
 
 private:
     Ui::TaskItemWidget *ui;
     Task task;
+
     QGraphicsOpacityEffect *btnEffect;
     QPropertyAnimation *fadeAnim;
+
     void setButtonsVisible(bool visible);
 };
 
-#endif //TASKITEMWIDGET_H
+#endif // TASKITEMWIDGET_H

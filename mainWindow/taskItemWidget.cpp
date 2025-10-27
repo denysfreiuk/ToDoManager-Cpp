@@ -1,8 +1,14 @@
 #include "taskitemwidget.h"
 #include "ui_taskitemwidget.h"
-#include <QFont>
+#include <string>
+#include <QHBoxLayout>
+#include <QDate>
 #include <QEnterEvent>
-#include <QPalette>
+#include <QMouseEvent>
+#include <QFont>
+#include <QPixmap>
+
+using namespace std;
 
 TaskItemWidget::TaskItemWidget(const Task& t, QWidget *parent)
     : QWidget(parent),
@@ -12,25 +18,10 @@ TaskItemWidget::TaskItemWidget(const Task& t, QWidget *parent)
       fadeAnim(new QPropertyAnimation(btnEffect, "opacity", this))
 {
     ui->setupUi(this);
-    setMinimumHeight(70);
-    setFocusPolicy(Qt::NoFocus);
-    setAttribute(Qt::WA_Hover, true);
-    setAutoFillBackground(true);
 
-    QPalette pal = palette();
-    pal.setColor(QPalette::Window, QColor(245, 245, 245));
-    setPalette(pal);
-
-    ui->mainLayout->setAlignment(Qt::AlignVCenter);
-    ui->titleLabel->setText(task.toDisplayString());
-    ui->titleLabel->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-    ui->mainLayout->setContentsMargins(8, 4, 8, 4);
-    ui->mainLayout->setSpacing(8);
 
     QWidget *btnContainer = new QWidget(this);
     QHBoxLayout *btnLayout = new QHBoxLayout(btnContainer);
-    btnLayout->setContentsMargins(0, 0, 0, 0);
-    btnLayout->setSpacing(6);
     btnLayout->addWidget(ui->editButton);
     btnLayout->addWidget(ui->doneButton);
     btnLayout->addWidget(ui->detailsButton);
@@ -40,15 +31,13 @@ TaskItemWidget::TaskItemWidget(const Task& t, QWidget *parent)
 
     btnEffect->setOpacity(0.0);
 
-    connect(ui->editButton, &QPushButton::clicked, [this]() { emit requestEdit(task); });
-    connect(ui->doneButton, &QPushButton::clicked, [this]() { emit requestDone(task); });
+    connect(ui->editButton,    &QPushButton::clicked, [this]() { emit requestEdit(task); });
+    connect(ui->doneButton,    &QPushButton::clicked, [this]() { emit requestDone(task); });
     connect(ui->detailsButton, &QPushButton::clicked, [this]() { emit requestDetails(task); });
-    connect(ui->deleteButton, &QPushButton::clicked, [this]() {emit requestDelete(task);});
+    connect(ui->deleteButton,  &QPushButton::clicked, [this]() { emit requestDelete(task); });
 
-    setFocusPolicy(Qt::NoFocus);
-    setAttribute(Qt::WA_Hover, true);
-
-    updateStyle();
+    updateDisplay();
+    setStyleSheet(qApp->styleSheet());
 }
 
 TaskItemWidget::~TaskItemWidget() {
@@ -59,25 +48,62 @@ Task TaskItemWidget::getTask() const {
     return task;
 }
 
-void TaskItemWidget::updateStyle() {
-    QFont f = ui->titleLabel->font();
+void TaskItemWidget::mouseDoubleClickEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton)
+        emit requestDetails(task);
+    QWidget::mouseDoubleClickEvent(event);
+}
 
-    if (task.isCompleted()) {
-        f.setStrikeOut(true);
-        ui->titleLabel->setFont(f);
-        ui->titleLabel->setStyleSheet("color: darkgreen;");
-        ui->doneButton->setEnabled(false);
-        ui->doneButton->setToolTip("Already completed");
-    }
-    else if (task.getDeadline() < QDate::currentDate()) {
-        ui->titleLabel->setStyleSheet("color: red;");
+void TaskItemWidget::updateDisplay() {
+    ui->titleLabel->setText(task.getTitle());
+    ui->titleLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+    QDate deadline = task.getDeadline();
+    if (deadline.isValid())
+        ui->labelDeadline->setText(deadline.toString("dd MMM yyyy"));
+    else
+        ui->labelDeadline->setText("No deadline");
+
+    bool done = task.isCompleted();
+
+    if (done) {
+        ui->labelCheck->setPixmap(QPixmap(":/resources/icons/check.png")
+            .scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        ui->labelCheck->setVisible(true);
+
+        ui->labelPriority->setVisible(false);
+
+        ui->doneButton->setVisible(false);
+
+        ui->titleLabel->setStyleSheet("color: #666; text-decoration: line-through;");
+        ui->labelDeadline->setStyleSheet("color: #999;");
+    } else {
+        ui->labelCheck->setVisible(false);
+
+        string pr = task.getPriority().toStdString();
+        QString iconPath;
+        if (pr == "Low") {
+            iconPath = ":/resources/icons/priority_low.png";
+        } else if (pr == "Medium") {
+            iconPath = ":/resources/icons/priority_medium.png";
+        } else if (pr == "High") {
+            iconPath = ":/resources/icons/priority_high.png";
+        }
+
+        if (!iconPath.isEmpty()) {
+            ui->labelPriority->setPixmap(QPixmap(iconPath)
+                .scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            ui->labelPriority->setVisible(true);
+        } else {
+            ui->labelPriority->setVisible(false);
+        }
+
+        ui->doneButton->setVisible(true);
         ui->doneButton->setEnabled(true);
         ui->doneButton->setToolTip("Mark task as done");
-    }
-    else {
-        ui->titleLabel->setStyleSheet("color: black;");
-        ui->doneButton->setEnabled(true);
-        ui->doneButton->setToolTip("Mark task as done");
+
+        ui->titleLabel->setStyleSheet("color: #222; text-decoration: none;");
+        ui->labelDeadline->setStyleSheet("color: #555;");
     }
 }
 
@@ -99,4 +125,3 @@ void TaskItemWidget::leaveEvent(QEvent *event) {
     setButtonsVisible(false);
     QWidget::leaveEvent(event);
 }
-
