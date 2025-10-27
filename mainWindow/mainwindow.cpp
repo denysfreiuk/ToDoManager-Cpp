@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QGraphicsDropShadowEffect>
+#include <QPropertyAnimation>
 
 MainWindow::MainWindow(TaskManager& manager, QWidget *parent)
     : QMainWindow(parent),
@@ -14,6 +16,15 @@ MainWindow::MainWindow(TaskManager& manager, QWidget *parent)
     ui->setupUi(this);
     initToolBoxSections();
     updateToolBoxTitles();
+
+    for (auto button : findChildren<QPushButton*>()) {
+        auto *shadow = new QGraphicsDropShadowEffect(button);
+        shadow->setBlurRadius(15);
+        shadow->setOffset(0, 3);
+        shadow->setColor(QColor(201, 66, 119, 80));
+        button->setGraphicsEffect(shadow);
+    }
+
     setWindowTitle("ToDo Manager");
     QFile file(":/styles/main.qss");
     if (file.open(QFile::ReadOnly)) {
@@ -292,14 +303,14 @@ void MainWindow::updateToolBoxTitles() {
     for (const auto& s : sections) {
         if (!s.page || !s.list || s.index < 0) continue;
         const int count = s.list->count();
-        ui->toolBox->setItemText(s.index, QString("%1 (%2)").arg(s.baseTitle).arg(count));
+        ui->toolBox->setItemText(s.index, QString("%1 (%2)").arg(s.baseTitle).arg(QString::number(count)));
     }
 }
 
 void MainWindow::updateToolBoxTitleFor(QListWidget* list) {
     for (const auto& s : sections) {
         if (s.list == list && s.index >= 0) {
-            ui->toolBox->setItemText(s.index, QString("%1 (%2)").arg(s.baseTitle).arg(list->count()));
+            ui->toolBox->setItemText(s.index, QString("%1 (%2)").arg(s.baseTitle).arg(QString::number(list->count())));
             break;
         }
     }

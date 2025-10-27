@@ -19,6 +19,19 @@ TaskItemWidget::TaskItemWidget(const Task& t, QWidget *parent)
 {
     ui->setupUi(this);
 
+    auto setupButton = [](QPushButton *btn) {
+        QSizePolicy policy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        policy.setRetainSizeWhenHidden(false);
+        btn->setSizePolicy(policy);
+    };
+
+    setupButton(ui->editButton);
+    setupButton(ui->doneButton);
+    setupButton(ui->detailsButton);
+    setupButton(ui->deleteButton);
+
+    for (int i = 0; i < ui->btnContainer->count(); ++i)
+        ui->btnContainer->setStretch(i, 1);
 
     QWidget *btnContainer = new QWidget(this);
     QHBoxLayout *btnLayout = new QHBoxLayout(btnContainer);
@@ -59,12 +72,15 @@ void TaskItemWidget::updateDisplay() {
     ui->titleLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
     QDate deadline = task.getDeadline();
+    QDate today = QDate::currentDate();
+
     if (deadline.isValid())
         ui->labelDeadline->setText(deadline.toString("dd MMM yyyy"));
     else
         ui->labelDeadline->setText("No deadline");
 
     bool done = task.isCompleted();
+    bool overdue = (deadline.isValid() && deadline < today && !done);
 
     if (done) {
         ui->labelCheck->setPixmap(QPixmap(":/resources/icons/check.png")
@@ -72,23 +88,33 @@ void TaskItemWidget::updateDisplay() {
         ui->labelCheck->setVisible(true);
 
         ui->labelPriority->setVisible(false);
-
         ui->doneButton->setVisible(false);
 
-        ui->titleLabel->setStyleSheet("color: #666; text-decoration: line-through;");
+        ui->titleLabel->setStyleSheet("color: #A49F9E;");
         ui->labelDeadline->setStyleSheet("color: #999;");
-    } else {
+    }
+    else if (overdue) {
         ui->labelCheck->setVisible(false);
 
-        string pr = task.getPriority().toStdString();
+        ui->labelPriority->setPixmap(QPixmap(":/resources/icons/overdue_icon.png")
+            .scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        ui->labelPriority->setVisible(true);
+
+        ui->doneButton->setVisible(true);
+        ui->doneButton->setEnabled(true);
+        ui->doneButton->setToolTip("Task is overdue! Mark as done.");
+
+        ui->titleLabel->setStyleSheet("color: #c0392b; font-weight: 600;");
+        ui->labelDeadline->setStyleSheet("color: #e74c3c; font-style: italic;");
+    }
+    else {
+        ui->labelCheck->setVisible(false);
+
+        QString priority = task.getPriority();
         QString iconPath;
-        if (pr == "Low") {
-            iconPath = ":/resources/icons/priority_low.png";
-        } else if (pr == "Medium") {
-            iconPath = ":/resources/icons/priority_medium.png";
-        } else if (pr == "High") {
-            iconPath = ":/resources/icons/priority_high.png";
-        }
+        if (priority == "Low")      iconPath = ":/resources/icons/priority_low.png";
+        else if (priority == "Medium") iconPath = ":/resources/icons/priority_medium.png";
+        else if (priority == "High")   iconPath = ":/resources/icons/priority_high.png";
 
         if (!iconPath.isEmpty()) {
             ui->labelPriority->setPixmap(QPixmap(iconPath)
@@ -102,11 +128,10 @@ void TaskItemWidget::updateDisplay() {
         ui->doneButton->setEnabled(true);
         ui->doneButton->setToolTip("Mark task as done");
 
-        ui->titleLabel->setStyleSheet("color: #222; text-decoration: none;");
+        ui->titleLabel->setStyleSheet("color: #2F0A28; text-decoration: none;");
         ui->labelDeadline->setStyleSheet("color: #555;");
     }
 }
-
 
 void TaskItemWidget::setButtonsVisible(bool visible) {
     fadeAnim->stop();
