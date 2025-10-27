@@ -15,6 +15,7 @@ QLabel#titleLabel, QLabel#headerLabel, QLabel#labelTitle {
     font-weight: 600;
     text-align: center;
 }
+
 QListWidget {
     background-color: #ffffff;
     border: 1px solid #e1e4ea;
@@ -32,20 +33,7 @@ QListWidget::item:selected {
 
 QListWidget::item{
     background-color: #ffffff;
-    border: 1px solid #e1e4ea;
-    border-radius: 12px;
-    transition: all 0.25s ease;
-}
-
-QWidget::item:hover {
-    border: 1px solid #d0d5e0;
-    background-color: #fefefe;
-    box-shadow: 0 3px 8px rgba(108,99,255,0.12);
-}
-
-QWidget::item:focus-within {
-    border: 1px solid #6c63ff;
-    box-shadow: 0 0 8px rgba(108, 99, 255, 0.25);
+    border: 1px solid #A49F9E;
 }
 
 QPushButton {
@@ -117,7 +105,7 @@ QDateEdit::drop-down {
 }
 
 QDateEdit::down-arrow {
-    image: url(:/icons/calendar.svg);
+    image: url(:/resources/icons/calendar.png);
     width: 14px;
     height: 14px;
     margin-right: 6px;
@@ -152,10 +140,9 @@ QComboBox::drop-down {
 }
 
 QComboBox::down-arrow {
-    image: url(:/icons/down-arrow.png);
-    width: 24px;
-    height: 24px;
-    margin-right: 6px;
+    image: url(:/resources/icons/down-arrow.png);
+    width: 12px;
+    height: 12px;
 }
 
 QComboBox QAbstractItemView {

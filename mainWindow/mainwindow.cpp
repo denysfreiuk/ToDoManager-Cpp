@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "settingsWindow.h"
 #include <QMessageBox>
 #include <QDate>
 #include <QFile>
@@ -44,6 +45,8 @@ MainWindow::MainWindow(TaskManager& manager, QWidget *parent)
 
     connect(ui->quickAddButton, &QPushButton::clicked, this, &MainWindow::addQuickTask);
     connect(ui->addTaskButton,  &QPushButton::clicked, this, &MainWindow::openTaskEditor);
+    connect(ui->settingsButton, &QPushButton::clicked, this, [this]() {
+    SettingsWindow sw(this); sw.exec();});
 
     ui->viewFilterBox->clear();
     ui->viewFilterBox->addItems({"All Tasks", "Overdue", "Completed", "Uncompleted"});

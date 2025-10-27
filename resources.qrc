@@ -11,5 +11,6 @@
         <file>resources/icons/right-arrow.png</file>
         <file>resources/icons/to-do-list.png</file>
         <file>resources/icons/overdue_icon.png</file>
+        <file>resources/icons/calendar.png</file>
     </qresource>
 </RCC>

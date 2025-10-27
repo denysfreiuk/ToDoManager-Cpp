@@ -18,7 +18,9 @@ TaskItemWidget::TaskItemWidget(const Task& t, QWidget *parent)
       fadeAnim(new QPropertyAnimation(btnEffect, "opacity", this))
 {
     ui->setupUi(this);
-
+    qDebug() << "TaskItemWidget name =" << objectName();
+    setAttribute(Qt::WA_StyledBackground, true);
+    setAutoFillBackground(true);
     auto setupButton = [](QPushButton *btn) {
         QSizePolicy policy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         policy.setRetainSizeWhenHidden(false);
