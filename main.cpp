@@ -26,8 +26,8 @@ int main(int argc, char *argv[]) {
     AccountRepository accRepo(db);
     AuthManager auth(accRepo);
 
-    //auto loggedUser = auth.authenticate(nullptr);
-    optional<string> loggedUser = "1234";
+    auto loggedUser = auth.authenticate(nullptr);
+    //optional<string> loggedUser = "admin";  DEFAULT ACCOUT
 
     if (!loggedUser.has_value()) {
         return 0;
