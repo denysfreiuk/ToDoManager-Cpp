@@ -45,25 +45,21 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QDateEdit" name="deadlineEdit">
+        <widget class="QDateTimeEdit" name="deadlineEdit">
          <property name="currentSection">
-          <enum>QDateTimeEdit::Section::MonthSection</enum>
+          <enum>QDateTimeEdit::Section::DaySection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>dd.MM.yyyy hh:mm</string>
          </property>
          <property name="calendarPopup">
           <bool>true</bool>
          </property>
          <property name="currentSectionIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <property name="timeSpec">
           <enum>Qt::TimeSpec::LocalTime</enum>
-         </property>
-         <property name="date">
-          <date>
-           <year>2025</year>
-           <month>10</month>
-           <day>25</day>
-          </date>
          </property>
         </widget>
        </item>

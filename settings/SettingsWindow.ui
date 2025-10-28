@@ -130,7 +130,7 @@
          </widget>
         </item>
         <item row="4" column="0">
-         <widget class="QLabel" name="labelSoundPathLabel">
+         <widget class="QLabel" name="labelSoundPath_2">
           <property name="text">
            <string>Selected file:</string>
           </property>
@@ -140,6 +140,20 @@
          <widget class="QLabel" name="labelSoundPath">
           <property name="text">
            <string>(none selected)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QPushButton" name="testSoundButton">
+          <property name="text">
+           <string>▶ Test sound</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="testLabel">
+          <property name="text">
+           <string>Plat test sound:</string>
           </property>
          </widget>
         </item>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1109</width>
-    <height>760</height>
+    <width>1113</width>
+    <height>844</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -194,8 +194,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>857</width>
-             <height>334</height>
+             <width>861</width>
+             <height>418</height>
             </rect>
            </property>
            <attribute name="label">
@@ -208,7 +208,7 @@
                <number>200</number>
               </property>
               <property name="spacing">
-               <number>0</number>
+               <number>5</number>
               </property>
               <property name="itemAlignment">
                <set>Qt::AlignmentFlag::AlignVCenter</set>
@@ -232,8 +232,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>857</width>
-             <height>334</height>
+             <width>861</width>
+             <height>418</height>
             </rect>
            </property>
            <attribute name="label">
@@ -250,8 +250,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>857</width>
-             <height>334</height>
+             <width>861</width>
+             <height>418</height>
             </rect>
            </property>
            <attribute name="label">
@@ -268,8 +268,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>857</width>
-             <height>334</height>
+             <width>861</width>
+             <height>418</height>
             </rect>
            </property>
            <attribute name="label">
@@ -286,8 +286,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>857</width>
-             <height>334</height>
+             <width>861</width>
+             <height>418</height>
             </rect>
            </property>
            <attribute name="label">
@@ -312,7 +312,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1109</width>
+     <width>1113</width>
      <height>25</height>
     </rect>
    </property>

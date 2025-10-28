@@ -1,15 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+
 #include <QMainWindow>
-#include <QListWidget>
-#include <QComboBox>
-#include <QGraphicsOpacityEffect>
-#include <QPropertyAnimation>
 #include <QTimer>
-#include <QMap>
-#include "../tasks/TaskManager.h"
-#include "taskItemWidget.h"
-#include "taskEditorWindow.h"
+#include <QSoundEffect>
+#include <QMediaPlayer>
+#include <QAudioOutput>
+#include <QSet>
+#include <QListWidget>
+#include "../tasks/taskmanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,38 +18,51 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(TaskManager& manager, QWidget *parent = nullptr);
+    explicit MainWindow(TaskManager &manager, QWidget *parent = nullptr);
     ~MainWindow();
 
     private slots:
         void addQuickTask();
-    void showTaskDetails();
     void openTaskEditor();
+    void handleTaskEdit(const Task &task);
+    void handleTaskDone(const Task &task);
+    void handleTaskDelete(const Task &task);
+    void handleTaskDetails(const Task &task);
     void onFilterChanged(int index);
-
-    void handleTaskEdit(const Task& task);
-    void handleTaskDone(const Task& task);
-    void handleTaskDetails(const Task& task);
-    void handleTaskDelete(const Task& task);
+    void onSettingsClicked();
+    void checkRemindersTick();
 
 private:
+    Ui::MainWindow *ui;
+    TaskManager &taskManager;
+
+    QTimer *reminderTimer = nullptr;
+    QMediaPlayer *reminderPlayer = nullptr;
+    QAudioOutput *audioOut = nullptr;
+    QSoundEffect reminderSound;
+
+    QSet<QString> remindedKeys;
+    QTimer *autoDeleteTimer = nullptr;
+
     struct Section {
-        QWidget* page = nullptr;
-        QListWidget* list = nullptr;
+        QWidget *page = nullptr;
+        QListWidget *list = nullptr;
         int index = -1;
         QString baseTitle;
     };
-
-    Ui::MainWindow *ui;
-    TaskManager& taskManager;
-
-    void loadTasks();
-    void addTaskToToolBox(const Task& task);
-    void updateToolBoxTitles();
-    void clearAllLists();
     QVector<Section> sections;
+
     void initToolBoxSections();
-    void updateToolBoxTitleFor(QListWidget* list);
-    QWidget* toolBoxPageFor(QWidget* child) const;
+    void clearAllLists();
+    void loadTasks();
+    void addTaskToToolBox(const Task &task);
+    void updateToolBoxTitles();
+    void updateToolBoxTitleFor(QListWidget *list);
+    QWidget* toolBoxPageFor(QWidget *child) const;
+
+    void applySettings();
+    void enforceAutoDelete();
+    void startOrStopReminders();
 };
-#endif //MAINWINDOW_H
+
+#endif // MAINWINDOW_H

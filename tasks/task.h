@@ -8,24 +8,24 @@ class Task {
 private:
     QString title;
     QString description;
-    QDate deadline;
+    QDateTime deadline;
     QString priority;
     bool completed;
 
 public:
     Task();
     Task(const QString &title, const QString &description,
-         const QDate &deadline, const QString &priority, bool completed = false);
+         const QDateTime &deadline, const QString &priority, bool completed = false);
 
     QString getTitle() const;
     QString getDescription() const;
-    QDate getDeadline() const;
+    const QDateTime& getDeadline() const;
     QString getPriority() const;
     bool isCompleted() const;
 
     void setTitle(const QString &value);
     void setDescription(const QString &value);
-    void setDeadline(const QDate &value);
+    void setDeadline(const QDateTime& d);
     void setPriority(const QString &value);
     void setCompleted(bool value);
 

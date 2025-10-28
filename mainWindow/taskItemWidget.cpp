@@ -18,7 +18,6 @@ TaskItemWidget::TaskItemWidget(const Task& t, QWidget *parent)
       fadeAnim(new QPropertyAnimation(btnEffect, "opacity", this))
 {
     ui->setupUi(this);
-    qDebug() << "TaskItemWidget name =" << objectName();
     setAttribute(Qt::WA_StyledBackground, true);
     setAutoFillBackground(true);
     auto setupButton = [](QPushButton *btn) {
@@ -73,11 +72,11 @@ void TaskItemWidget::updateDisplay() {
     ui->titleLabel->setText(task.getTitle());
     ui->titleLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
-    QDate deadline = task.getDeadline();
-    QDate today = QDate::currentDate();
+    QDateTime deadline = task.getDeadline();
+    QDateTime today = QDateTime::currentDateTime();
 
     if (deadline.isValid())
-        ui->labelDeadline->setText(deadline.toString("dd MMM yyyy"));
+        ui->labelDeadline->setText(deadline.toString("dd MMM yyyy  hh:mm"));
     else
         ui->labelDeadline->setText("No deadline");
 
@@ -85,7 +84,7 @@ void TaskItemWidget::updateDisplay() {
     bool overdue = (deadline.isValid() && deadline < today && !done);
 
     if (done) {
-        ui->labelCheck->setPixmap(QPixmap(":/resources/icons/check.png")
+        ui->labelCheck->setPixmap(QPixmap(":/resources/icons/check.svg")
             .scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
         ui->labelCheck->setVisible(true);
 
@@ -98,7 +97,7 @@ void TaskItemWidget::updateDisplay() {
     else if (overdue) {
         ui->labelCheck->setVisible(false);
 
-        ui->labelPriority->setPixmap(QPixmap(":/resources/icons/overdue_icon.png")
+        ui->labelPriority->setPixmap(QPixmap(":/resources/icons/overdue_icon.svg")
             .scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
         ui->labelPriority->setVisible(true);
 

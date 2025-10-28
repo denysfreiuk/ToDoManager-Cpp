@@ -1,3 +1,4 @@
+/* === MAIN WINDOW === */
 QMainWindow {
     background-color: #f7f8fa;
     color: #222;
@@ -5,10 +6,12 @@ QMainWindow {
     font-size: 15px;
 }
 
+/* === CENTRAL WIDGET === */
 QWidget#centralwidget {
     background-color: #f7f8fa;
 }
 
+/* === LABELS === */
 QLabel#titleLabel, QLabel#headerLabel, QLabel#labelTitle {
     color: #1a1a1a;
     font-size: 22px;
@@ -16,6 +19,7 @@ QLabel#titleLabel, QLabel#headerLabel, QLabel#labelTitle {
     text-align: center;
 }
 
+/* === LISTS === */
 QListWidget {
     background-color: #ffffff;
     border: 1px solid #e1e4ea;
@@ -28,14 +32,13 @@ QListWidget::item:hover {
 
 QListWidget::item:selected {
     background: rgba(108, 99, 255, 0.1);
-    border-radius: 10px;
 }
 
-QListWidget::item{
+QListWidget::item {
     background-color: #ffffff;
     border: 1px solid #A49F9E;
 }
-
+/* === BUTTONS === */
 QPushButton {
     background-color: #f1f3f9;
     color: #333;
@@ -43,7 +46,6 @@ QPushButton {
     border-radius: 8px;
     padding: 8px 14px;
     font-weight: 500;
-    transition: all 0.25s ease;
 }
 
 QPushButton:hover {
@@ -62,6 +64,7 @@ QPushButton:disabled {
     border: 1px solid #e0e2e8;
 }
 
+/* === LINE EDIT === */
 QLineEdit {
     background-color: #ffffff;
     border: 1px solid #d8dce6;
@@ -75,6 +78,7 @@ QLineEdit:focus {
     background-color: #fcfcff;
 }
 
+/* === TEXT EDIT === */
 QTextEdit {
     background-color: #ffffff;
     border: 1px solid #d8dce6;
@@ -88,7 +92,8 @@ QTextEdit:focus {
     background-color: #fcfcff;
 }
 
-QDateEdit {
+/* === DATETIME EDIT === */
+QDateTimeEdit {
     background-color: #ffffff;
     border: 1px solid #d8dce6;
     border-radius: 8px;
@@ -96,7 +101,7 @@ QDateEdit {
     color: #222;
 }
 
-QDateEdit::drop-down {
+QDateTimeEdit::drop-down {
     subcontrol-origin: padding;
     subcontrol-position: top right;
     width: 24px;
@@ -104,17 +109,18 @@ QDateEdit::drop-down {
     background-color: #f1f3f9;
 }
 
-QDateEdit::down-arrow {
+QDateTimeEdit::down-arrow {
     image: url(:/resources/icons/calendar.png);
     width: 14px;
     height: 14px;
     margin-right: 6px;
 }
 
-QDateEdit:focus {
+QDateTimeEdit:focus {
     border: 1px solid #6c63ff;
 }
 
+/* === COMBOBOX === */
 QComboBox {
     background-color: #ffffff;
     border: 1px solid #d8dce6;
@@ -153,6 +159,7 @@ QComboBox QAbstractItemView {
     border-radius: 6px;
 }
 
+/* === CHECKBOX === */
 QCheckBox {
     color: #222;
     spacing: 6px;
@@ -171,6 +178,7 @@ QCheckBox::indicator:checked {
     border: 1px solid #6c63ff;
 }
 
+/* === TABLE === */
 QTableWidget {
     background-color: #ffffff;
     border: 1px solid #d8dce6;
@@ -188,6 +196,7 @@ QHeaderView::section {
     padding: 6px;
 }
 
+/* === SCROLLBAR === */
 QScrollBar:vertical {
     background: #f1f2f5;
     width: 10px;
@@ -208,12 +217,14 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
     background: none;
 }
 
+/* === STATUSBAR === */
 QStatusBar {
     background-color: #f1f2f6;
     color: #555;
     border-top: 1px solid #dcdfe5;
 }
 
+/* === TOOLBOX === */
 QToolBox {
     background-color: #ffffff;
     border: 1px solid #d8dce6;
@@ -248,9 +259,7 @@ QToolBox::tab:selected {
     border: 1px solid #b9c0f5;
     color: #2e2bff;
     font-weight: 600;
-    box-shadow: 0 2px 6px rgba(108, 99, 255, 0.1);
 }
-
 
 QToolBox QWidget {
     background-color: #ffffff;
@@ -269,4 +278,87 @@ QToolBox QScrollBar::handle:vertical {
 
 QToolBox QScrollBar::handle:vertical:hover {
     background: #a9aee0;
+}
+
+/* === SETTINGS WINDOW === */
+QDialog#SettingsWindow {
+    background-color: #ffffff;
+    border: 1px solid #d8dce6;
+    border-radius: 12px;
+    color: #222;
+    font-size: 15px;
+}
+
+/* Group boxes inside Settings */
+QGroupBox {
+    border: 1px solid #d8dce6;
+    border-radius: 8px;
+    margin-top: 8px;
+    background-color: #f9f9fc;
+    font-weight: 500;
+    padding: 8px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    padding: 0 4px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Labels in settings */
+QLabel {
+    color: #333;
+}
+
+/* Spin boxes and combo inside settings */
+QSpinBox, QDoubleSpinBox, QTimeEdit {
+    background-color: #ffffff;
+    border: 1px solid #d8dce6;
+    border-radius: 6px;
+    padding: 4px 6px;
+    color: #222;
+}
+
+QSpinBox:focus, QDoubleSpinBox:focus, QTimeEdit:focus {
+    border: 1px solid #6c63ff;
+}
+
+/* Radio buttons */
+QRadioButton {
+    color: #222;
+    spacing: 4px;
+}
+
+QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #999;
+    border-radius: 7px;
+    background: #fff;
+}
+
+QRadioButton::indicator:checked {
+    background-color: #6c63ff;
+    border: 1px solid #6c63ff;
+}
+
+/* QFileDialog (для вибору звуку) */
+QFileDialog {
+    background-color: #ffffff;
+    color: #222;
+}
+
+QFileDialog QPushButton {
+    background-color: #f1f3f9;
+    border: 1px solid #d8dce6;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+
+QFileDialog QPushButton:hover {
+    background-color: #e8ebf7;
+    border: 1px solid #b9c0f5;
+    color: #2e2bff;
 }

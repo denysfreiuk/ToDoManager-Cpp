@@ -123,7 +123,7 @@ vector<Task> TaskRepository::getTasksByUser(const string& username) {
         string priority = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
         bool completed = sqlite3_column_int(stmt, 4);
 
-        QDate date = QDate::fromString(QString::fromStdString(deadlineStr), Qt::ISODate);
+        QDateTime date = QDateTime::fromString(QString::fromStdString(deadlineStr), Qt::ISODate);
         tasks.emplace_back(QString::fromStdString(title),
                            QString::fromStdString(desc),
                            date,
@@ -151,7 +151,7 @@ optional<Task> TaskRepository::getTaskByTitle(const string& username, const stri
         QString qPriority = QString::fromUtf8(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)));
         bool completed = sqlite3_column_int(stmt, 4);
 
-        QDate date = QDate::fromString(qDeadline, Qt::ISODate);
+        QDateTime date = QDateTime::fromString(qDeadline, Qt::ISODate);
         result = Task(qTitle, qDesc, date, qPriority, completed);
     }
 

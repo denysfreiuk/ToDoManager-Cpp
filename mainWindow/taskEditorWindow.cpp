@@ -35,7 +35,7 @@ Task TaskEditorWindow::getTask() const {
     return Task(
         ui->titleEdit->text(),
         ui->descriptionEdit->toPlainText(),
-        ui->deadlineEdit->date(),
+        ui->deadlineEdit->dateTime(),
         ui->priorityBox->currentText(),
         false
     );
@@ -44,7 +44,7 @@ Task TaskEditorWindow::getTask() const {
 void TaskEditorWindow::setTask(const Task& task) {
     ui->titleEdit->setText(task.getTitle());
     ui->descriptionEdit->setText(task.getDescription());
-    ui->deadlineEdit->setDate(task.getDeadline());
+    ui->deadlineEdit->setDateTime(task.getDeadline());
     int index = ui->priorityBox->findText(task.getPriority());
     if (index >= 0) ui->priorityBox->setCurrentIndex(index);
 }
