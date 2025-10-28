@@ -23,6 +23,8 @@ set(SQLITE_PATH "C:/libs/sqlite")
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -48,30 +50,51 @@ set(PROJECT_SOURCES
         authWindow/loginWindow.h
         authWindow/loginWindow.cpp
         authWindow/loginWindow.ui
+        authWindow/registerWindow.h
+        authWindow/registerWindow.cpp
+        authWindow/registerWindow.ui
+        mainWindow/taskEditorWindow.h
+        mainWindow/taskEditorWindow.cpp
+        mainWindow/taskEditorWindow.ui
+        databaseManager/TaskRepository.h
+        databaseManager/TaskRepository.cpp
+        tasks/TaskManager.h
+        tasks/TaskManager.cpp
+        mainWindow/taskItemWidget.h
+        mainWindow/taskItemWidget.cpp
+        mainWindow/taskItemWidget.ui
+        settings/settingsWindow.h
+        settings/settingsWindow.cpp
+        settings/settingsWindow.ui
+        settings/appSettings.h
+
+        resources.qrc
 )
 
-if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QtEx
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
+
     )
-else ()
-    if (ANDROID)
+else()
+    if(ANDROID)
         add_library(QtEx SHARED
                 ${PROJECT_SOURCES}
         )
-    else ()
+    else()
         add_executable(QtEx
                 ${PROJECT_SOURCES}
         )
-    endif ()
-endif ()
+    endif()
+endif()
 
-target_link_libraries(QtEx PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(QtEx PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia)
+target_link_libraries(QtEx PRIVATE Qt6::Widgets Qt6::Multimedia)
 
-if (${QT_VERSION} VERSION_LESS 6.1.0)
+if(${QT_VERSION} VERSION_LESS 6.1.0)
     set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.QtEx)
-endif ()
+endif()
 set_target_properties(QtEx PROPERTIES
         ${BUNDLE_ID_OPTION}
         MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -87,9 +110,9 @@ install(TARGETS QtEx
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if (QT_VERSION_MAJOR EQUAL 6)
+if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(QtEx)
-endif ()
+endif()
 
 target_include_directories(QtEx PUBLIC
         ${SQLITE_PATH}
@@ -104,4 +127,8 @@ add_custom_command(TARGET QtEx POST_BUILD
         "${SQLITE_PATH}/sqlite3.dll"
         $<TARGET_FILE_DIR:QtEx>
 )
+
+if (MINGW)
+    set_target_properties(QtEx PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")
+endif()
 ```
