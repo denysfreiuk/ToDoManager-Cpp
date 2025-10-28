@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/loginAndReg"/>
+    <qresource prefix="/">
+        <file>styles/main.qss</file>
+        <file>resources/icons/check.png</file>
+        <file>resources/icons/down-arrow.png</file>
+        <file>resources/icons/plus.png</file>
+        <file>resources/icons/priority_high.png</file>
+        <file>resources/icons/priority_low.png</file>
+        <file>resources/icons/priority_medium.png</file>
+        <file>resources/icons/right-arrow.png</file>
+        <file>resources/icons/to-do-list.png</file>
+        <file>resources/icons/overdue_icon.png</file>
+        <file>resources/icons/calendar.png</file>
+        <file>resources/sounds/ping.wav</file>
+        <file>styles/main_dark.qss</file>
+        <file>resources/icons/calendar.svg</file>
+        <file>resources/icons/check.svg</file>
+        <file>resources/icons/down-arrow.svg</file>
+        <file>resources/icons/overdue_icon.svg</file>
+        <file>resources/icons/plus.svg</file>
+        <file>resources/icons/to-do-list.svg</file>
+        <file>resources/icons/arrow_down.svg</file>
+        <file>resources/icons/arrow_up.svg</file>
+    </qresource>
+</RCC>
