@@ -1,5 +1,6 @@
 #include "taskitemwidget.h"
 #include "ui_taskitemwidget.h"
+#include "../settings/appSettings.h"
 #include <string>
 #include <QHBoxLayout>
 #include <QDate>
@@ -7,6 +8,7 @@
 #include <QMouseEvent>
 #include <QFont>
 #include <QPixmap>
+#include <QStyle>
 
 using namespace std;
 
@@ -20,21 +22,9 @@ TaskItemWidget::TaskItemWidget(const Task& t, QWidget *parent)
     ui->setupUi(this);
     setAttribute(Qt::WA_StyledBackground, true);
     setAutoFillBackground(true);
-    auto setupButton = [](QPushButton *btn) {
-        QSizePolicy policy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        policy.setRetainSizeWhenHidden(false);
-        btn->setSizePolicy(policy);
-    };
-
-    setupButton(ui->editButton);
-    setupButton(ui->doneButton);
-    setupButton(ui->detailsButton);
-    setupButton(ui->deleteButton);
-
-    for (int i = 0; i < ui->btnContainer->count(); ++i)
-        ui->btnContainer->setStretch(i, 1);
 
     QWidget *btnContainer = new QWidget(this);
+    btnContainer->setObjectName("btnContainerStyle");
     QHBoxLayout *btnLayout = new QHBoxLayout(btnContainer);
     btnLayout->addWidget(ui->editButton);
     btnLayout->addWidget(ui->doneButton);
@@ -84,31 +74,46 @@ void TaskItemWidget::updateDisplay() {
     bool overdue = (deadline.isValid() && deadline < today && !done);
 
     if (done) {
-        ui->labelCheck->setPixmap(QPixmap(":/resources/icons/check.svg")
-            .scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-        ui->labelCheck->setVisible(true);
+        setProperty("state", "done");
 
+        QString iconPath;
+        if (AppSettings::theme() == AppSettings::Theme::Dark)
+            iconPath = ":/resources/icons/check-white.png";
+        else if (AppSettings::theme() == AppSettings::Theme::Light)
+            iconPath = ":/resources/icons/check-black.png";
+        else
+            iconPath = ":/resources/icons/non-icon.png";
+        ui->labelCheck->setPixmap(QPixmap(iconPath)
+            .scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
+        ui->labelCheck->setVisible(true);
         ui->labelPriority->setVisible(false);
         ui->doneButton->setVisible(false);
-
-        ui->titleLabel->setStyleSheet("color: #A49F9E;");
-        ui->labelDeadline->setStyleSheet("color: #999;");
     }
     else if (overdue) {
+        setProperty("state", "overdue");
         ui->labelCheck->setVisible(false);
 
-        ui->labelPriority->setPixmap(QPixmap(":/resources/icons/overdue_icon.svg")
-            .scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
+        QString iconPath;
+        if (AppSettings::theme() == AppSettings::Theme::Dark)
+            iconPath = ":/resources/icons/overdue-white.png";
+        else if (AppSettings::theme() == AppSettings::Theme::Light)
+            iconPath = ":/resources/icons/overdue-black.png";
+        else
+            iconPath = ":/resources/icons/non-icon.png";
+        ui->labelPriority->setPixmap(QPixmap(iconPath)
+            .scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
         ui->labelPriority->setVisible(true);
 
         ui->doneButton->setVisible(true);
         ui->doneButton->setEnabled(true);
         ui->doneButton->setToolTip("Task is overdue! Mark as done.");
 
-        ui->titleLabel->setStyleSheet("color: #c0392b; font-weight: 600;");
-        ui->labelDeadline->setStyleSheet("color: #e74c3c; font-style: italic;");
     }
     else {
+        setProperty("state", "normal");
         ui->labelCheck->setVisible(false);
 
         QString priority = task.getPriority();
@@ -128,10 +133,10 @@ void TaskItemWidget::updateDisplay() {
         ui->doneButton->setVisible(true);
         ui->doneButton->setEnabled(true);
         ui->doneButton->setToolTip("Mark task as done");
-
-        ui->titleLabel->setStyleSheet("color: #2F0A28; text-decoration: none;");
-        ui->labelDeadline->setStyleSheet("color: #555;");
     }
+
+    style()->unpolish(this);
+    style()->polish(this);
 }
 
 void TaskItemWidget::setButtonsVisible(bool visible) {

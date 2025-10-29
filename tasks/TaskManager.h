@@ -7,23 +7,24 @@
 #include "../logger/globalLogger.h"
 #include "../tasks/task.h"
 #include <QWidget>
-
+using namespace std;
 class TaskManager {
 private:
     TaskRepository& repo;
-    std::string currentUser;
+    ::string currentUser;
 
 public:
     explicit TaskManager(TaskRepository& repository);
 
-    void setCurrentUser(const std::string& username);
+    void setCurrentUser(const ::string& username);
 
     bool addTask(QWidget* parent, const Task& task);
-    bool removeTask(QWidget* parent, const std::string& title);
-    bool markCompleted(QWidget* parent, const std::string& title);
+    bool removeTask(QWidget* parent, const ::string& title);
+    bool markCompleted(QWidget* parent, const ::string& title);
     bool updateTask(QWidget* parent, const Task& task);
-    bool deleteTask(QWidget* parent, const std::string& title);
-    std::vector<Task> loadTasks();
+    bool deleteTask(QWidget* parent, const ::string& title);
+    ::vector<Task> tasksForToday(bool includeCompleted = true);
+    ::vector<Task> loadTasks();
 };
 
 #endif //TASKMANAGER_H

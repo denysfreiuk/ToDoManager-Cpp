@@ -1,5 +1,6 @@
 #include "taskManager.h"
 #include <QMessageBox>
+#include <QDate>
 using namespace std;
 
 TaskManager::TaskManager(TaskRepository& repository) : repo(repository) {
@@ -83,6 +84,38 @@ bool TaskManager::deleteTask(QWidget* parent, const string& title) {
         return false;
     }
 }
+
+
+std::vector<Task> TaskManager::tasksForToday(bool includeCompleted)
+{
+    std::vector<Task> todayTasks;
+
+    if (currentUser.empty()) {
+        logger.warn("tasksForToday() called with no user logged in");
+        return todayTasks;
+    }
+
+    // Отримуємо всі задачі користувача
+    auto allTasks = repo.getTasksByUser(currentUser);
+
+    QDate today = QDate::currentDate();
+
+    for (const Task &task : allTasks) {
+        QDate deadline = task.getDeadline().date();
+
+        if (deadline == today) {
+            if (includeCompleted || !task.isCompleted()) {
+                todayTasks.push_back(task);
+            }
+        }
+    }
+
+    logger.debug("tasksForToday() returned " + std::to_string(todayTasks.size()) +
+                 " tasks for user " + currentUser);
+
+    return todayTasks;
+}
+
 
 vector<Task> TaskManager::loadTasks() {
     if (currentUser.empty()) return {};

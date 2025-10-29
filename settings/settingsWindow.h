@@ -3,10 +3,11 @@
 #include <QDialog>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include "../windowEdit/framelessWindow.h"
 
 namespace Ui { class SettingsWindow; }
 
-class SettingsWindow : public QDialog {
+class SettingsWindow : public FramelessDialog{
     Q_OBJECT
 public:
     explicit SettingsWindow(QWidget *parent = nullptr);

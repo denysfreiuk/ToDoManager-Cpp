@@ -4,6 +4,8 @@ ToDo Manager is a cross-platform desktop application developed in C++ with Qt 6.
 # Run Application
 To run application you need to add CMakeLists.txt and compile with CMake
 
+Toolset: QT - Bundled MinGW
+
 CMakeLists.txt:
 
 ```cmake
@@ -69,6 +71,10 @@ set(PROJECT_SOURCES
         settings/appSettings.h
 
         resources.qrc
+        windowEdit/snapPreviewWindow.h
+        windowEdit/snapPreviewWindow.cpp
+        windowEdit/framelessWindow.h
+        windowEdit/framelessWindow.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

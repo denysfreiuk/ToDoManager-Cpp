@@ -4,17 +4,26 @@
 #include "taskeditorwindow.h"
 #include "../settings/settingswindow.h"
 #include "../settings/appsettings.h"
+#include "../windowEdit/snapPreviewWindow.h"
 
 #include <QMessageBox>
+#include <QCloseEvent>
+#include <QActionGroup>
 #include <QDate>
 #include <QFile>
 #include <QDebug>
 #include <QTimer>
 #include <QSoundEffect>
 #include <QFileInfo>
-
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QMouseEvent>
+#include <QScreen>
+#include <QGuiApplication>
+#include <QApplication>
+#include <QGraphicsDropShadowEffect>
 MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
-    : QMainWindow(parent),
+    : FramelessWindow(parent),
       ui(new Ui::MainWindow),
       taskManager(manager)
 {
@@ -23,11 +32,120 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
     updateToolBoxTitles();
     setWindowTitle("ToDo Manager");
 
-    QMediaPlayer *test = new QMediaPlayer(this);
-    QAudioOutput *out = new QAudioOutput(this);
-    test->setAudioOutput(out);
-    test->setSource(QUrl("qrc:/resources/sounds/ping.wav"));
-    test->play();
+    trayIcon = new QSystemTrayIcon(this);
+    trayMenu = new QMenu(this);
+
+    QMenu *statusMenu = new QMenu("Status", trayMenu);
+    QAction *statusActive = new QAction("🟢 Active", this);
+    QAction *statusBusy   = new QAction("🔴 Busy", this);
+    QAction *statusAway   = new QAction("🟡 Away", this);
+
+    statusActive->setCheckable(true);
+    statusBusy->setCheckable(true);
+    statusAway->setCheckable(true);
+
+    QActionGroup *statusGroup = new QActionGroup(this);
+    statusGroup->addAction(statusActive);
+    statusGroup->addAction(statusBusy);
+    statusGroup->addAction(statusAway);
+
+    switch (AppSettings::userStatus()) {
+        case AppSettings::UserStatus::Busy: statusBusy->setChecked(true); break;
+        case AppSettings::UserStatus::Away: statusAway->setChecked(true); break;
+        default: statusActive->setChecked(true); break;
+    }
+
+    statusMenu->addActions(statusGroup->actions());
+
+    bool dark = (AppSettings::theme() == AppSettings::Theme::Dark);
+
+    QAction *showAction     = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/home-white.png"     : ":/resources/icons/icons-for-tray/home-black.png"),     "Show ToDo Manager", this);
+    QAction *addTaskAction  = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/add-white.png"      : ":/resources/icons/icons-for-tray/add-black.png"),      "Add task", this);
+    QAction *todayAction    = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/today-white.png"    : ":/resources/icons/icons-for-tray/today-black.png"),    "Today's tasks", this);
+    QAction *settingsAction = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/settings-white.png" : ":/resources/icons/icons-for-tray/settings-black.png"), "Aettings", this);
+    QAction *themeAction    = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/theme-white.png"    : ":/resources/icons/icons-for-tray/theme-black.png"),    "Switch theme", this);
+    QAction *quitAction     = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/exit-white.png"     : ":/resources/icons/icons-for-tray/exit-black.png"),     "Exit", this);
+
+    trayMenu->addMenu(statusMenu);
+    trayMenu->addSeparator();
+    trayMenu->addAction(showAction);
+    trayMenu->addAction(addTaskAction);
+    trayMenu->addAction(todayAction);
+    trayMenu->addSeparator();
+    trayMenu->addAction(settingsAction);
+    trayMenu->addAction(themeAction);
+    trayMenu->addSeparator();
+    trayMenu->addAction(quitAction);
+
+    trayIcon->setContextMenu(trayMenu);
+    trayIcon->show();
+
+    applyTrayTheme();
+    updateTrayTooltip();
+
+    connect(showAction, &QAction::triggered, this, [this]() {
+        this->showNormal();
+        this->activateWindow();
+    });
+
+    connect(addTaskAction, &QAction::triggered, this, &MainWindow::openTaskEditor);
+    connect(todayAction, &QAction::triggered, this, [this]() {
+        ui->toolBox->setCurrentIndex(0);
+        this->showNormal();
+        this->activateWindow();
+    });
+
+    connect(settingsAction, &QAction::triggered, this, &MainWindow::onSettingsClicked);
+    connect(themeAction, &QAction::triggered, this, &MainWindow::onThemeButtonClicked);
+    connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
+
+    connect(statusGroup, &QActionGroup::triggered, this, [this](QAction *act) {
+        if (act->text().contains("Active"))
+            AppSettings::setUserStatus(AppSettings::UserStatus::Active);
+        else if (act->text().contains("Busy"))
+            AppSettings::setUserStatus(AppSettings::UserStatus::Busy);
+        else
+            AppSettings::setUserStatus(AppSettings::UserStatus::Away);
+
+        trayIcon->showMessage("Status changed to:",
+            AppSettings::userStatusEmoji() + " Now you are " + AppSettings::userStatusName(),
+            QSystemTrayIcon::Information, 2500);
+
+        if (AppSettings::userStatus() == AppSettings::UserStatus::Busy)
+            reminderTimer->stop(); // “Не турбувати”
+        else
+            startOrStopReminders();
+
+        updateTrayTooltip();
+    });
+
+    connect(trayIcon, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
+        if (reason == QSystemTrayIcon::Trigger) {
+            if (isHidden()) showNormal();
+            else hide();
+        }
+    });
+
+    connect(this, &MainWindow::themeChanged, this, [this](AppSettings::Theme) {
+    applyTrayTheme();
+    updateTrayTooltip();
+});
+
+    QTimer *trayUpdateTimer = new QTimer(this);
+    connect(trayUpdateTimer, &QTimer::timeout, this, &MainWindow::updateTrayTooltip);
+    trayUpdateTimer->start(60000);
+
+    snapPreview = new SnapPreviewWindow(this);
+
+    if (AppSettings::theme() == AppSettings::Theme::Light) {
+        ui->btnMaximize->setIcon(QIcon(":/resources/icons/icons-for-window/maximize-black.png"));
+        ui->btnMinimize->setIcon(QIcon(":/resources/icons/icons-for-window/window-minimize-black.png"));
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-black.png"));
+    } else {
+        ui->btnMaximize->setIcon(QIcon(":/resources/icons/icons-for-window/maximize-white.png"));
+        ui->btnMinimize->setIcon(QIcon(":/resources/icons/icons-for-window/window-minimize-white.png"));
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-white.png"));
+    }
 
     ui->todayList->setSelectionMode(QAbstractItemView::NoSelection);
     ui->weekList->setSelectionMode(QAbstractItemView::NoSelection);
@@ -38,36 +156,114 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
     connect(ui->quickAddButton, &QPushButton::clicked, this, &MainWindow::addQuickTask);
     connect(ui->addTaskButton,  &QPushButton::clicked, this, &MainWindow::openTaskEditor);
     connect(ui->settingsButton, &QPushButton::clicked, this, &MainWindow::onSettingsClicked);
+    connect(ui->themeButton,    &QPushButton::clicked, this, &MainWindow::onThemeButtonClicked);
+    connect(this, &FramelessWindow::windowMaximizedChanged, this, &MainWindow::updateMaximizeIcon);
 
-    ui->viewFilterBox->clear();
     ui->viewFilterBox->addItems({"All Tasks", "Overdue", "Completed", "Uncompleted"});
     connect(ui->viewFilterBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &MainWindow::onFilterChanged);
-
 
     reminderTimer = new QTimer(this);
     connect(reminderTimer, &QTimer::timeout, this, &MainWindow::checkRemindersTick);
 
     audioOut = new QAudioOutput(this);
-    audioOut->setVolume(0.9);
     reminderPlayer = new QMediaPlayer(this);
     reminderPlayer->setAudioOutput(audioOut);
 
     autoDeleteTimer = new QTimer(this);
-    connect(autoDeleteTimer, &QTimer::timeout, this, [this](){ enforceAutoDelete(); loadTasks(); });
+    connect(autoDeleteTimer, &QTimer::timeout, this, [this]() {
+        enforceAutoDelete();
+        loadTasks();
+    });
+
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
+    setMouseTracking(true);
+    ui->centralwidget->setMouseTracking(true);
 
     startOrStopReminders();
     applySettings();
+    setupTitleBar();
     loadTasks();
     enforceAutoDelete();
 
-    autoDeleteTimer->start(1 * 60 * 1000);
+    autoDeleteTimer->start(60 * 1000);
 }
 
-MainWindow::~MainWindow() {
+MainWindow::~MainWindow()
+{
+    if (snapPreview) {
+        snapPreview->hidePreview();
+        snapPreview->deleteLater();
+    }
     delete ui;
 }
 
+void MainWindow::applyTrayTheme()
+{
+    bool dark = (AppSettings::theme() == AppSettings::Theme::Dark);
+
+    trayIcon->setIcon(QIcon(dark
+        ? ":/resources/icons/icons-for-tray/to-do-white.png"
+        : ":/resources/icons/icons-for-tray/to-do-black.png"));
+
+    // Оновлюємо іконки у меню
+    auto update = [dark](QAction *a, const QString &name) {
+        if (!a) return;
+        a->setIcon(QIcon(dark
+            ? QString(":/resources/icons/icons-for-tray/%1-white.png").arg(name)
+            : QString(":/resources/icons/icons-for-tray/%1-black.png").arg(name)));
+    };
+
+    update(trayMenu->actions().at(2), "home");
+    update(trayMenu->actions().at(3), "add");
+    update(trayMenu->actions().at(4), "today");
+    update(trayMenu->actions().at(6), "settings");
+    update(trayMenu->actions().at(7), "theme");
+    update(trayMenu->actions().at(9), "exit");
+}
+
+void MainWindow::updateTrayTooltip()
+{
+    int todayCount = taskManager.tasksForToday(false).size();
+    QString emoji = AppSettings::userStatusEmoji();
+    QString status = AppSettings::userStatusName();
+
+    QString themeStr = (AppSettings::theme() == AppSettings::Theme::Dark)
+        ? "🌙 Темна тема" : "☀️ Світла тема";
+
+    trayIcon->setToolTip(QString("%1 %2 • %3\n📅 %4 tasks%5 today")
+                         .arg(emoji)
+                         .arg(status)
+                         .arg(themeStr)
+                         .arg(todayCount)
+                         .arg(todayCount == 1 ? "а" : (todayCount < 5 ? "і" : "")));
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if (trayIcon && trayIcon->isVisible()) {
+        hide();
+        event->ignore();
+    } else {
+        QMainWindow::closeEvent(event);
+    }
+}
+
+void MainWindow::updateMaximizeIcon(bool maxed) {
+    bool isLight = (AppSettings::theme() == AppSettings::Theme::Light);
+
+    QString path;
+    if (maxed)
+        path = isLight
+            ? ":/resources/icons/icons-for-window/minimize-black.png"
+            : ":/resources/icons/icons-for-window/minimize-white.png";
+    else
+        path = isLight
+            ? ":/resources/icons/icons-for-window/maximize-black.png"
+            : ":/resources/icons/icons-for-window/maximize-white.png";
+
+    ui->btnMaximize->setIcon(QIcon(path));
+}
 
 void MainWindow::onSettingsClicked() {
     SettingsWindow dlg(this);
@@ -79,12 +275,54 @@ void MainWindow::onSettingsClicked() {
     }
 }
 
+void MainWindow::onThemeButtonClicked() {
+    using Theme = AppSettings::Theme;
+    Theme current = AppSettings::theme();
+    Theme next = (current == Theme::Light) ? Theme::Dark : Theme::Light;
+
+    ui->themeButton->setIconSize(QSize(32, 32));
+
+    if (AppSettings::theme() == AppSettings::Theme::Light){
+        ui->themeButton->setIcon(QIcon(":/resources/icons/dark-theme.png"));
+        ui->btnMinimize->setIcon(QIcon(":/resources/icons/icons-for-window/window-minimize-white.png"));
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-white.png"));
+    }
+    else {
+        ui->themeButton->setIcon(QIcon(":/resources/icons/light-theme.png"));
+        ui->btnMinimize->setIcon(QIcon(":/resources/icons/icons-for-window/window-minimize-black.png"));
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-black.png"));
+    }
+
+    AppSettings::setTheme(next);
+    emit themeChanged(next);
+    applySettings();
+    loadTasks();
+    applyTrayTheme();
+
+    updateMaximizeIcon(isMaximized);
+
+    QString mode = (next == Theme::Light) ? "Light" : "Dark";
+    ui->statusbar->showMessage("Theme switched to " + mode, 3000);
+}
+
 void MainWindow::applySettings() {
     QFile f;
     if (AppSettings::theme() == AppSettings::Theme::Dark)
         f.setFileName(":/styles/main_dark.qss");
     else
         f.setFileName(":/styles/main.qss");
+
+    if (AppSettings::theme() == AppSettings::Theme::Light)
+        ui->settingsButton->setIcon(QIcon(":/resources/icons/setting-dark.png"));
+    else
+        ui->settingsButton->setIcon(QIcon(":/resources/icons/setting-white.png"));
+    ui->settingsButton->setIconSize(QSize(32, 32));
+
+    if (AppSettings::theme() == AppSettings::Theme::Light)
+        ui->themeButton->setIcon(QIcon(":/resources/icons/dark-theme.png"));
+    else
+        ui->themeButton->setIcon(QIcon(":/resources/icons/light-theme.png"));
+    ui->themeButton->setIconSize(QSize(32, 32));
 
     if (f.open(QFile::ReadOnly)) {
         qApp->setStyleSheet(QLatin1String(f.readAll()));
@@ -106,7 +344,6 @@ void MainWindow::startOrStopReminders() {
         reminderTimer->stop();
     }
 }
-
 
 void MainWindow::checkRemindersTick() {
     if (!AppSettings::reminderEnabled())
@@ -281,7 +518,7 @@ void MainWindow::addQuickTask() {
         QMessageBox::warning(this, "Warning", "Please enter a task title!");
         return;
     }
-    QDateTime defDeadline = AppSettings::computeQuickAddDeadline(QDateTime::currentDateTime());
+    QDateTime defDeadline = AppSettings::computeQuickAddDeadline();
     Task quickTask(text, "Quick added task", defDeadline, "Medium", false);
     if (taskManager.addTask(this, quickTask)) {
         enforceAutoDelete();
@@ -375,5 +612,19 @@ void MainWindow::initToolBoxSections() {
             else if (s.page == ui->otherPage) s.baseTitle = "Other";
         }
         sections.push_back(s);
+    }
+}
+
+void MainWindow::setupTitleBar() {
+    ui->titleBar->setMinimumHeight(36);
+    ui->titleBar->setMaximumHeight(36);
+
+    connect(ui->btnClose,    &QPushButton::clicked, this, &QWidget::close);
+    connect(ui->btnMinimize, &QPushButton::clicked, this, &QWidget::showMinimized);
+    connect(ui->btnMaximize, &QPushButton::clicked, this, &MainWindow::toggleMaximizeRestore);
+
+    if (auto *v = qobject_cast<QVBoxLayout*>(ui->centralwidget->layout())) {
+        v->setContentsMargins(0,0,0,0);
+        v->setSpacing(0);
     }
 }
