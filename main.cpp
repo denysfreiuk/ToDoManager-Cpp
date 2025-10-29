@@ -22,12 +22,14 @@ int main(int argc, char *argv[]) {
 #endif*/
     QApplication app(argc, argv);
 
+    app.setWindowIcon(QIcon(":/resources/icons/to-do.png"));
+
     DatabaseManager db("todo.db");
     AccountRepository accRepo(db);
     AuthManager auth(accRepo);
 
     auto loggedUser = auth.authenticate(nullptr);
-    //optional<string> loggedUser = "admin";  DEFAULT ACCOUT
+    //optional<string> loggedUser = "admin";  //DEFAULT ACCOUT
 
     if (!loggedUser.has_value()) {
         return 0;

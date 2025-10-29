@@ -3,16 +3,23 @@
 #include "appsettings.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QIcon>
 
 SettingsWindow::SettingsWindow(QWidget *parent)
-    : QDialog(parent), ui(new Ui::SettingsWindow) {
+    : FramelessDialog(parent), ui(new Ui::SettingsWindow) {
     ui->setupUi(this);
     setWindowTitle("Settings");
+    setWindowIcon(QIcon(":/resources/icons/settings_icon.png"));
 
     audioOut = new QAudioOutput(this);
     audioOut->setVolume(20);
     player = new QMediaPlayer(this);
     player->setAudioOutput(audioOut);
+
+    if (AppSettings::theme() == AppSettings::Theme::Light)
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-black.png"));
+    else
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-white.png"));
 
     connect(ui->testSoundButton, &QPushButton::clicked, this, &SettingsWindow::onTestSound);
 

@@ -15,19 +15,19 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="font">
-      <font>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Add Task</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="titleLabel">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Add Task</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLineEdit" name="titleEdit">
        <property name="placeholderText">
@@ -43,25 +43,60 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QDateTimeEdit" name="deadlineEdit">
-         <property name="currentSection">
-          <enum>QDateTimeEdit::Section::DaySection</enum>
-         </property>
-         <property name="displayFormat">
-          <string>dd.MM.yyyy hh:mm</string>
-         </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
-         </property>
-         <property name="currentSectionIndex">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
           <number>0</number>
          </property>
-         <property name="timeSpec">
-          <enum>Qt::TimeSpec::LocalTime</enum>
-         </property>
-        </widget>
+         <item>
+          <widget class="QDateTimeEdit" name="deadlineEdit">
+           <property name="currentSection">
+            <enum>QDateTimeEdit::Section::DaySection</enum>
+           </property>
+           <property name="displayFormat">
+            <string>dd.MM.yyyy hh:mm</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+           <property name="currentSectionIndex">
+            <number>0</number>
+           </property>
+           <property name="timeSpec">
+            <enum>Qt::TimeSpec::LocalTime</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnChangeTime">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>26</width>
+             <height>29</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>26</width>
+             <height>1000</height>
+            </size>
+           </property>
+           <property name="cursor">
+            <cursorShape>ArrowCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QComboBox" name="priorityBox">

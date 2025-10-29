@@ -11,6 +11,8 @@ public:
     enum class AutoDeletePeriod { Immediately, After1Day, After1Week, AfterDeadline };
     enum class Theme { Light, Dark };
 
+    enum class UserStatus { Active, Busy, Away };
+
     static QSettings& s() {
         static QSettings settings("ToDoSoft", "ToDoManager");
         return settings;
@@ -24,6 +26,7 @@ public:
         if (v == "None") return DefaultDeadline::None;
         return DefaultDeadline::Tomorrow;
     }
+
     static void setDefaultDeadline(DefaultDeadline d) {
         QString v = "Tomorrow";
         if (d == DefaultDeadline::None) v = "None";
@@ -43,6 +46,7 @@ public:
         if (v == "After 1 week") return AutoDeletePeriod::After1Week;
         return AutoDeletePeriod::AfterDeadline;
     }
+
     static void setDeletePeriod(AutoDeletePeriod p) {
         QString v = "After deadline passes";
         if (p == AutoDeletePeriod::Immediately) v = "Immediately";
@@ -55,7 +59,10 @@ public:
         const QString v = s().value("theme", "Light").toString();
         return (v == "Dark") ? Theme::Dark : Theme::Light;
     }
-    static void setTheme(Theme t) { s().setValue("theme", t == Theme::Dark ? "Dark" : "Light"); }
+
+    static void setTheme(Theme t) {
+        s().setValue("theme", t == Theme::Dark ? "Dark" : "Light");
+    }
 
     static bool reminderEnabled() { return s().value("reminderEnabled", false).toBool(); }
     static void setReminderEnabled(bool on) { s().setValue("reminderEnabled", on); }
@@ -66,16 +73,55 @@ public:
     static QString reminderSound() { return s().value("reminderSound", "").toString(); }
     static void setReminderSound(const QString& path) { s().setValue("reminderSound", path); }
 
-    static QDateTime computeQuickAddDeadline(QDateTime today = QDateTime::currentDateTime()) {
+    static QDateTime computeQuickAddDeadline(QDateTime now = QDateTime::currentDateTime()) {
+        QDate today = now.date();
+        QDateTime base(today, QTime(23, 59));
+
         switch (defaultDeadline()) {
-            case DefaultDeadline::None:       return QDateTime();
-            case DefaultDeadline::Today:      return today;
-            case DefaultDeadline::Tomorrow:   return today.addDays(1);
-            case DefaultDeadline::In3Days:    return today.addDays(3);
-            case DefaultDeadline::InWeek:     return today.addDays(7);
+            case DefaultDeadline::None:
+                return QDateTime();
+            case DefaultDeadline::Today:
+                return base;
+            case DefaultDeadline::Tomorrow:
+                return base.addDays(1);
+            case DefaultDeadline::In3Days:
+                return base.addDays(3);
+            case DefaultDeadline::InWeek:
+                return base.addDays(7);
         }
-        return today.addDays(1);
+        return base;
     }
+
+    static UserStatus userStatus() {
+        const QString v = s().value("userStatus", "Active").toString();
+        if (v == "Busy") return UserStatus::Busy;
+        if (v == "Away") return UserStatus::Away;
+        return UserStatus::Active;
+    }
+
+    static void setUserStatus(UserStatus status) {
+        QString v = "Active";
+        if (status == UserStatus::Busy) v = "Busy";
+        else if (status == UserStatus::Away) v = "Away";
+        s().setValue("userStatus", v);
+    }
+
+    static QString userStatusEmoji() {
+        switch (userStatus()) {
+            case UserStatus::Busy: return "🔴";
+            case UserStatus::Away: return "🟡";
+            case UserStatus::Active: default: return "🟢";
+        }
+    }
+
+    static QString userStatusName() {
+        switch (userStatus()) {
+            case UserStatus::Busy: return "Busy";
+            case UserStatus::Away: return "Away";
+            case UserStatus::Active: default: return "Active";
+        }
+    }
+
 };
 
-#endif //APPSETTINGS_H
+#endif // APPSETTINGS_H
