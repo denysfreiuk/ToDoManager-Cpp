@@ -315,9 +315,6 @@ QToolBox QScrollBar::handle:vertical:hover {
     background: #555;
 }
 
-/* === SETTINGS WINDOW === */
-
-/*****************************************************/
 TaskItemWidget {
     background-color: #1e1e1e;
     border: 1px solid #2c2c2c;
@@ -523,14 +520,10 @@ QCalendarWidget QAbstractItemView:enabled {
     background-color: #121212;
 }
 
-
-
-
-
-
 /* === SETTINGS WINDOW (Dark) === */
-SettingsWindow QDialog#SettingsWindow {
+SettingsWindow {
     background-color: #121212;
+    border: 1px solid #4F4F4F;
     color: #e0e0e0;
     font-family: "Segoe UI", "Roboto", sans-serif;
     font-size: 15px;
@@ -662,7 +655,7 @@ SettingsWindow QLabel#labelSoundPath {
         stop:0 #1c1c1c,
         stop:1 #151515
     );
-    padding-left: 34px;           /* місце під іконку */
+    padding-left: 34px;
     padding-top: 6px;
     padding-bottom: 6px;
     padding-right: 10px;
@@ -695,7 +688,6 @@ SettingsWindow QLabel#labelSoundPath:disabled {
     background-color: #1a1a1a;
     color: #666;
     border: 1px dashed #333;
-    background-image: url(":/resources/icons/folder-gray.png");
 }
 
 QWidget#titleBar {
@@ -723,7 +715,7 @@ QPushButton#btnMinimize {
 
 /* Hover */
 QPushButton#btnClose:hover {
-    background-color: #E81123;
+    background-color: #FF3D3D;
     color: #ffffff;
 }
 QPushButton#btnMaximize:hover,

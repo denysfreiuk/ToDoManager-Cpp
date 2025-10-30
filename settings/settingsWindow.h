@@ -27,6 +27,7 @@ private:
     QAudioOutput *audioOut = nullptr;
     void loadUiFromSettings();
     void applyVisibility();
+    void setupTitleBar();
 };
 
 #endif // SETTINGSWINDOW_H

@@ -32,10 +32,10 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">/* === Глобальний стиль вікна === */
+   <string notr="true">
 QDialog, QWidget {
-    background-color: #f2f2f2;        /* світлий фон */
-    color: #202020;                   /* основний текст */
+    background-color: #f2f2f2;
+    color: #202020;
     font-family: &quot;Stencil&quot;;
     font-size: 15px;
     letter-spacing: 1px;
@@ -87,12 +87,10 @@ QPushButton {
 
 QPushButton:hover {
     background-color: #00b377;
-    box-shadow: 0 0 8px #00cc88;
 }
 
 QPushButton:pressed {
     background-color: #009966;
-    transform: scale(0.97);
 }
 
 QPushButton:disabled {
@@ -208,14 +206,12 @@ QScrollBar::sub-line:vertical {
 QPushButton:hover {
     background-color: #00ff88;
     color: #101010;
-    box-shadow: 0 0 10px #00ff88;
 }
 
 QPushButton:pressed {
     background-color: #00cc66;
     border-color: #00cc66;
     color: #0f0f0f;
-    transform: scale(0.97);
 }
 
 QPushButton:disabled {

@@ -32,6 +32,12 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
     updateToolBoxTitles();
     setWindowTitle("ToDo Manager");
 
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect screenGeometry = screen->availableGeometry();
+    resize(screenGeometry.size());
+    move(screenGeometry.topLeft());
+    isMaximized = true;
+
     trayIcon = new QSystemTrayIcon(this);
     trayMenu = new QMenu(this);
 
@@ -62,7 +68,7 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
     QAction *showAction     = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/home-white.png"     : ":/resources/icons/icons-for-tray/home-black.png"),     "Show ToDo Manager", this);
     QAction *addTaskAction  = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/add-white.png"      : ":/resources/icons/icons-for-tray/add-black.png"),      "Add task", this);
     QAction *todayAction    = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/today-white.png"    : ":/resources/icons/icons-for-tray/today-black.png"),    "Today's tasks", this);
-    QAction *settingsAction = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/settings-white.png" : ":/resources/icons/icons-for-tray/settings-black.png"), "Aettings", this);
+    QAction *settingsAction = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/settings-white.png" : ":/resources/icons/icons-for-tray/settings-black.png"), "Settings", this);
     QAction *themeAction    = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/theme-white.png"    : ":/resources/icons/icons-for-tray/theme-black.png"),    "Switch theme", this);
     QAction *quitAction     = new QAction(QIcon(dark ? ":/resources/icons/icons-for-tray/exit-white.png"     : ":/resources/icons/icons-for-tray/exit-black.png"),     "Exit", this);
 
@@ -112,7 +118,7 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
             QSystemTrayIcon::Information, 2500);
 
         if (AppSettings::userStatus() == AppSettings::UserStatus::Busy)
-            reminderTimer->stop(); // “Не турбувати”
+            reminderTimer->stop();
         else
             startOrStopReminders();
 
@@ -206,7 +212,6 @@ void MainWindow::applyTrayTheme()
         ? ":/resources/icons/icons-for-tray/to-do-white.png"
         : ":/resources/icons/icons-for-tray/to-do-black.png"));
 
-    // Оновлюємо іконки у меню
     auto update = [dark](QAction *a, const QString &name) {
         if (!a) return;
         a->setIcon(QIcon(dark
@@ -229,13 +234,13 @@ void MainWindow::updateTrayTooltip()
     QString status = AppSettings::userStatusName();
 
     QString themeStr = (AppSettings::theme() == AppSettings::Theme::Dark)
-        ? "🌙 Темна тема" : "☀️ Світла тема";
+        ? "🌙 Black theme" : "☀️ Light theme";
 
     trayIcon->setToolTip(QString("%1 %2 • %3\n📅 %4 tasks%5 today")
                          .arg(emoji)
                          .arg(status)
                          .arg(themeStr)
-                         .arg(todayCount)
+                         .arg(QString::number(todayCount))
                          .arg(todayCount == 1 ? "а" : (todayCount < 5 ? "і" : "")));
 }
 
@@ -382,7 +387,7 @@ void MainWindow::checkRemindersTick() {
                         "Time left: %3 min")
                         .arg(task.getTitle())
                         .arg(deadline.toString("dd.MM.yyyy hh:mm"))
-                        .arg(minutesLeft);
+                        .arg(QString::number(minutesLeft));
 
                 QMessageBox::information(this, "Reminder", msg);
             });
@@ -498,7 +503,7 @@ void MainWindow::updateToolBoxTitles() {
     for (const auto &s : sections) {
         if (!s.page || !s.list || s.index < 0) continue;
         ui->toolBox->setItemText(s.index,
-                                 QString("%1 (%2)").arg(s.baseTitle).arg(s.list->count()));
+                                 QString("%1 (%2)").arg(s.baseTitle).arg(QString::number(s.list->count())));
     }
 }
 
@@ -506,7 +511,7 @@ void MainWindow::updateToolBoxTitleFor(QListWidget *list) {
     for (const auto &s : sections) {
         if (s.list == list && s.index >= 0) {
             ui->toolBox->setItemText(s.index,
-                                     QString("%1 (%2)").arg(s.baseTitle).arg(list->count()));
+                                     QString("%1 (%2)").arg(s.baseTitle).arg(QString::number(list->count())));
             break;
         }
     }

@@ -10,105 +10,174 @@ CMakeLists.txt:
 
 ```cmake
 cmake_minimum_required(VERSION 3.16)
-
 project(QtEx VERSION 0.1 LANGUAGES CXX)
 
+# ======================================================
+# === Основні налаштування проекту
+# ======================================================
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# ======================================================
+# === Шляхи до Qt і бібліотек
+# ======================================================
 set(CMAKE_PREFIX_PATH "C:/Qt/6.10.0/mingw_64/lib/cmake")
 set(SQLITE_PATH "C:/libs/sqlite")
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+# ======================================================
+# === Пошук бібліотек Qt
+# ======================================================
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia)
-find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia)
 
+# ======================================================
+# === Джерельні файли
+# ======================================================
 set(PROJECT_SOURCES
         main.cpp
+
+        # --- Main window & core UI ---
         mainWindow/mainwindow.cpp
         mainWindow/mainwindow.h
         mainWindow/mainwindow.ui
-        tasks/task.h
-        tasks/task.cpp
-        accounts/account.h
+        mainWindow/taskEditorWindow.cpp
+        mainWindow/taskEditorWindow.h
+        mainWindow/taskEditorWindow.ui
+        mainWindow/taskItemWidget.cpp
+        mainWindow/taskItemWidget.h
+        mainWindow/taskItemWidget.ui
+
+        # --- Accounts & Auth ---
         accounts/account.cpp
-        accounts/authManager.h
+        accounts/account.h
         accounts/authManager.cpp
+        accounts/authManager.h
+        authWindow/loginWindow.cpp
+        authWindow/loginWindow.h
+        authWindow/loginWindow.ui
+        authWindow/registerWindow.cpp
+        authWindow/registerWindow.h
+        authWindow/registerWindow.ui
+
+        # --- Database ---
         databaseManager/SQLUtilities/SQLUtils.cpp
         databaseManager/SQLUtilities/SQLUtils.h
         databaseManager/accountRepository.cpp
         databaseManager/accountRepository.h
         databaseManager/databaseManager.cpp
         databaseManager/databaseManager.h
-        logger/logger.h
-        logger/logger.cpp
-        logger/globalLogger.h
-        logger/globalLogger.cpp
-        authWindow/loginWindow.h
-        authWindow/loginWindow.cpp
-        authWindow/loginWindow.ui
-        authWindow/registerWindow.h
-        authWindow/registerWindow.cpp
-        authWindow/registerWindow.ui
-        mainWindow/taskEditorWindow.h
-        mainWindow/taskEditorWindow.cpp
-        mainWindow/taskEditorWindow.ui
-        databaseManager/TaskRepository.h
         databaseManager/TaskRepository.cpp
-        tasks/TaskManager.h
+        databaseManager/TaskRepository.h
+
+        # --- Tasks ---
+        tasks/task.cpp
+        tasks/task.h
         tasks/TaskManager.cpp
-        mainWindow/taskItemWidget.h
-        mainWindow/taskItemWidget.cpp
-        mainWindow/taskItemWidget.ui
-        settings/settingsWindow.h
+        tasks/TaskManager.h
+
+        # --- Settings ---
         settings/settingsWindow.cpp
+        settings/settingsWindow.h
         settings/settingsWindow.ui
         settings/appSettings.h
 
-        resources.qrc
-        windowEdit/snapPreviewWindow.h
-        windowEdit/snapPreviewWindow.cpp
-        windowEdit/framelessWindow.h
+        # --- Logging ---
+        logger/logger.cpp
+        logger/logger.h
+        logger/globalLogger.cpp
+        logger/globalLogger.h
+
+        # --- Frameless Window & Snap ---
         windowEdit/framelessWindow.cpp
+        windowEdit/framelessWindow.h
+        windowEdit/snapPreviewWindow.cpp
+        windowEdit/snapPreviewWindow.h
+
+        # --- Resources ---
+        resources.qrc
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+# ======================================================
+# === Створення виконуваного файлу
+# ======================================================
+if(QT_VERSION_MAJOR GREATER_EQUAL 6)
     qt_add_executable(QtEx
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
-
     )
 else()
-    if(ANDROID)
-        add_library(QtEx SHARED
-                ${PROJECT_SOURCES}
-        )
-    else()
-        add_executable(QtEx
-                ${PROJECT_SOURCES}
-        )
-    endif()
+    add_executable(QtEx ${PROJECT_SOURCES})
 endif()
 
-target_link_libraries(QtEx PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia)
-target_link_libraries(QtEx PRIVATE Qt6::Widgets Qt6::Multimedia)
-
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.QtEx)
-endif()
-set_target_properties(QtEx PROPERTIES
-        ${BUNDLE_ID_OPTION}
-        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-        MACOSX_BUNDLE TRUE
-        WIN32_EXECUTABLE TRUE
+# ======================================================
+# === Підключення бібліотек
+# ======================================================
+target_link_libraries(QtEx PRIVATE
+        Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Multimedia
 )
 
+# ======================================================
+# === SQLite (локальна бібліотека)
+# ======================================================
+target_include_directories(QtEx PUBLIC ${SQLITE_PATH})
+target_link_libraries(QtEx PUBLIC "${SQLITE_PATH}/sqlite3.dll")
+
+add_custom_command(TARGET QtEx POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${SQLITE_PATH}/sqlite3.dll"
+        $<TARGET_FILE_DIR:QtEx>
+        COMMENT "Copying sqlite3.dll..."
+)
+
+# ======================================================
+# === Властивості додатку (Windows / macOS)
+# ======================================================
+set_target_properties(QtEx PROPERTIES
+        MACOSX_BUNDLE TRUE
+        WIN32_EXECUTABLE TRUE
+        MACOSX_BUNDLE_GUI_IDENTIFIER com.example.QtEx
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING
+        ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+)
+
+# ======================================================
+# === Автоматичний запуск windeployqt (Windows only)
+# ======================================================
+if(WIN32)
+    get_target_property(QT_QMAKE_EXECUTABLE Qt6::qmake LOCATION)
+    get_filename_component(QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}" DIRECTORY)
+
+    add_custom_command(TARGET QtEx POST_BUILD
+            COMMAND "${QT_BIN_DIR}/windeployqt.exe"
+            --no-translations
+            --multimedia
+            "$<TARGET_FILE:QtEx>"
+            COMMENT "Running windeployqt automatically after build..."
+    )
+endif()
+
+# ======================================================
+# === Налаштування компіляції для MinGW  | OPTIONAL(access to console)
+# ======================================================
+if(MINGW)
+    set_target_properties(QtEx PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")
+endif()
+
+# ======================================================
+# === Завершення для Qt6
+# ======================================================
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(QtEx)
+endif()
+
+# ======================================================
+# === Інсталяційні шляхи (CMake install)
+# ======================================================
 include(GNUInstallDirs)
 install(TARGETS QtEx
         BUNDLE DESTINATION .
@@ -116,25 +185,4 @@ install(TARGETS QtEx
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(QtEx)
-endif()
-
-target_include_directories(QtEx PUBLIC
-        ${SQLITE_PATH}
-)
-
-target_link_libraries(QtEx PUBLIC
-        "${SQLITE_PATH}/sqlite3.dll"
-)
-
-add_custom_command(TARGET QtEx POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${SQLITE_PATH}/sqlite3.dll"
-        $<TARGET_FILE_DIR:QtEx>
-)
-
-if (MINGW)
-    set_target_properties(QtEx PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")
-endif()
 ```
