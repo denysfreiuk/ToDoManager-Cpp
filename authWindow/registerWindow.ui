@@ -97,12 +97,10 @@ QPushButton {
 
 QPushButton:hover {
     background-color: #00b377;
-    box-shadow: 0 0 8px #00cc88;
 }
 
 QPushButton:pressed {
     background-color: #009966;
-    transform: scale(0.97);
 }
 
 QPushButton:disabled {

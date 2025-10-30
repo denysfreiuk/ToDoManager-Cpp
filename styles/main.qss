@@ -516,13 +516,10 @@ QCalendarWidget QAbstractItemView:enabled {
     background-color: #FFFFFF;
 }
 
-
-
-
-
 /* === SETTINGS WINDOW (Light) === */
-SettingsWindow QDialog {
+SettingsWindow {
     background-color: #f7f8fa;
+    border: 1px solid #95969A;
     color: #222;
     font-family: "Segoe UI", "Roboto", sans-serif;
     font-size: 15px;
@@ -627,9 +624,11 @@ SettingsWindow QPushButton {
     font-weight: 600;
 }
 SettingsWindow QPushButton:hover {
+    color: white;
     background-color: #357ae8;
 }
 SettingsWindow QPushButton:pressed {
+    color: white;
     background-color: #2f5bb7;
 }
 
@@ -683,7 +682,6 @@ SettingsWindow QLabel#labelSoundPath:disabled {
     background-color: #f1f1f1;
     color: #9ca3af;
     border: 1px dashed #d4d4d4;
-    background-image: url(":/resources/icons/folder-gray.png");
 }
 
 QWidget#titleBar {
@@ -711,7 +709,7 @@ QPushButton#btnMinimize {
 
 /* Hover */
 QPushButton#btnClose:hover {
-    background-color: #E81123;
+    background-color: #FF3D3D;
     color: #ffffff;
 }
 QPushButton#btnMaximize:hover,

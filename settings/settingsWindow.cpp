@@ -8,8 +8,6 @@
 SettingsWindow::SettingsWindow(QWidget *parent)
     : FramelessDialog(parent), ui(new Ui::SettingsWindow) {
     ui->setupUi(this);
-    setWindowTitle("Settings");
-    setWindowIcon(QIcon(":/resources/icons/settings_icon.png"));
 
     audioOut = new QAudioOutput(this);
     audioOut->setVolume(20);
@@ -29,6 +27,7 @@ SettingsWindow::SettingsWindow(QWidget *parent)
 
     loadUiFromSettings();
     applyVisibility();
+    setupTitleBar();
 
     connect(ui->saveButton, &QPushButton::clicked, this, &SettingsWindow::onSave);
     connect(ui->cancelButton, &QPushButton::clicked, this, &SettingsWindow::onCancel);
@@ -38,7 +37,9 @@ SettingsWindow::SettingsWindow(QWidget *parent)
     connect(ui->testSoundButton, &QPushButton::clicked, this, &SettingsWindow::onTestSound);
 }
 
-SettingsWindow::~SettingsWindow() { delete ui; }
+SettingsWindow::~SettingsWindow() {
+    delete ui;
+}
 
 void SettingsWindow::loadUiFromSettings() {
     const QString dd = AppSettings::s().value("defaultDeadline", "Tomorrow").toString();
@@ -108,6 +109,13 @@ void SettingsWindow::onSave() {
     AppSettings::s().setValue("reminderSound", sound == "(none selected)" ? "" : sound);
 
     accept();
+}
+
+void SettingsWindow::setupTitleBar() {
+    ui->titleBar->setMinimumHeight(36);
+    ui->titleBar->setMaximumHeight(36);
+    connect(ui->btnClose,    &QPushButton::clicked, this, &onCancel);
+
 }
 
 void SettingsWindow::onCancel() { reject(); }

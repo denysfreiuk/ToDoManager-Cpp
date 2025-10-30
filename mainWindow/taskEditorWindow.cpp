@@ -14,12 +14,17 @@
 #include <QGraphicsDropShadowEffect>
 
 TaskEditorWindow::TaskEditorWindow(QWidget *parent)
-    : QDialog(parent),
+    : FramelessDialog(parent),
       ui(new Ui::TaskEditorWindow)
 {
     ui->setupUi(this);
     setWindowTitle("New Task");
     resize(400, 300);
+    if (AppSettings::theme() == AppSettings::Theme::Light)
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-black.png"));
+    else
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-white.png"));
+
 
     if (AppSettings::theme() == AppSettings::Theme::Light) ui->btnChangeTime->setIcon(QIcon(":/resources/icons/time-black.png"));
     else ui->btnChangeTime->setIcon(QIcon(":/resources/icons/time-white.png"));
@@ -49,18 +54,20 @@ menu->setGraphicsEffect(shadow);
     QSlider *hourSlider = new QSlider(Qt::Horizontal, popup);
     hourSlider->setRange(0, 23);
     hourSlider->setValue(ui->deadlineEdit->time().hour());
-    QLabel *hourLabel = new QLabel(QString("Hour: %1").arg(hourSlider->value()), popup);
+    QLabel *hourLabel = new QLabel(QString("Hour: %1").arg(QString::number(hourSlider->value())), popup);
 
     QSlider *minSlider = new QSlider(Qt::Horizontal, popup);
     minSlider->setRange(0, 59);
     minSlider->setValue(ui->deadlineEdit->time().minute());
-    QLabel *minLabel = new QLabel(QString("Minute: %1").arg(minSlider->value()), popup);
+    QLabel *minLabel = new QLabel(QString("Minute: %1").arg(QString::number(minSlider->value())), popup);
 
     connect(hourSlider, &QSlider::valueChanged, hourLabel, [=](int v) {
-        hourLabel->setText(QString("Hour: %1").arg(v, 2, 10, QLatin1Char('0')));
+        QString numberString = QString::number(v).rightJustified(2, QLatin1Char('0'));
+        hourLabel->setText(QString("Hour: %1").arg(numberString));
     });
     connect(minSlider, &QSlider::valueChanged, minLabel, [=](int v) {
-        minLabel->setText(QString("Minute: %1").arg(v, 2, 10, QLatin1Char('0')));
+        QString numberString = QString::number(v).rightJustified(2, QLatin1Char('0'));
+        minLabel->setText(QString("Minute: %1").arg(numberString));
     });
 
     QPushButton *okBtn = new QPushButton("OK", popup);
@@ -102,10 +109,17 @@ menu->setGraphicsEffect(shadow);
 
     connect(ui->saveButton, &QPushButton::clicked, this, &TaskEditorWindow::saveTask);
     connect(ui->cancelButton, &QPushButton::clicked, this, &TaskEditorWindow::reject);
+    setupTitleBar();
 }
 
 TaskEditorWindow::~TaskEditorWindow() {
     delete ui;
+}
+
+void TaskEditorWindow::setupTitleBar() {
+    ui->titleBar->setMinimumHeight(36);
+    ui->titleBar->setMaximumHeight(36);
+    connect(ui->btnClose,&QPushButton::clicked, this, &reject);
 }
 
 void TaskEditorWindow::saveTask() {
