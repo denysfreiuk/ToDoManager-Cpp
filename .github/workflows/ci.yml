@@ -19,12 +19,17 @@ jobs:
       - name: Set up Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: '6.5.3'
+          version: '6.6.3'
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_mingw'
+          arch: 'win64_msvc2022_64'
           modules: 'qtbase qtmultimedia'
           cache: true
+
+      - name: Configure MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
 
       - name: Verify Qt installation
         shell: bash
@@ -37,7 +42,8 @@ jobs:
         run: |
           cmake -S . -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_TESTS=ON
+            -DBUILD_TESTS=ON \
+            -DCMAKE_PREFIX_PATH="$Qt6_DIR/lib/cmake"
 
       - name: Build project
         shell: bash
