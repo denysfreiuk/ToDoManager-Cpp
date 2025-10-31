@@ -130,8 +130,10 @@ if(NOT EXISTS "${SQLITE_PATH}/sqlite3.c")
     file(COPY "${SQLITE_SRC}" DESTINATION "${SQLITE_PATH}")
 endif()
 
-add_library(sqlite3 STATIC "${SQLITE_PATH}/sqlite3.c")
-target_include_directories(sqlite3 PUBLIC "${SQLITE_PATH}")
+if(NOT TARGET sqlite3)
+    add_library(sqlite3 STATIC "${SQLITE_PATH}/sqlite3.c")
+    target_include_directories(sqlite3 PUBLIC "${SQLITE_PATH}")
+endif()
 target_link_libraries(QtEx PRIVATE sqlite3)
 
 # ======================================================

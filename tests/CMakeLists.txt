@@ -30,7 +30,7 @@ set(SQLITE_PATH "${CMAKE_BINARY_DIR}/sqlite")
 set(SQLITE_LOCAL "${CMAKE_CURRENT_BINARY_DIR}/sqlite3.c")
 
 if(NOT EXISTS "${SQLITE_LOCAL}")
-    message(STATUS "Downloading SQLite amalgamation...")
+    message(STATUS "Downloading SQLite amalgamation for tests...")
     file(MAKE_DIRECTORY "${SQLITE_PATH}")
     file(DOWNLOAD
             "https://www.sqlite.org/2024/sqlite-amalgamation-3460000.zip"
@@ -45,8 +45,10 @@ if(NOT EXISTS "${SQLITE_LOCAL}")
     file(COPY "${SQLITE_SRC}" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 endif()
 
-add_library(sqlite3 STATIC "${SQLITE_LOCAL}")
-target_include_directories(sqlite3 PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+if(NOT TARGET sqlite3)
+    add_library(sqlite3 STATIC "${SQLITE_LOCAL}")
+    target_include_directories(sqlite3 PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+endif()
 
 # ======================================================
 # === Qt Libraries
