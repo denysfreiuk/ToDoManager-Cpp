@@ -37,3 +37,4 @@ jobs:
       - name: Run ctest
         shell: bash
         run: ctest --test-dir build --output-on-failure
+
