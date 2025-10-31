@@ -10,7 +10,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@v4
@@ -21,20 +22,28 @@ jobs:
           version: '6.6.3'
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_msvc2019_64'
+          arch: 'win64_msvc2022_64'
+          modules: 'qtbase qtmultimedia'
           cache: true
+
+      - name: Verify Qt installation
+        shell: bash
+        run: |
+          echo "Qt6_DIR=$Qt6_DIR"
+          ls "$Qt6_DIR/lib/cmake" || true
 
       - name: Configure (CMake, Ninja, MSVC)
         shell: bash
         run: |
           cmake -S . -B build -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=ON
 
-      - name: Build
+      - name: Build project
         shell: bash
         run: cmake --build build --config Release -- -v
 
-      - name: Run ctest
+      - name: Run unit tests
         shell: bash
-        run: ctest --test-dir build --output-on-failure
-
+        run: |
+          ctest --test-dir build --output-on-failure
