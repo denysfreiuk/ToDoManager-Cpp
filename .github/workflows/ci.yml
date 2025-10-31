@@ -1,4 +1,3 @@
-
 name: CI
 
 on:
@@ -9,11 +8,12 @@ on:
 jobs:
   build-and-test-windows:
     runs-on: windows-latest
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Ninja
-      - uses: seanmiddleditch/gha-setup-ninja@v4
+        uses: seanmiddleditch/gha-setup-ninja@v4
 
       - name: Set up Qt
         uses: jurplel/install-qt-action@v3
