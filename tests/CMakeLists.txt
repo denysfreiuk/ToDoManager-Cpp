@@ -14,7 +14,7 @@ set(CMAKE_AUTORCC ON)
 include(FetchContent)
 
 # ======================================================
-# === GoogleTest Integration ===
+# === GoogleTest Integration
 # ======================================================
 FetchContent_Declare(
         googletest
@@ -24,25 +24,38 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # ======================================================
-# === SQLite Build (MinGW-safe version)
+# === SQLite Auto-Download & Build
 # ======================================================
-set(SQLITE_PATH "C:/libs/sqlite")
-
-# Копіюємо sqlite3.c локально, щоб уникнути шляху C_/...
-file(COPY "${SQLITE_PATH}/sqlite3.c" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+set(SQLITE_PATH "${CMAKE_BINARY_DIR}/sqlite")
 set(SQLITE_LOCAL "${CMAKE_CURRENT_BINARY_DIR}/sqlite3.c")
 
+if(NOT EXISTS "${SQLITE_LOCAL}")
+    message(STATUS "Downloading SQLite amalgamation...")
+    file(MAKE_DIRECTORY "${SQLITE_PATH}")
+    file(DOWNLOAD
+            "https://www.sqlite.org/2024/sqlite-amalgamation-3460000.zip"
+            "${SQLITE_PATH}/sqlite.zip"
+            SHOW_PROGRESS
+    )
+    execute_process(
+            COMMAND ${CMAKE_COMMAND} -E tar xzf "${SQLITE_PATH}/sqlite.zip"
+            WORKING_DIRECTORY "${SQLITE_PATH}"
+    )
+    file(GLOB SQLITE_SRC "${SQLITE_PATH}/sqlite-amalgamation-*/sqlite3.c")
+    file(COPY "${SQLITE_SRC}" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+endif()
+
 add_library(sqlite3 STATIC "${SQLITE_LOCAL}")
-target_include_directories(sqlite3 PUBLIC "${SQLITE_PATH}")
+target_include_directories(sqlite3 PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 
 # ======================================================
-# === Qt Libraries ===
+# === Qt Libraries
 # ======================================================
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Multimedia Test)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia Test)
 
 # ======================================================
-# === Project Sources ===
+# === Project Sources
 # ======================================================
 file(GLOB_RECURSE TEST_SOURCES "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 file(GLOB_RECURSE CORE_SOURCES
@@ -60,7 +73,7 @@ file(GLOB_RECURSE UI_SOURCES
 set(RESOURCES_QRC "${CMAKE_SOURCE_DIR}/resources.qrc")
 
 # ======================================================
-# === Test Executable ===
+# === Test Executable
 # ======================================================
 add_executable(QtEx_tests
         ${TEST_SOURCES}
@@ -70,7 +83,7 @@ add_executable(QtEx_tests
 )
 
 # ======================================================
-# === Link Dependencies ===
+# === Link Dependencies
 # ======================================================
 target_link_libraries(QtEx_tests PRIVATE
         gtest
@@ -94,7 +107,7 @@ target_include_directories(QtEx_tests PRIVATE
 )
 
 # ======================================================
-# === Enable GTest Discovery ===
+# === Enable GTest Discovery
 # ======================================================
 include(GoogleTest)
 gtest_discover_tests(QtEx_tests)
