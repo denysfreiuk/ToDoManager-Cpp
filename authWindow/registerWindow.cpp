@@ -12,6 +12,8 @@ RegisterWindow::RegisterWindow(QWidget *parent)
     ui->labelStatus->clear();
     connect(ui->lineEditUsername, &QLineEdit::textChanged, this, &RegisterWindow::on_textChanged);
     connect(ui->lineEditPassword, &QLineEdit::textChanged, this, &RegisterWindow::on_textChanged);
+    connect(ui->lineEditConfirmPassword, &QLineEdit::textChanged, this, &RegisterWindow::on_textChanged);
+
 }
 
 RegisterWindow::~RegisterWindow() {
@@ -19,11 +21,11 @@ RegisterWindow::~RegisterWindow() {
 }
 
 void RegisterWindow::on_btnRegister_clicked() {
-    string user = ui->lineEditUsername->text().toStdString();
-    string pass1 = ui->lineEditPassword->text().toStdString();
-    string pass2 = ui->lineEditConfirmPassword->text().toStdString();
+    const QString user  = ui->lineEditUsername->text().trimmed();
+    const QString pass1 = ui->lineEditPassword->text();
+    const QString pass2 = ui->lineEditConfirmPassword->text();
 
-    if (user.empty() || pass1.empty() || pass2.empty()) {
+    if (user.isEmpty() || pass1.isEmpty() || pass2.isEmpty()) {
         setStatus("All fields must be filled in!", true);
         return;
     }

@@ -428,7 +428,7 @@ void MainWindow::enforceAutoDelete() {
         }
 
         if (del) {
-            taskManager.deleteTask(this, t.getTitle().toStdString());
+            taskManager.removeTask(this, t.getTitle().toStdString());
         }
     }
 }
@@ -575,7 +575,7 @@ void MainWindow::handleTaskDone(const Task &task) {
 void MainWindow::handleTaskDelete(const Task &task) {
     if (QMessageBox::question(this, "Delete", "Delete \"" + task.getTitle() + "\"?")
         == QMessageBox::Yes) {
-        if (taskManager.deleteTask(this, task.getTitle().toStdString()))
+        if (taskManager.removeTask(this, task.getTitle().toStdString()))
             loadTasks();
     }
 }

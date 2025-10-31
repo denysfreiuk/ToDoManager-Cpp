@@ -1,5 +1,12 @@
+*.txt
+CMakeLists.txt.user
+cmake-build-debug
+build
+.idea
+
 # Prerequisites
 *.d
+
 
 # Compiled Object files
 *.slo

@@ -13,8 +13,7 @@ LoginWindow::LoginWindow(QWidget *parent)
     ui->lineEditPassword->setEchoMode(QLineEdit::Password);
 
     connect(ui->btnLogin, &QPushButton::clicked, this, &LoginWindow::on_btnLogin_clicked);
-    connect(ui->checkShowPassword, &QCheckBox::stateChanged, this, &LoginWindow::on_checkShowPassword_stateChanged);
-
+    connect(ui->checkShowPassword, &QCheckBox::checkStateChanged, this, &LoginWindow::on_checkShowPassword_stateChanged);
     connect(ui->lineEditUsername, &QLineEdit::textChanged, this, &LoginWindow::on_textChanged);
     connect(ui->lineEditPassword, &QLineEdit::textChanged, this, &LoginWindow::on_textChanged);
 }
@@ -24,9 +23,16 @@ LoginWindow::~LoginWindow() {
 }
 
 void LoginWindow::on_btnLogin_clicked() {
-    string user = ui->lineEditUsername->text().toStdString();
-    string pass = ui->lineEditPassword->text().toStdString();
+    const QString user = ui->lineEditUsername->text().trimmed();
+    const QString pass = ui->lineEditPassword->text();
+
+    if (user.isEmpty() || pass.isEmpty()) {
+        setStatus("Username and password cannot be empty!", true);
+        return;
+    }
+
     emit loginRequested(user, pass);
+
 }
 
 void LoginWindow::on_btnRegister_clicked() {

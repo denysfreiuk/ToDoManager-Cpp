@@ -2,7 +2,7 @@
 #define APPSETTINGS_H
 
 #include <QSettings>
-#include <QDate>
+#include <QDateTime>
 #include <QString>
 
 class AppSettings {
@@ -10,118 +10,37 @@ public:
     enum class DefaultDeadline { None, Today, Tomorrow, In3Days, InWeek };
     enum class AutoDeletePeriod { Immediately, After1Day, After1Week, AfterDeadline };
     enum class Theme { Light, Dark };
-
     enum class UserStatus { Active, Busy, Away };
 
-    static QSettings& s() {
-        static QSettings settings("ToDoSoft", "ToDoManager");
-        return settings;
-    }
+    static QSettings& s();
 
-    static DefaultDeadline defaultDeadline() {
-        const QString v = s().value("defaultDeadline", "Tomorrow").toString();
-        if (v == "Today") return DefaultDeadline::Today;
-        if (v == "In 3 days") return DefaultDeadline::In3Days;
-        if (v == "In a week") return DefaultDeadline::InWeek;
-        if (v == "None") return DefaultDeadline::None;
-        return DefaultDeadline::Tomorrow;
-    }
+    static DefaultDeadline defaultDeadline();
+    static void setDefaultDeadline(DefaultDeadline d);
 
-    static void setDefaultDeadline(DefaultDeadline d) {
-        QString v = "Tomorrow";
-        if (d == DefaultDeadline::None) v = "None";
-        else if (d == DefaultDeadline::Today) v = "Today";
-        else if (d == DefaultDeadline::In3Days) v = "In 3 days";
-        else if (d == DefaultDeadline::InWeek) v = "In a week";
-        s().setValue("defaultDeadline", v);
-    }
+    static bool autoDelete();
+    static void setAutoDelete(bool on);
 
-    static bool autoDelete() { return s().value("autoDelete", false).toBool(); }
-    static void setAutoDelete(bool on) { s().setValue("autoDelete", on); }
+    static AutoDeletePeriod deletePeriod();
+    static void setDeletePeriod(AutoDeletePeriod p);
 
-    static AutoDeletePeriod deletePeriod() {
-        const QString v = s().value("deletePeriod", "After deadline passes").toString();
-        if (v == "Immediately") return AutoDeletePeriod::Immediately;
-        if (v == "After 1 day") return AutoDeletePeriod::After1Day;
-        if (v == "After 1 week") return AutoDeletePeriod::After1Week;
-        return AutoDeletePeriod::AfterDeadline;
-    }
+    static Theme theme();
+    static void setTheme(Theme t);
 
-    static void setDeletePeriod(AutoDeletePeriod p) {
-        QString v = "After deadline passes";
-        if (p == AutoDeletePeriod::Immediately) v = "Immediately";
-        else if (p == AutoDeletePeriod::After1Day) v = "After 1 day";
-        else if (p == AutoDeletePeriod::After1Week) v = "After 1 week";
-        s().setValue("deletePeriod", v);
-    }
+    static bool reminderEnabled();
+    static void setReminderEnabled(bool on);
 
-    static Theme theme() {
-        const QString v = s().value("theme", "Light").toString();
-        return (v == "Dark") ? Theme::Dark : Theme::Light;
-    }
+    static int reminderMinutes();
+    static void setReminderMinutes(int m);
 
-    static void setTheme(Theme t) {
-        s().setValue("theme", t == Theme::Dark ? "Dark" : "Light");
-    }
+    static QString reminderSound();
+    static void setReminderSound(const QString& path);
 
-    static bool reminderEnabled() { return s().value("reminderEnabled", false).toBool(); }
-    static void setReminderEnabled(bool on) { s().setValue("reminderEnabled", on); }
+    static QDateTime computeQuickAddDeadline(QDateTime now = QDateTime::currentDateTime());
 
-    static int reminderMinutes() { return s().value("reminderTime", 30).toInt(); }
-    static void setReminderMinutes(int m) { s().setValue("reminderTime", m); }
-
-    static QString reminderSound() { return s().value("reminderSound", "").toString(); }
-    static void setReminderSound(const QString& path) { s().setValue("reminderSound", path); }
-
-    static QDateTime computeQuickAddDeadline(QDateTime now = QDateTime::currentDateTime()) {
-        QDate today = now.date();
-        QDateTime base(today, QTime(23, 59));
-
-        switch (defaultDeadline()) {
-            case DefaultDeadline::None:
-                return QDateTime();
-            case DefaultDeadline::Today:
-                return base;
-            case DefaultDeadline::Tomorrow:
-                return base.addDays(1);
-            case DefaultDeadline::In3Days:
-                return base.addDays(3);
-            case DefaultDeadline::InWeek:
-                return base.addDays(7);
-        }
-        return base;
-    }
-
-    static UserStatus userStatus() {
-        const QString v = s().value("userStatus", "Active").toString();
-        if (v == "Busy") return UserStatus::Busy;
-        if (v == "Away") return UserStatus::Away;
-        return UserStatus::Active;
-    }
-
-    static void setUserStatus(UserStatus status) {
-        QString v = "Active";
-        if (status == UserStatus::Busy) v = "Busy";
-        else if (status == UserStatus::Away) v = "Away";
-        s().setValue("userStatus", v);
-    }
-
-    static QString userStatusEmoji() {
-        switch (userStatus()) {
-            case UserStatus::Busy: return "🔴";
-            case UserStatus::Away: return "🟡";
-            case UserStatus::Active: default: return "🟢";
-        }
-    }
-
-    static QString userStatusName() {
-        switch (userStatus()) {
-            case UserStatus::Busy: return "Busy";
-            case UserStatus::Away: return "Away";
-            case UserStatus::Active: default: return "Active";
-        }
-    }
-
+    static UserStatus userStatus();
+    static void setUserStatus(UserStatus status);
+    static QString userStatusEmoji();
+    static QString userStatusName();
 };
 
 #endif // APPSETTINGS_H

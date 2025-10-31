@@ -18,7 +18,7 @@ public:
     void setStatus(const QString &text, bool isError = false);
 
     signals:
-        void registerRequested(const std::string &username, const std::string &password);
+        void registerRequested(const QString &username, const QString &password);
 
     private slots:
         void on_btnRegister_clicked();

@@ -42,6 +42,7 @@ QLabel#IconToDo{
 }
 
 
+
 /* === LISTS === */
 QListWidget {
     background-color: #ffffff;

@@ -10,7 +10,15 @@
 #include <QPropertyAnimation>
 #include "snapPreviewWindow.h"
 
-/* VOID
+/*
+ .h
+#include "windowEdit/framelesswindow.h"
+private:
+    void setupTitleBar();
+class YOURCLASS : public FramelessWindow
+
+.cpp
+ VOID
  void MainWindow::setupTitleBar() {
     ui->titleBar->setMinimumHeight(36);
     ui->titleBar->setMaximumHeight(36);
@@ -88,6 +96,26 @@ private:
     void setupTitleBar();
 
 .cpp
+
+
+
+void MainWindow::updateMaximizeIcon(bool maxed) {
+    bool isLight = (AppSettings::theme() == AppSettings::Theme::Light);
+
+    QString path;
+    if (maxed)
+        path = isLight
+            ? ":/resources/icons/icons-for-window/minimize-black.png"
+            : ":/resources/icons/icons-for-window/minimize-white.png";
+    else
+        path = isLight
+            ? ":/resources/icons/icons-for-window/maximize-black.png"
+            : ":/resources/icons/icons-for-window/maximize-white.png";
+
+    ui->btnMaximize->setIcon(QIcon(path));
+}
+
+
 
 void YOURCLASS::setupTitleBar() {
     ui->titleBar->setMinimumHeight(36);

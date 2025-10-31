@@ -75,17 +75,6 @@ bool TaskManager::updateTask(QWidget* parent, const Task& task) {
     return true;
 }
 
-bool TaskManager::deleteTask(QWidget* parent, const string& title) {
-    if (repo.deleteTask(currentUser, title)) {
-        logger.info("Task deleted: " + title);
-        return true;
-    } else {
-        QMessageBox::warning(parent, "Error", "Could not delete task from database!");
-        return false;
-    }
-}
-
-
 std::vector<Task> TaskManager::tasksForToday(bool includeCompleted)
 {
     std::vector<Task> todayTasks;

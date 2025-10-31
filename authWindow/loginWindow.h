@@ -19,7 +19,7 @@ public:
     void setStatus(const QString &text, bool isError = false);
 
     signals:
-        void loginRequested(const std::string &username, const std::string &password);
+        void loginRequested(const QString &username, const QString &password);
     void registerRequested();
 
     private slots:

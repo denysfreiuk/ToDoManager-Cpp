@@ -6,6 +6,7 @@
 #include <vector>
 #include <optional>
 #include "../accounts/authManager.h"
+#include "../accounts/account.h"
 
 using namespace std;
 

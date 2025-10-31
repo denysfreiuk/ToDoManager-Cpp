@@ -31,6 +31,11 @@ void DatabaseManager::close() {
     if (db) sqlite3_close(db);
     db = nullptr;
 }
+
+int DatabaseManager::getChanges() const {
+    return sqlite3_changes(db);
+}
+
 bool DatabaseManager::execute(const string& sql) {
     char* errMsg = nullptr;
     int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg);

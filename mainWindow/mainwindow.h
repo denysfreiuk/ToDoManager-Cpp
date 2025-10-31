@@ -22,8 +22,11 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class TestFriend_MainWindow;
+
 class MainWindow : public FramelessWindow {
     Q_OBJECT
+    friend class TestFriend_MainWindow;
 
 public:
     explicit MainWindow(TaskManager &manager, QWidget *parent = nullptr);

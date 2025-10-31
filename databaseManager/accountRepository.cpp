@@ -2,6 +2,7 @@
 #include "../logger/globalLogger.h"
 #include "SQLUtilities/SQLUtils.h"
 #include <sstream>
+#include <algorithm>
 using namespace std;
 
 AccountRepository::AccountRepository(DatabaseManager& database) : db(database) {}
@@ -27,14 +28,24 @@ void AccountRepository::initTable() {
 }
 
 bool AccountRepository::addAccount(const string& username, size_t passwordHash) {
+    if (username.empty() ||
+        all_of(username.begin(), username.end(), [](unsigned char c){ return isspace(c); })) {
+        logger.warn("Attempt to add account with empty or whitespace-only username.");
+        return false;
+        }
+
     string safeUsername = escapeSQL(username);
+
     string sql =
-        "INSERT INTO accounts (username, passwordHash) VALUES ('" + safeUsername + "', '" +
-        to_string(passwordHash) + "');";
+        "INSERT INTO accounts (username, passwordHash) VALUES ('" +
+        safeUsername + "', '" + std::to_string(passwordHash) + "');";
 
     bool ok = db.execute(sql);
-    if (ok) logger.info("Account added: " + username);
-    else logger.error("Failed to insert account: " + username);
+    if (ok)
+        logger.info("Account added: " + username);
+    else
+        logger.error("Failed to insert account: " + username);
+
     return ok;
 }
 
@@ -64,6 +75,10 @@ bool AccountRepository::updateAccount(const string& username,
 }
 
 optional<Account> AccountRepository::getAccount(const string& username) {
+    if (username.empty() ||
+    all_of(username.begin(), username.end(), [](unsigned char c){ return isspace(c); })) {
+        return nullopt;
+    }
     string sql = "SELECT username, passwordHash FROM accounts WHERE username='" + username + "';";
     sqlite3_stmt* stmt;
     if (!db.prepare(sql, &stmt)) {
@@ -117,6 +132,10 @@ vector<Account> AccountRepository::getAllAccounts() {
 }
 
 bool AccountRepository::accountExists(const string& username) {
+    if (username.empty() ||
+        all_of(username.begin(), username.end(), [](unsigned char c){ return isspace(c); })) {
+        return false;
+        }
     string sql = "SELECT COUNT(*) FROM accounts WHERE username=?;";
     sqlite3_stmt* stmt = nullptr;
 
