@@ -14,7 +14,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # === Шляхи до Qt і бібліотек
 # ======================================================
 set(CMAKE_PREFIX_PATH "C:/Qt/6.10.0/mingw_64/lib/cmake")
-set(SQLITE_PATH "C:/libs/sqlite")
 
 # ======================================================
 # === Пошук бібліотек Qt
@@ -111,17 +110,29 @@ target_link_libraries(QtEx PRIVATE
 )
 
 # ======================================================
-# === SQLite (локальна бібліотека)
+# === SQLite (вбудована статична збірка)
 # ======================================================
-target_include_directories(QtEx PUBLIC ${SQLITE_PATH})
-target_link_libraries(QtEx PUBLIC "${SQLITE_PATH}/sqlite3.dll")
+set(SQLITE_PATH "${CMAKE_BINARY_DIR}/sqlite")
 
-add_custom_command(TARGET QtEx POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${SQLITE_PATH}/sqlite3.dll"
-        $<TARGET_FILE_DIR:QtEx>
-        COMMENT "Copying sqlite3.dll..."
-)
+if(NOT EXISTS "${SQLITE_PATH}/sqlite3.c")
+    message(STATUS "Downloading SQLite amalgamation for main build...")
+    file(MAKE_DIRECTORY "${SQLITE_PATH}")
+    file(DOWNLOAD
+            "https://www.sqlite.org/2024/sqlite-amalgamation-3460000.zip"
+            "${SQLITE_PATH}/sqlite.zip"
+            SHOW_PROGRESS
+    )
+    execute_process(
+            COMMAND ${CMAKE_COMMAND} -E tar xzf "${SQLITE_PATH}/sqlite.zip"
+            WORKING_DIRECTORY "${SQLITE_PATH}"
+    )
+    file(GLOB SQLITE_SRC "${SQLITE_PATH}/sqlite-amalgamation-*/sqlite3.c")
+    file(COPY "${SQLITE_SRC}" DESTINATION "${SQLITE_PATH}")
+endif()
+
+add_library(sqlite3 STATIC "${SQLITE_PATH}/sqlite3.c")
+target_include_directories(sqlite3 PUBLIC "${SQLITE_PATH}")
+target_link_libraries(QtEx PRIVATE sqlite3)
 
 # ======================================================
 # === Властивості додатку (Windows / macOS)
