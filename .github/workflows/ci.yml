@@ -22,7 +22,7 @@ jobs:
           version: '6.6.3'
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_msvc2022_64'
+          arch: 'win64_mingw'
           modules: 'qtbase qtmultimedia'
           cache: true
 
