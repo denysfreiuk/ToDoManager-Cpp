@@ -2,12 +2,8 @@
 #define FRAMELESSWINDOW_H
 
 #include <QMainWindow>
-#include <QDialog>
-#include <QMouseEvent>
-#include <QScreen>
-#include <QGuiApplication>
+#include <QMessageBox>
 #include <QGraphicsDropShadowEffect>
-#include <QPropertyAnimation>
 #include "snapPreviewWindow.h"
 
 /*
@@ -58,31 +54,36 @@ public:
         void windowMaximizedChanged(bool maximized);
 
 protected:
+    enum ResizeRegion {
+        None, Left, Right, Top, Bottom,
+        TopLeft, TopRight, BottomLeft, BottomRight
+    };
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
-
-    enum ResizeRegion {
-        None, Left, Right, Top, Bottom,
-        TopLeft, TopRight, BottomLeft, BottomRight
-    };
     ResizeRegion detectResizeRegion(const QPoint &pos);
     void updateCursorShape(const QPoint &pos);
     void toggleMaximizeRestore();
     void toggleFullscreenMode();
+    bool eventFilter(QObject *obj, QEvent *event) override;
+    void enterEvent(QEnterEvent *event) override;
+    void leaveEvent(QEvent *e) override;
+    void showEvent(QShowEvent *event) override;
 
-
+    bool isFullscreenMode = false;
+    bool m_uiInitialized = false;
     bool isMaximized = false;
     bool isDragging = false;
     bool isResizing = false;
     QPoint dragOffset;
     QRect savedGeometryBeforeMaximize;
     ResizeRegion currentResizeRegion = None;
-
     SnapPreviewWindow *snapPreview = nullptr;
+private:
+    void setResizeCursor(ResizeRegion region);
 };
 
 
@@ -139,8 +140,24 @@ IN UI -> QWidget#titleBar:  QLabels: IconName, titleLabel;  horizontalLayout: (Q
 class FramelessDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit FramelessDialog(QWidget *parent = nullptr);
+    explicit FramelessDialog(QWidget *parent, bool enableShadow = true);
     ~FramelessDialog() override = default;
+
+    void setResizeEnabled(bool enabled) { resizeEnabled = enabled; }
+    void setShadowEnabled(bool enabled) { shadowEnabled = enabled; }
+
+private:
+    enum ResizeRegion {
+        None, Left, Right, Top, Bottom,
+        TopLeft, TopRight, BottomLeft, BottomRight
+    };
+    bool shadowEnabled = true;
+    bool resizeEnabled = true;
+    bool m_uiInitialized = false;
+    bool isDragging = false;
+    bool isResizing = false;
+    QPoint dragOffset;
+    ResizeRegion currentResizeRegion = None;
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -149,23 +166,87 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-
-private:
-    enum ResizeRegion {
-        None, Left, Right, Top, Bottom,
-        TopLeft, TopRight, BottomLeft, BottomRight
-    };
+    void applyShadowEffect();
 
     ResizeRegion detectResizeRegion(const QPoint &pos);
     void updateCursorShape(const QPoint &pos);
-    void applyShadowEffect();
+    bool eventFilter(QObject *obj, QEvent *event) override;
+    void enterEvent(QEnterEvent *event) override;
+    void leaveEvent(QEvent *event) override;
+    void showEventFade(QShowEvent *event);
+};
+
+/*
+ EXAMPLE
+    before:
+       QMessageBox::warning(this, "Warning", "Task title cannot be empty!");
+    after:
+        // 1. Info
+        FramelessMessageBox::information(this, "Saved", "Task saved successfully!");
+
+        // 2. Warn
+        FramelessMessageBox::warning(this, "Warning", "Task title cannot be empty!");
+
+        // 3. Question (return bool)
+        if (FramelessMessageBox::question(this, "Delete Task", "Are you sure you want to delete this task?")) {
+            deleteTask();
+        }
+
+        // 4. Error
+        FramelessMessageBox::critical(this, "Error", "Database connection failed!");
+
+ */
+
+
+class FramelessMessageBox : public FramelessDialog
+{
+    Q_OBJECT
+public:
+    explicit FramelessMessageBox(const QString &title,
+                                 const QString &message,
+                                 QMessageBox::Icon icon = QMessageBox::Information,
+                                 QWidget *parent = nullptr);
+
+    int exec() override;
+
+    static void information(QWidget *parent,
+                            const QString &title,
+                            const QString &message);
+
+    static void warning(QWidget *parent,
+                        const QString &title,
+                        const QString &message);
+
+    static bool question(QWidget *parent,
+                         const QString &title,
+                         const QString &message);
+
+    static void critical(QWidget *parent,
+                         const QString &title,
+                         const QString &message);
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+    private slots:
+        void onOkClicked();
+    void onCancelClicked();
+
+private:
+    QLabel *titleLabel = nullptr;
+    QLabel *iconLabel = nullptr;
+    QLabel *messageLabel = nullptr;
+    QPushButton *okButton = nullptr;
+    QPushButton *cancelButton = nullptr;
+    QGraphicsDropShadowEffect *shadowEffect = nullptr;
 
     bool isDragging = false;
-    bool isResizing = false;
     QPoint dragOffset;
-    ResizeRegion currentResizeRegion = None;
-
-    static constexpr int RESIZE_MARGIN = 4;
+    int resultCode = QMessageBox::Rejected;
 };
+
+
 
 #endif // FRAMELESSDIALOG_H

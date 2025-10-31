@@ -520,6 +520,14 @@ QCalendarWidget QAbstractItemView:enabled {
     background-color: #121212;
 }
 
+TaskEditorWindow #titleBar{
+    border: 1px solid #4F4F4F;
+}
+
+TaskEditorWindow{
+    border: 1px solid #4F4F4F;
+}
+
 /* === SETTINGS WINDOW (Dark) === */
 SettingsWindow {
     background-color: #121212;
@@ -527,6 +535,10 @@ SettingsWindow {
     color: #e0e0e0;
     font-family: "Segoe UI", "Roboto", sans-serif;
     font-size: 15px;
+}
+
+SettingsWindow #titleBar{
+    border: 1px solid #4F4F4F;
 }
 
 /* === GROUP BOXES === */
@@ -727,4 +739,48 @@ QPushButton#btnMinimize:hover {
 QPushButton#btnMaximize:pressed,
 QPushButton#btnMinimize:pressed {
     background-color: #3b3b3b;
+}
+
+/*FramelessMessageBox*/
+FramelessMessageBox #background {
+    background-color: #1e1e1e;
+    border: 1px solid #2563eb;
+    border-radius: 12px;
+    padding: 4px;
+}
+
+/* === Заголовок === */
+FramelessMessageBox #titleLabel {
+    color: #f0f0f0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-align: center;
+    padding-bottom: 4px;
+}
+
+/* === Текст повідомлення === */
+FramelessMessageBox #messageLabel {
+    color: #d9d9d9;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4em;
+    padding: 4px 0;
+}
+
+/* === Кнопки === */
+FramelessMessageBox QPushButton {
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.15s ease-in-out;
+}
+FramelessMessageBox QPushButton:hover {
+    background-color: #2563eb;
+}
+FramelessMessageBox QPushButton:pressed {
+    background-color: #1e40af;
 }

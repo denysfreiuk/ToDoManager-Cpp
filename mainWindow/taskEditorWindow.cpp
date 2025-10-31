@@ -1,7 +1,6 @@
 #include "taskeditorwindow.h"
 #include "ui_taskeditorwindow.h"
 #include "../settings/appSettings.h"
-#include <QMessageBox>
 #include <QDate>
 #include <QMenu>
 #include <QWidgetAction>
@@ -125,7 +124,7 @@ void TaskEditorWindow::setupTitleBar() {
 void TaskEditorWindow::saveTask() {
     QString title = ui->titleEdit->text().trimmed();
     if (title.isEmpty()) {
-        QMessageBox::warning(this, "Warning", "Task title cannot be empty!");
+        FramelessMessageBox::warning(this, "Warning", "Task title cannot be empty!");
         return;
     }
     accept();
