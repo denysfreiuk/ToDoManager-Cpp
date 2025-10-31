@@ -11,7 +11,7 @@ using namespace std;
 class TaskManager {
 private:
     TaskRepository& repo;
-    ::string currentUser;
+    string currentUser;
 
 public:
     explicit TaskManager(TaskRepository& repository);
@@ -22,9 +22,8 @@ public:
     bool removeTask(QWidget* parent, const ::string& title);
     bool markCompleted(QWidget* parent, const ::string& title);
     bool updateTask(QWidget* parent, const Task& task);
-    bool deleteTask(QWidget* parent, const ::string& title);
-    ::vector<Task> tasksForToday(bool includeCompleted = true);
-    ::vector<Task> loadTasks();
+    vector<Task> tasksForToday(bool includeCompleted = true);
+    vector<Task> loadTasks();
 };
 
 #endif //TASKMANAGER_H

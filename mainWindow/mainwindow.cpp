@@ -6,7 +6,6 @@
 #include "../settings/appsettings.h"
 #include "../windowEdit/snapPreviewWindow.h"
 
-#include <QMessageBox>
 #include <QCloseEvent>
 #include <QActionGroup>
 #include <QDate>
@@ -389,7 +388,7 @@ void MainWindow::checkRemindersTick() {
                         .arg(deadline.toString("dd.MM.yyyy hh:mm"))
                         .arg(QString::number(minutesLeft));
 
-                QMessageBox::information(this, "Reminder", msg);
+                FramelessMessageBox::information(this, "Reminder", msg);
             });
         }
 
@@ -428,7 +427,7 @@ void MainWindow::enforceAutoDelete() {
         }
 
         if (del) {
-            taskManager.deleteTask(this, t.getTitle().toStdString());
+            taskManager.removeTask(this, t.getTitle().toStdString());
         }
     }
 }
@@ -520,7 +519,7 @@ void MainWindow::updateToolBoxTitleFor(QListWidget *list) {
 void MainWindow::addQuickTask() {
     QString text = ui->taskInput->text().trimmed();
     if (text.isEmpty()) {
-        QMessageBox::warning(this, "Warning", "Please enter a task title!");
+        FramelessMessageBox::warning(this, "Warning", "Please enter a task title!");
         return;
     }
     QDateTime defDeadline = AppSettings::computeQuickAddDeadline();
@@ -537,11 +536,11 @@ void MainWindow::openTaskEditor() {
     if (editor.exec() == QDialog::Accepted) {
         Task t = editor.getTask();
         if (taskManager.addTask(this, t)) {
-            QMessageBox::information(this, "Success", "Task added successfully!");
+            FramelessMessageBox::information(this, "Success", "Task added successfully!");
             enforceAutoDelete();
             loadTasks();
         } else {
-            QMessageBox::critical(this, "Error", "Failed to add task!");
+            FramelessMessageBox::critical(this, "Error", "Failed to add task!");
         }
     }
 }
@@ -552,7 +551,7 @@ void MainWindow::handleTaskEdit(const Task &task) {
     if (ed.exec() == QDialog::Accepted) {
         Task upd = ed.getTask();
         if (taskManager.updateTask(this, upd)) {
-            QMessageBox::information(this, "Updated", "Task updated successfully!");
+            FramelessMessageBox::information(this, "Updated", "Task updated successfully!");
             enforceAutoDelete();
             loadTasks();
         }
@@ -561,11 +560,12 @@ void MainWindow::handleTaskEdit(const Task &task) {
 
 void MainWindow::handleTaskDone(const Task &task) {
     if (task.isCompleted()) {
-        QMessageBox::information(this, "Info", "Task already completed.");
+        FramelessMessageBox::information(this, "Info", "Task already completed.");
         return;
     }
     if (!taskManager.markCompleted(this, task.getTitle().toStdString())) {
-        QMessageBox::warning(this, "Error", "Failed to update status!");
+        FramelessMessageBox::warning(this, "Error", "Failed to update status!");
+
         return;
     }
     enforceAutoDelete();
@@ -573,9 +573,9 @@ void MainWindow::handleTaskDone(const Task &task) {
 }
 
 void MainWindow::handleTaskDelete(const Task &task) {
-    if (QMessageBox::question(this, "Delete", "Delete \"" + task.getTitle() + "\"?")
+    if (FramelessMessageBox::question(this, "Delete", "Delete \"" + task.getTitle() + "\"?")
         == QMessageBox::Yes) {
-        if (taskManager.deleteTask(this, task.getTitle().toStdString()))
+        if (taskManager.removeTask(this, task.getTitle().toStdString()))
             loadTasks();
     }
 }
@@ -587,7 +587,7 @@ void MainWindow::handleTaskDetails(const Task &task) {
             .arg(task.getDeadline().toString("dd.MM.yyyy hh:mm"))
             .arg(task.getPriority())
             .arg(task.isCompleted() ? "Yes" : "No");
-    QMessageBox::information(this, "Details", info);
+    FramelessMessageBox::information(this, "Details", info);
 }
 
 void MainWindow::onFilterChanged(int) { loadTasks(); }

@@ -66,25 +66,20 @@ bool TaskRepository::addTask(const string& username, const Task& task) {
     return ok;
 }
 
-//ToDO: 2 identical methods. Need to remove one of them
+
 bool TaskRepository::removeTask(const string& username, const string& title) {
     string sql = "DELETE FROM tasks WHERE username='" + escapeSQL(username) +
                  "' AND title='" + escapeSQL(title) + "';";
     bool ok = db.execute(sql);
+
+    int changes = db.getChanges();
+    if (changes == 0) {
+        logger.warn("No task found to remove: " + title);
+        return false;
+    }
+
     if (ok) logger.info("Task removed: " + title);
     else logger.warn("Failed to remove task: " + title);
-    return ok;
-}
-
-bool TaskRepository::deleteTask(const string& username, const string& title) {
-    string sql =
-        "DELETE FROM tasks WHERE username='" + escapeSQL(username) +
-        "' AND title='" + escapeSQL(title) + "';";
-    bool ok = db.execute(sql);
-    if (ok)
-        logger.info("Task deleted: " + title);
-    else
-        logger.error("Failed to delete task: " + title);
     return ok;
 }
 
@@ -99,9 +94,15 @@ bool TaskRepository::updateTask(const string& username, const Task& task) {
         "' AND title='" + escapeSQL(task.getTitle().toStdString()) + "';";
 
     bool ok = db.execute(sql);
-    if (ok) logger.info("Task updated: " + task.getTitle().toStdString());
-    else    logger.error("Failed to update task: " + task.getTitle().toStdString());
-    return ok;
+    int changed = db.getChanges();
+
+    if (!ok || changed == 0) {
+        logger.warn("No task found to update: " + task.getTitle().toStdString());
+        return false;
+    }
+
+    logger.info("Task updated: " + task.getTitle().toStdString());
+    return true;
 }
 
 vector<Task> TaskRepository::getTasksByUser(const string& username) {

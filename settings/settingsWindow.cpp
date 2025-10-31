@@ -2,7 +2,6 @@
 #include "ui_settingswindow.h"
 #include "appsettings.h"
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QIcon>
 
 SettingsWindow::SettingsWindow(QWidget *parent)
@@ -78,7 +77,8 @@ void SettingsWindow::onReminderChanged(int)   { applyVisibility(); }
 void SettingsWindow::onTestSound() {
     const QString path = ui->labelSoundPath->text();
     if (path.isEmpty() || path == "(none selected)" || !QFileInfo::exists(path)) {
-        QMessageBox::warning(this, "No sound", "Please select a valid audio file first.");
+        FramelessMessageBox::warning(this, "No sound", "Please select a valid audio file first.");
+
         return;
     }
 

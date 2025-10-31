@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 
     TaskRepository taskRepo(db);
     TaskManager taskManager(taskRepo);
-    taskManager.setCurrentUser(loggedUser.value());
+    taskManager.setCurrentUser(loggedUser.value().toStdString());
 
     MainWindow mainWin(taskManager);
     mainWin.show();

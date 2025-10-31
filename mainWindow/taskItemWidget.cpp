@@ -94,7 +94,6 @@ void TaskItemWidget::updateDisplay() {
         setProperty("state", "overdue");
         ui->labelCheck->setVisible(false);
 
-
         QString iconPath;
         if (AppSettings::theme() == AppSettings::Theme::Dark)
             iconPath = ":/resources/icons/overdue-white.png";

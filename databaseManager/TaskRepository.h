@@ -19,7 +19,6 @@ public:
     void initTable();
     bool addTask(const string& username, const Task& task);
     bool removeTask(const string& username, const string& title);
-    bool deleteTask(const string& username, const string& title);
     bool updateTask(const string& username, const Task& task);
     vector<Task> getTasksByUser(const string& username);
     optional<Task> getTaskByTitle(const string& username, const string& title);

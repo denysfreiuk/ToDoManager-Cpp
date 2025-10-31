@@ -16,6 +16,8 @@ public:
     bool open();
     void close();
 
+    int getChanges() const;
+
     bool execute(const string& sql);
     bool prepare(const string& sql, sqlite3_stmt** stmt);
 
