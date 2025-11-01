@@ -16,11 +16,6 @@ jobs:
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@v4
 
-      - name: Configure MSVC environment
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
-
       - name: Set up Qt
         uses: jurplel/install-qt-action@v3
         with:
@@ -31,6 +26,12 @@ jobs:
           modules: 'qtmultimedia'
           aqtversion: '==2.2.0'
           cache: true
+
+
+      - name: Configure MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
 
       - name: Verify Qt installation
         run: |
