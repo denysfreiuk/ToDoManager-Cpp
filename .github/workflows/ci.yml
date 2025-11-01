@@ -23,6 +23,7 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2022_64'
+          aqtversion: '==2.2.0'
           cache: true
 
       - name: Configure MSVC environment
@@ -30,13 +31,7 @@ jobs:
         with:
           arch: x64
 
-      - name: Verify Qt installation
-        shell: bash
-        run: |
-          echo "Qt6_DIR=$Qt6_DIR"
-          ls "$Qt6_DIR/lib/cmake" || true
-
-      - name: Configure (CMake, Ninja, MSVC)
+      - name: Configure CMake
         shell: bash
         run: |
           cmake -S . -B build -G Ninja \
