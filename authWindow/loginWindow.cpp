@@ -13,7 +13,7 @@ LoginWindow::LoginWindow(QWidget *parent)
     ui->lineEditPassword->setEchoMode(QLineEdit::Password);
 
     connect(ui->btnLogin, &QPushButton::clicked, this, &LoginWindow::on_btnLogin_clicked);
-    connect(ui->checkShowPassword, &QCheckBox::checkStateChanged, this, &LoginWindow::on_checkShowPassword_stateChanged);
+    connect(ui->checkShowPassword, &QCheckBox::stateChanged, this, &LoginWindow::on_checkShowPassword_stateChanged);
     connect(ui->lineEditUsername, &QLineEdit::textChanged, this, &LoginWindow::on_textChanged);
     connect(ui->lineEditPassword, &QLineEdit::textChanged, this, &LoginWindow::on_textChanged);
 }
