@@ -15,33 +15,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # ======================================================
-# === SQLite Auto-Download & Build
-# ======================================================
-set(SQLITE_PATH "${CMAKE_BINARY_DIR}/sqlite")
-set(SQLITE_LOCAL "${CMAKE_CURRENT_BINARY_DIR}/sqlite3.c")
-
-if(NOT EXISTS "${SQLITE_LOCAL}")
-    message(STATUS "Downloading SQLite amalgamation for tests...")
-    file(MAKE_DIRECTORY "${SQLITE_PATH}")
-    file(DOWNLOAD
-            "https://www.sqlite.org/2024/sqlite-amalgamation-3460000.zip"
-            "${SQLITE_PATH}/sqlite.zip"
-            SHOW_PROGRESS
-    )
-    execute_process(
-            COMMAND ${CMAKE_COMMAND} -E tar xzf "${SQLITE_PATH}/sqlite.zip"
-            WORKING_DIRECTORY "${SQLITE_PATH}"
-    )
-    file(GLOB SQLITE_SRC "${SQLITE_PATH}/sqlite-amalgamation-*/sqlite3.c")
-    file(COPY "${SQLITE_SRC}" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-endif()
-
-if(NOT TARGET sqlite3)
-    add_library(sqlite3 STATIC "${SQLITE_LOCAL}")
-    target_include_directories(sqlite3 PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
-endif()
-
-# ======================================================
 # === Qt Libraries
 # ======================================================
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Multimedia Test)
@@ -86,6 +59,9 @@ target_link_libraries(QtEx_tests PRIVATE
         Qt${QT_VERSION_MAJOR}::Test
 )
 
+# ======================================================
+# === Include Directories
+# ======================================================
 target_include_directories(QtEx_tests PRIVATE
         ${CMAKE_SOURCE_DIR}
         ${CMAKE_SOURCE_DIR}/databaseManager

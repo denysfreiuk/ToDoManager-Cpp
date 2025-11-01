@@ -126,8 +126,9 @@ if(NOT EXISTS "${SQLITE_PATH}/sqlite3.c")
             COMMAND ${CMAKE_COMMAND} -E tar xzf "${SQLITE_PATH}/sqlite.zip"
             WORKING_DIRECTORY "${SQLITE_PATH}"
     )
-    file(GLOB SQLITE_SRC "${SQLITE_PATH}/sqlite-amalgamation-*/sqlite3.c")
-    file(COPY "${SQLITE_SRC}" DESTINATION "${SQLITE_PATH}")
+    file(GLOB SQLITE_EXTRACTED_DIR "${SQLITE_PATH}/sqlite-amalgamation-*")
+    file(COPY "${SQLITE_EXTRACTED_DIR}/sqlite3.c" DESTINATION "${SQLITE_PATH}")
+    file(COPY "${SQLITE_EXTRACTED_DIR}/sqlite3.h" DESTINATION "${SQLITE_PATH}")
 endif()
 
 if(NOT TARGET sqlite3)
@@ -165,13 +166,6 @@ if(WIN32)
 endif()
 
 # ======================================================
-# === Налаштування компіляції для MinGW  | OPTIONAL(access to console)
-# ======================================================
-if(MINGW)
-    set_target_properties(QtEx PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")
-endif()
-
-# ======================================================
 # === Завершення для Qt6
 # ======================================================
 if(QT_VERSION_MAJOR EQUAL 6)
@@ -193,8 +187,8 @@ install(TARGETS QtEx
 # ======================================================
 option(BUILD_TESTS "Build unit tests" ON)
 
-if (BUILD_TESTS)
-    if (EXISTS "${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt")
+if(BUILD_TESTS)
+    if(EXISTS "${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt")
         message(STATUS "Including GoogleTests...")
         add_subdirectory(tests)
     else()
