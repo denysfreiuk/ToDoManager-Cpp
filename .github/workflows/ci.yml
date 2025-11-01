@@ -16,28 +16,29 @@ jobs:
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@v4
 
+      - name: Set up MinGW
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          version: '11.2.0'
+          platform: x64
+
       - name: Set up Qt
         uses: jurplel/install-qt-action@v3
         with:
           version: '6.6.3'
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_msvc2019_64'
+          arch: 'win64_mingw'
           modules: 'qtmultimedia'
           aqtversion: '==2.2.0'
           cache: true
-
-      - name: Configure MSVC environment
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
 
       - name: Verify Qt installation
         run: |
           Write-Host "Qt6_DIR=$env:Qt6_DIR"
           Get-ChildItem "$env:Qt6_DIR/lib/cmake"
 
-      - name: Configure (CMake, Ninja, MSVC)
+      - name: Configure (CMake, Ninja, MinGW)
         run: |
           cmake -S . -B build -G Ninja `
             -DCMAKE_BUILD_TYPE=Release `
@@ -53,5 +54,5 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: QtEx-Build
+          name: QtEx-Build-MinGW
           path: build/QtEx.exe
