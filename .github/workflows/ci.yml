@@ -19,11 +19,11 @@ jobs:
       - name: Set up Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: '6.6.3'
+          version: '6.5.3'
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2022_64'
-          modules: 'qtmultimedia qttools qtimageformats'
+          modules: 'qtbase qtmultimedia qttools qtimageformats'
           cache: true
 
       - name: Configure MSVC environment
@@ -53,3 +53,9 @@ jobs:
         shell: bash
         run: |
           ctest --test-dir build --output-on-failure
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: QtEx-Build
+          path: build/QtEx.exe
