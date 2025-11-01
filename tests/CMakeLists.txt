@@ -1,12 +1,3 @@
-enable_language(C)
-enable_language(CXX)
-
-set(CMAKE_C_COMPILER ${CMAKE_C_COMPILER} CACHE FILEPATH "" FORCE)
-set(CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER} CACHE FILEPATH "" FORCE)
-
-cmake_minimum_required(VERSION 3.16)
-cmake_policy(SET CMP0111 OLD)
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
