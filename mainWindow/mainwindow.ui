@@ -452,7 +452,7 @@
                <x>0</x>
                <y>0</y>
                <width>796</width>
-               <height>475</height>
+               <height>528</height>
               </rect>
              </property>
              <attribute name="label">
@@ -461,25 +461,12 @@
              <layout class="QVBoxLayout" name="verticalLayout">
               <item>
                <widget class="QListWidget" name="todayList">
-                <property name="updateThreshold">
-                 <number>200</number>
-                </property>
                 <property name="spacing">
                  <number>3</number>
                 </property>
                 <property name="itemAlignment">
                  <set>Qt::AlignmentFlag::AlignVCenter</set>
                 </property>
-                <item>
-                 <property name="text">
-                  <string>Новий елемент</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Новий елемент</string>
-                 </property>
-                </item>
                </widget>
               </item>
              </layout>
@@ -490,7 +477,7 @@
                <x>0</x>
                <y>0</y>
                <width>796</width>
-               <height>475</height>
+               <height>528</height>
               </rect>
              </property>
              <attribute name="label">
@@ -511,8 +498,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>796</width>
-               <height>475</height>
+               <width>91</width>
+               <height>91</height>
               </rect>
              </property>
              <attribute name="label">
@@ -533,8 +520,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>796</width>
-               <height>475</height>
+               <width>91</width>
+               <height>91</height>
               </rect>
              </property>
              <attribute name="label">
@@ -556,7 +543,7 @@
                <x>0</x>
                <y>0</y>
                <width>796</width>
-               <height>475</height>
+               <height>528</height>
               </rect>
              </property>
              <attribute name="label">
