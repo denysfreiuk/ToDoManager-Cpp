@@ -36,7 +36,6 @@ TEST_F(TaskManagerFx, AddLoadAndComplete) {
 TEST_F(TaskManagerFx, UpdateAndDelete) {
     Task t("Edit", "ui", QDateTime::currentDateTime(), "Low", false);
     ASSERT_TRUE(mgr->addTask(nullptr, t));
-    // update priority and desc
     t.setPriority("High");
     t.setDescription("ui/ux");
     EXPECT_TRUE(mgr->updateTask(nullptr, t));

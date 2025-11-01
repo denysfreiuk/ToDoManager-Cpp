@@ -79,4 +79,7 @@ target_include_directories(QtEx_tests PRIVATE
 # === Enable GTest Discovery
 # ======================================================
 include(GoogleTest)
-gtest_discover_tests(QtEx_tests)
+gtest_discover_tests(QtEx_tests
+        PROPERTIES
+        ENVIRONMENT "TEST_MODE=1;QT_QPA_PLATFORM=offscreen"
+)

@@ -185,6 +185,7 @@ install(TARGETS QtEx
 # ======================================================
 # === Підключення тестів
 # ======================================================
+enable_testing()
 option(BUILD_TESTS "Build unit tests" ON)
 
 if(BUILD_TESTS)

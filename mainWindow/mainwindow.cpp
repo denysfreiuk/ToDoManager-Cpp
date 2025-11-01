@@ -270,6 +270,11 @@ void MainWindow::updateMaximizeIcon(bool maxed) {
 }
 
 void MainWindow::onSettingsClicked() {
+    if (qEnvironmentVariableIsSet("TEST_MODE")) {
+        qDebug() << "[TEST_MODE] Suppressed Settings dialog";
+        return;
+    }
+
     SettingsWindow dlg(this);
     if (dlg.exec() == QDialog::Accepted) {
         applySettings();
@@ -532,6 +537,11 @@ void MainWindow::addQuickTask() {
 }
 
 void MainWindow::openTaskEditor() {
+    if (qEnvironmentVariableIsSet("TEST_MODE")) {
+        qDebug() << "[TEST_MODE] Suppressed TaskEditor dialog";
+        return;
+    }
+
     TaskEditorWindow editor(this);
     if (editor.exec() == QDialog::Accepted) {
         Task t = editor.getTask();

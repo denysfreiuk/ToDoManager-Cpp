@@ -15,6 +15,10 @@ void TaskManager::setCurrentUser(const string& username) {
 
 bool TaskManager::addTask(QWidget* parent, const Task& task) {
     if (currentUser.empty()) {
+        if (qEnvironmentVariableIsSet("TEST_MODE")) {
+            qDebug() << "[TEST_MODE] Settings dialog suppressed";
+            return false;
+        }
         QMessageBox::warning(parent, "Error", "No user logged in!");
         return false;
     }
@@ -28,12 +32,23 @@ bool TaskManager::addTask(QWidget* parent, const Task& task) {
 
 bool TaskManager::removeTask(QWidget* parent, const string& title) {
     if (currentUser.empty()) {
-        QMessageBox::warning(parent, "Error", "No user logged in!");
-        return false;
+        if (qEnvironmentVariableIsSet("TEST_MODE")) {
+            qDebug() << "[TEST_MODE] Suppressed QMessageBox (no user logged in)";
+            return false;
+        } else {
+            QMessageBox::warning(parent, "Error", "No user logged in!");
+            return false;
+        }
     }
+
     bool ok = repo.removeTask(currentUser, title);
-    if (!ok)
-        QMessageBox::critical(parent, "Error", "Failed to delete task from database!");
+    if (!ok) {
+        if (qEnvironmentVariableIsSet("TEST_MODE")) {
+            qDebug() << "[TEST_MODE] Suppressed QMessageBox (remove failed)";
+        } else {
+            QMessageBox::critical(parent, "Error", "Failed to delete task from database!");
+        }
+    }
     return ok;
 }
 
@@ -55,6 +70,10 @@ bool TaskManager::markCompleted(QWidget* parent, const string& title) {
     t.setCompleted(true);
 
     if (!repo.updateTask(currentUser, t)) {
+        if (qEnvironmentVariableIsSet("TEST_MODE")) {
+            qDebug() << "[TEST_MODE] Settings dialog suppressed";
+            return false;
+        }
         QMessageBox::critical(parent, "Error", "Failed to update task in database!");
         return false;
     }
@@ -68,6 +87,10 @@ bool TaskManager::updateTask(QWidget* parent, const Task& task) {
     }
 
     if (!repo.updateTask(currentUser, task)) {
+        if (qEnvironmentVariableIsSet("TEST_MODE")) {
+            qDebug() << "[TEST_MODE] Settings dialog suppressed";
+            return false;
+        }
         QMessageBox::critical(parent, "Error", "Failed to update task in database!");
         return false;
     }
