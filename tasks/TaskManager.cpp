@@ -1,5 +1,6 @@
 #include "taskManager.h"
 #include <QMessageBox>
+#include <algorithm>
 #include <QDate>
 using namespace std;
 
@@ -23,8 +24,10 @@ bool TaskManager::addTask(QWidget* parent, const Task& task) {
         return false;
     }
     bool ok = repo.addTask(currentUser, task);
-    if (ok)
+    if (ok){
         logger.info("Task added for user " + currentUser + ": " + task.getTitle().toStdString());
+        notifyObservers();
+    }
     else
         QMessageBox::critical(parent, "Error", "Failed to add task to database!");
     return ok;
@@ -42,6 +45,9 @@ bool TaskManager::removeTask(QWidget* parent, const string& title) {
     }
 
     bool ok = repo.removeTask(currentUser, title);
+
+    notifyObservers();
+
     if (!ok) {
         if (qEnvironmentVariableIsSet("TEST_MODE")) {
             qDebug() << "[TEST_MODE] Suppressed QMessageBox (remove failed)";
@@ -95,6 +101,8 @@ bool TaskManager::updateTask(QWidget* parent, const Task& task) {
         return false;
     }
 
+    notifyObservers();
+
     return true;
 }
 
@@ -132,4 +140,21 @@ std::vector<Task> TaskManager::tasksForToday(bool includeCompleted)
 vector<Task> TaskManager::loadTasks() {
     if (currentUser.empty()) return {};
     return repo.getTasksByUser(currentUser);
+}
+
+// === Реалізація патерну Observer ===
+void TaskManager::addObserver(ITaskObserver* observer) {
+    if (std::find(observers.begin(), observers.end(), observer) == observers.end()) {
+        observers.push_back(observer);
+    }
+}
+
+void TaskManager::removeObserver(ITaskObserver* observer) {
+    observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
+}
+
+void TaskManager::notifyObservers() {
+    for (ITaskObserver* obs : observers) {
+        obs->onTasksUpdated();
+    }
 }

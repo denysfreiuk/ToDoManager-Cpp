@@ -31,6 +31,8 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
     updateToolBoxTitles();
     setWindowTitle("ToDo Manager");
 
+    taskManager.addObserver(this);
+
     QScreen *screen = QGuiApplication::primaryScreen();
     QRect screenGeometry = screen->availableGeometry();
     resize(screenGeometry.size());
@@ -200,7 +202,12 @@ MainWindow::~MainWindow()
         snapPreview->hidePreview();
         snapPreview->deleteLater();
     }
+    taskManager.addObserver(this);
     delete ui;
+}
+
+void MainWindow::onTasksUpdated() {
+    loadTasks();
 }
 
 void MainWindow::applyTrayTheme()

@@ -4,6 +4,7 @@
 #include "../windowEdit/framelesswindow.h"
 #include "../tasks/taskmanager.h"
 #include "../settings/appSettings.h"
+#include "../tasks/ITaskObserver.h"
 #include <QTimer>
 #include <QSoundEffect>
 #include <QMediaPlayer>
@@ -24,13 +25,15 @@ QT_END_NAMESPACE
 
 class TestFriend_MainWindow;
 
-class MainWindow : public FramelessWindow {
+class MainWindow : public FramelessWindow, public ITaskObserver {
     Q_OBJECT
     friend class TestFriend_MainWindow;
 
 public:
     explicit MainWindow(TaskManager &manager, QWidget *parent = nullptr);
     ~MainWindow();
+
+    void onTasksUpdated() override;
 
     private slots:
         void onThemeButtonClicked();
