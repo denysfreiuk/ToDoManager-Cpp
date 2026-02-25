@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <title>classDiagram</title>
+</head>
+<body>
+
+<?xml version="1.0" ?>
+<?plantuml 1.2026.2beta3?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="CLASS" height="800px" preserveAspectRatio="none" style="width:1237px;height:800px;background:#FFFFFF;" version="1.1" viewBox="0 0 1237 800" width="1237px" zoomAndPan="magnify">
+  <defs>
+    <filter height="300%" id="f3eay8wydpwpf" width="300%" x="-1" y="-1">
+      <feGaussianBlur result="blurOut" stdDeviation="2"/>
+      <feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/>
+      <feOffset dx="4" dy="4" in="blurOut2" result="blurOut3"/>
+      <feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/>
+    </filter>
+  </defs>
+  <g>
+    <!--cluster Models (????????)-->
+    <g class="cluster" data-qualified-name="Models .........." data-source-line="21" id="ent0002">
+      <rect fill="#F8F9FA" filter="url(#f3eay8wydpwpf)" height="180.48" rx="5" ry="5" style="stroke:#BDC3C7;stroke-width:1.5;" width="424" x="594" y="607.64"/>
+      <text fill="#2C3E50" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="141.8867" x="735.0566" y="622.6351">Models (Сутності)</text>
+    </g>
+    <!--cluster Repositories (?????? ? ??)-->
+    <g class="cluster" data-qualified-name="Repositories ....... . ..." data-source-line="37" id="ent0005">
+      <rect fill="#F8F9FA" filter="url(#f3eay8wydpwpf)" height="147.89" rx="5" ry="5" style="stroke:#BDC3C7;stroke-width:1.5;" width="702" x="447" y="435.75"/>
+      <text fill="#2C3E50" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="214.416" x="690.792" y="450.7451">Repositories (Робота з БД)</text>
+    </g>
+    <!--cluster Managers (??????-??????)-->
+    <g class="cluster" data-qualified-name="Managers .......-......." data-source-line="50" id="ent0008">
+      <rect fill="#F8F9FA" filter="url(#f3eay8wydpwpf)" height="156.16" rx="5" ry="5" style="stroke:#BDC3C7;stroke-width:1.5;" width="819" x="406" y="255.59"/>
+      <text fill="#2C3E50" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="203.0342" x="713.9829" y="270.5851">Managers (Бізнес-логіка)</text>
+    </g>
+    <!--cluster UI (????????? ?????????)-->
+    <g class="cluster" data-qualified-name="UI .......... .........." data-source-line="70" id="ent0012">
+      <rect fill="#F8F9FA" filter="url(#f3eay8wydpwpf)" height="384.32" rx="5" ry="5" style="stroke:#BDC3C7;stroke-width:1.5;" width="375" x="7" y="7"/>
+      <text fill="#2C3E50" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="208.7012" x="90.1494" y="21.9951">UI (Графічний інтерфейс)</text>
+    </g>
+    <!--class Task-->
+    <g class="entity" data-qualified-name="Models ...........Task" data-source-line="22" id="ent0003">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="129.4844" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="161.3105" x="610.34" y="642.64"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="161.3105" x="610.34" y="642.64"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="161.3105" x="610.34" y="669.64"/>
+      <rect fill="none" height="129.4844" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="161.3105" x="610.34" y="642.64"/>
+      <ellipse cx="670.4792" cy="658.64" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M673.4479,664.2806 Q672.8698,664.5775 672.2292,664.7181 Q671.5885,664.8744 670.8854,664.8744 Q668.3854,664.8744 667.0573,663.2338 Q665.7448,661.5775 665.7448,658.4525 Q665.7448,655.3275 667.0573,653.6713 Q668.3854,652.015 670.8854,652.015 Q671.5885,652.015 672.2292,652.1713 Q672.8854,652.3275 673.4479,652.6244 L673.4479,655.3431 Q672.8229,654.765 672.2292,654.4994 Q671.6354,654.2181 671.0104,654.2181 Q669.6667,654.2181 668.9792,655.2963 Q668.2917,656.3588 668.2917,658.4525 Q668.2917,660.5463 668.9792,661.6244 Q669.6667,662.6869 671.0104,662.6869 Q671.6354,662.6869 672.2292,662.4213 Q672.8229,662.14 673.4479,661.5619 L673.4479,664.2806 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="32.5322" x="690.9792" y="663.4867">Task</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="611.34" x2="770.6505" y1="674.64" y2="674.64"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="49.6973" x="616.34" y="691.6351">-id : int</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98.8408" x="616.34" y="707.932">-title : QString</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="149.3105" x="616.34" y="724.2289">-description : QString</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="611.34" x2="770.6505" y1="731.5306" y2="731.5306"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="90.5283" x="616.34" y="748.5257">+getId() : int</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="142.4951" x="616.34" y="764.8226">+getTitle() : QString</text>
+    </g>
+    <!--class Account-->
+    <g class="entity" data-qualified-name="Models ...........Account" data-source-line="30" id="ent0004">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="96.8906" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="195.6748" x="806.16" y="658.93"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="195.6748" x="806.16" y="658.93"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="195.6748" x="806.16" y="685.93"/>
+      <rect fill="none" height="96.8906" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="195.6748" x="806.16" y="658.93"/>
+      <ellipse cx="871.3612" cy="674.93" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M874.3299,680.5706 Q873.7518,680.8675 873.1112,681.0081 Q872.4705,681.1644 871.7674,681.1644 Q869.2674,681.1644 867.9393,679.5238 Q866.6268,677.8675 866.6268,674.7425 Q866.6268,671.6175 867.9393,669.9613 Q869.2674,668.305 871.7674,668.305 Q872.4705,668.305 873.1112,668.4613 Q873.7674,668.6175 874.3299,668.9144 L874.3299,671.6331 Q873.7049,671.055 873.1112,670.7894 Q872.5174,670.5081 871.8924,670.5081 Q870.5487,670.5081 869.8612,671.5863 Q869.1737,672.6488 869.1737,674.7425 Q869.1737,676.8363 869.8612,677.9144 Q870.5487,678.9769 871.8924,678.9769 Q872.5174,678.9769 873.1112,678.7113 Q873.7049,678.43 874.3299,677.8519 L874.3299,680.5706 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="56.7725" x="891.8612" y="679.7767">Account</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="807.16" x2="1000.8348" y1="690.93" y2="690.93"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="49.6973" x="812.16" y="707.9251">-id : int</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="141.709" x="812.16" y="724.222">-username : QString</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="807.16" x2="1000.8348" y1="731.5238" y2="731.5238"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="183.6748" x="812.16" y="748.5189">+getUsername() : QString</text>
+    </g>
+    <!--class TaskRepository-->
+    <g class="entity" data-qualified-name="Repositories ....... . ....TaskRepository" data-source-line="38" id="ent0006">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="96.8906" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="317.4297" x="463.29" y="470.75"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="317.4297" x="463.29" y="470.75"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="317.4297" x="463.29" y="497.75"/>
+      <rect fill="none" height="96.8906" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="317.4297" x="463.29" y="470.75"/>
+      <ellipse cx="563.9526" cy="486.75" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M566.9213,492.3906 Q566.3432,492.6875 565.7026,492.8281 Q565.062,492.9844 564.3588,492.9844 Q561.8588,492.9844 560.5307,491.3438 Q559.2182,489.6875 559.2182,486.5625 Q559.2182,483.4375 560.5307,481.7813 Q561.8588,480.125 564.3588,480.125 Q565.062,480.125 565.7026,480.2813 Q566.3588,480.4375 566.9213,480.7344 L566.9213,483.4531 Q566.2963,482.875 565.7026,482.6094 Q565.1088,482.3281 564.4838,482.3281 Q563.1401,482.3281 562.4526,483.4063 Q561.7651,484.4688 561.7651,486.5625 Q561.7651,488.6563 562.4526,489.7344 Q563.1401,490.7969 564.4838,490.7969 Q565.1088,490.7969 565.7026,490.5313 Q566.2963,490.25 566.9213,489.6719 L566.9213,492.3906 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="107.6045" x="584.4526" y="491.5967">TaskRepository</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="464.29" x2="779.7197" y1="502.75" y2="502.75"/>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="464.29" x2="779.7197" y1="510.75" y2="510.75"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="196.2324" x="469.29" y="527.7451">+addTask(task: Task) : bool</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="219.208" x="469.29" y="544.042">+updateTask(task: Task) : bool</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="305.4297" x="469.29" y="560.3389">+getTasksByAccount(id: int) : QList&lt;Task&gt;</text>
+    </g>
+    <!--class AccountRepository-->
+    <g class="entity" data-qualified-name="Repositories ....... . ....AccountRepository" data-source-line="44" id="ent0007">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="80.5938" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="317.0127" x="815.49" y="478.89"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="317.0127" x="815.49" y="478.89"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="317.0127" x="815.49" y="505.89"/>
+      <rect fill="none" height="80.5938" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="317.0127" x="815.49" y="478.89"/>
+      <ellipse cx="903.824" cy="494.89" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M906.7927,500.5306 Q906.2146,500.8275 905.574,500.9681 Q904.9334,501.1244 904.2302,501.1244 Q901.7302,501.1244 900.4021,499.4838 Q899.0896,497.8275 899.0896,494.7025 Q899.0896,491.5775 900.4021,489.9213 Q901.7302,488.265 904.2302,488.265 Q904.9334,488.265 905.574,488.4213 Q906.2302,488.5775 906.7927,488.8744 L906.7927,491.5931 Q906.1677,491.015 905.574,490.7494 Q904.9802,490.4681 904.3552,490.4681 Q903.0115,490.4681 902.324,491.5463 Q901.6365,492.6088 901.6365,494.7025 Q901.6365,496.7963 902.324,497.8744 Q903.0115,498.9369 904.3552,498.9369 Q904.9802,498.9369 905.574,498.6713 Q906.1677,498.39 906.7927,497.8119 L906.7927,500.5306 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="131.8447" x="924.324" y="499.7367">AccountRepository</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="816.49" x2="1131.5027" y1="510.89" y2="510.89"/>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="816.49" x2="1131.5027" y1="518.89" y2="518.89"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="239.2168" x="821.49" y="535.8851">+addAccount(acc: Account) : bool</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="305.0127" x="821.49" y="552.182">+getAccount(username: QString) : Account</text>
+    </g>
+    <!--class TaskManager-->
+    <g class="entity" data-qualified-name="Managers .......-........TaskManager" data-source-line="51" id="ent0009">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="96.8906" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="212.3271" x="421.84" y="294.72"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="212.3271" x="421.84" y="294.72"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="212.3271" x="421.84" y="321.72"/>
+      <rect fill="none" height="96.8906" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="212.3271" x="421.84" y="294.72"/>
+      <ellipse cx="476.8044" cy="310.72" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M479.7731,316.3606 Q479.195,316.6575 478.5544,316.7981 Q477.9137,316.9544 477.2106,316.9544 Q474.7106,316.9544 473.3825,315.3138 Q472.07,313.6575 472.07,310.5325 Q472.07,307.4075 473.3825,305.7513 Q474.7106,304.095 477.2106,304.095 Q477.9137,304.095 478.5544,304.2513 Q479.2106,304.4075 479.7731,304.7044 L479.7731,307.4231 Q479.1481,306.845 478.5544,306.5794 Q477.9606,306.2981 477.3356,306.2981 Q475.9919,306.2981 475.3044,307.3763 Q474.6169,308.4388 474.6169,310.5325 Q474.6169,312.6263 475.3044,313.7044 Q475.9919,314.7669 477.3356,314.7669 Q477.9606,314.7669 478.5544,314.5013 Q479.1481,314.22 479.7731,313.6419 L479.7731,316.3606 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93.8984" x="497.3044" y="315.5667">TaskManager</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="422.84" x2="633.1671" y1="326.72" y2="326.72"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="200.3271" x="427.84" y="343.7151">-cachedTasks : QList&lt;Task&gt;</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="422.84" x2="633.1671" y1="351.0169" y2="351.0169"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="188.6104" x="427.84" y="368.012">+loadTasks(accountId: int)</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="152.708" x="427.84" y="384.3089">+addTask(task: Task)</text>
+    </g>
+    <!--class AuthManager-->
+    <g class="entity" data-qualified-name="Managers .......-........AuthManager" data-source-line="57" id="ent0010">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="96.8906" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="195.2715" x="1013.36" y="294.72"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="195.2715" x="1013.36" y="294.72"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="195.2715" x="1013.36" y="321.72"/>
+      <rect fill="none" height="96.8906" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="195.2715" x="1013.36" y="294.72"/>
+      <ellipse cx="1059.6564" cy="310.72" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M1062.6251,316.3606 Q1062.047,316.6575 1061.4064,316.7981 Q1060.7658,316.9544 1060.0626,316.9544 Q1057.5626,316.9544 1056.2345,315.3138 Q1054.922,313.6575 1054.922,310.5325 Q1054.922,307.4075 1056.2345,305.7513 Q1057.5626,304.095 1060.0626,304.095 Q1060.7658,304.095 1061.4064,304.2513 Q1062.0626,304.4075 1062.6251,304.7044 L1062.6251,307.4231 Q1062.0001,306.845 1061.4064,306.5794 Q1060.8126,306.2981 1060.1876,306.2981 Q1058.8439,306.2981 1058.1564,307.3763 Q1057.4689,308.4388 1057.4689,310.5325 Q1057.4689,312.6263 1058.1564,313.7044 Q1058.8439,314.7669 1060.1876,314.7669 Q1060.8126,314.7669 1061.4064,314.5013 Q1062.0001,314.22 1062.6251,313.6419 L1062.6251,316.3606 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="94.1787" x="1080.1564" y="315.5667">AuthManager</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="1014.36" x2="1207.6315" y1="326.72" y2="326.72"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="183.2715" x="1019.36" y="343.7151">-currentAccount : Account</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="1014.36" x2="1207.6315" y1="351.0169" y2="351.0169"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="171.7734" x="1019.36" y="368.012">+login(user, pass) : bool</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="66.9238" x="1019.36" y="384.3089">+logout()</text>
+    </g>
+    <!--class DatabaseManager-->
+    <g class="entity" data-qualified-name="Managers .......-........DatabaseManager" data-source-line="63" id="ent0011">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="105.1563" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="308.8643" x="669.57" y="290.59"/>
+      <rect fill="#ECF0F1" height="40.2656" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="308.8643" x="669.57" y="290.59"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="308.8643" x="669.57" y="325.8556"/>
+      <rect fill="none" height="105.1563" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="308.8643" x="669.57" y="290.59"/>
+      <ellipse cx="755.6686" cy="310.7228" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M758.6374,316.3634 Q758.0593,316.6603 757.4186,316.8009 Q756.778,316.9572 756.0749,316.9572 Q753.5749,316.9572 752.2468,315.3166 Q750.9343,313.6603 750.9343,310.5353 Q750.9343,307.4103 752.2468,305.7541 Q753.5749,304.0978 756.0749,304.0978 Q756.778,304.0978 757.4186,304.2541 Q758.0749,304.4103 758.6374,304.7072 L758.6374,307.4259 Q758.0124,306.8478 757.4186,306.5822 Q756.8249,306.3009 756.1999,306.3009 Q754.8561,306.3009 754.1686,307.3791 Q753.4811,308.4416 753.4811,310.5353 Q753.4811,312.6291 754.1686,313.7072 Q754.8561,314.7697 756.1999,314.7697 Q756.8249,314.7697 757.4186,314.5041 Q758.0124,314.2228 758.6374,313.6447 L758.6374,316.3634 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="71.2266" x="804.6388" y="306.7287">«Singleton»</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="128.167" x="776.1686" y="322.5539">DatabaseManager</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="670.57" x2="977.4343" y1="330.8556" y2="330.8556"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="135.9258" x="675.57" y="347.8507">-db : QSqlDatabase</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="670.57" x2="977.4343" y1="355.1525" y2="355.1525"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="296.8643" x="675.57" y="372.1476">+static getInstance() : DatabaseManager*</text>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="155.1211" x="675.57" y="388.4445">+initDatabase() : bool</text>
+    </g>
+    <!--class FramelessWindow-->
+    <g class="entity" data-qualified-name="UI .......... ...........FramelessWindow" data-source-line="71" id="ent0013">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="64.2969" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="177.4229" x="105.29" y="42"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="177.4229" x="105.29" y="42"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="177.4229" x="105.29" y="69"/>
+      <rect fill="none" height="64.2969" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="177.4229" x="105.29" y="42"/>
+      <ellipse cx="128.4735" cy="58" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M131.4422,63.6406 Q130.8641,63.9375 130.2235,64.0781 Q129.5829,64.2344 128.8797,64.2344 Q126.3797,64.2344 125.0516,62.5938 Q123.7391,60.9375 123.7391,57.8125 Q123.7391,54.6875 125.0516,53.0313 Q126.3797,51.375 128.8797,51.375 Q129.5829,51.375 130.2235,51.5313 Q130.8797,51.6875 131.4422,51.9844 L131.4422,54.7031 Q130.8172,54.125 130.2235,53.8594 Q129.6297,53.5781 129.0047,53.5781 Q127.661,53.5781 126.9735,54.6563 Q126.286,55.7188 126.286,57.8125 Q126.286,59.9063 126.9735,60.9844 Q127.661,62.0469 129.0047,62.0469 Q129.6297,62.0469 130.2235,61.7813 Q130.8172,61.5 131.4422,60.9219 L131.4422,63.6406 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="127.2373" x="144.2921" y="62.8467">FramelessWindow</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="106.29" x2="281.7129" y1="74" y2="74"/>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="106.29" x2="281.7129" y1="82" y2="82"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="165.4229" x="111.29" y="98.9951">+customTitleBarLogic()</text>
+    </g>
+    <!--class MainWindow-->
+    <g class="entity" data-qualified-name="UI .......... ...........MainWindow" data-source-line="75" id="ent0014">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="64.2969" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="141.4932" x="222.25" y="166.29"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="141.4932" x="222.25" y="166.29"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="141.4932" x="222.25" y="193.29"/>
+      <rect fill="none" height="64.2969" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="141.4932" x="222.25" y="166.29"/>
+      <ellipse cx="246.504" cy="182.29" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M249.4728,187.9306 Q248.8946,188.2275 248.254,188.3681 Q247.6134,188.5244 246.9103,188.5244 Q244.4103,188.5244 243.0821,186.8837 Q241.7696,185.2275 241.7696,182.1025 Q241.7696,178.9775 243.0821,177.3212 Q244.4103,175.665 246.9103,175.665 Q247.6134,175.665 248.254,175.8212 Q248.9103,175.9775 249.4728,176.2744 L249.4728,178.9931 Q248.8478,178.415 248.254,178.1494 Q247.6603,177.8681 247.0353,177.8681 Q245.6915,177.8681 245.004,178.9462 Q244.3165,180.0087 244.3165,182.1025 Q244.3165,184.1962 245.004,185.2744 Q245.6915,186.3369 247.0353,186.3369 Q247.6603,186.3369 248.254,186.0712 Q248.8478,185.79 249.4728,185.2119 L249.4728,187.9306 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="88.9287" x="262.5604" y="187.1367">MainWindow</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="223.25" x2="362.7432" y1="198.29" y2="198.29"/>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="223.25" x2="362.7432" y1="206.29" y2="206.29"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="129.4932" x="228.25" y="223.2851">+refreshTaskList()</text>
+    </g>
+    <!--class TaskItemWidget-->
+    <g class="entity" data-qualified-name="UI .......... ...........TaskItemWidget" data-source-line="79" id="ent0015">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="64.2969" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="146.0098" x="220" y="311.02"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="146.0098" x="220" y="311.02"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="146.0098" x="220" y="338.02"/>
+      <rect fill="none" height="64.2969" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="146.0098" x="220" y="311.02"/>
+      <ellipse cx="235" cy="327.02" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M237.9688,332.6606 Q237.3906,332.9575 236.75,333.0981 Q236.1094,333.2544 235.4063,333.2544 Q232.9063,333.2544 231.5781,331.6138 Q230.2656,329.9575 230.2656,326.8325 Q230.2656,323.7075 231.5781,322.0513 Q232.9063,320.395 235.4063,320.395 Q236.1094,320.395 236.75,320.5513 Q237.4063,320.7075 237.9688,321.0044 L237.9688,323.7231 Q237.3438,323.145 236.75,322.8794 Q236.1563,322.5981 235.5313,322.5981 Q234.1875,322.5981 233.5,323.6763 Q232.8125,324.7388 232.8125,326.8325 Q232.8125,328.9263 233.5,330.0044 Q234.1875,331.0669 235.5313,331.0669 Q236.1563,331.0669 236.75,330.8013 Q237.3438,330.52 237.9688,329.9419 L237.9688,332.6606 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="114.0098" x="249" y="331.8667">TaskItemWidget</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="221" x2="365.0098" y1="343.02" y2="343.02"/>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="221" x2="365.0098" y1="351.02" y2="351.02"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86.3584" x="226" y="368.0151">+updateUI()</text>
+    </g>
+    <!--class TaskEditorWindow-->
+    <g class="entity" data-qualified-name="UI .......... ...........TaskEditorWindow" data-source-line="83" id="ent0016">
+      <rect fill="#FFFFFF" filter="url(#f3eay8wydpwpf)" height="64.2969" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="161.4727" x="23.26" y="311.02"/>
+      <rect fill="#ECF0F1" height="32" rx="5" ry="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="161.4727" x="23.26" y="311.02"/>
+      <rect fill="#ECF0F1" height="5" style="stroke:#ECF0F1;stroke-width:0.5;" width="161.4727" x="23.26" y="338.02"/>
+      <rect fill="none" height="64.2969" rx="5" ry="5" style="stroke:#2980B9;stroke-width:0.5;" width="161.4727" x="23.26" y="311.02"/>
+      <ellipse cx="38.26" cy="327.02" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+      <path d="M41.2288,332.6606 Q40.6506,332.9575 40.01,333.0981 Q39.3694,333.2544 38.6663,333.2544 Q36.1663,333.2544 34.8381,331.6138 Q33.5256,329.9575 33.5256,326.8325 Q33.5256,323.7075 34.8381,322.0513 Q36.1663,320.395 38.6663,320.395 Q39.3694,320.395 40.01,320.5513 Q40.6663,320.7075 41.2288,321.0044 L41.2288,323.7231 Q40.6038,323.145 40.01,322.8794 Q39.4163,322.5981 38.7913,322.5981 Q37.4475,322.5981 36.76,323.6763 Q36.0725,324.7388 36.0725,326.8325 Q36.0725,328.9263 36.76,330.0044 Q37.4475,331.0669 38.7913,331.0669 Q39.4163,331.0669 40.01,330.8013 Q40.6038,330.52 41.2288,329.9419 L41.2288,332.6606 Z " fill="#000000"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="129.4727" x="52.26" y="331.8667">TaskEditorWindow</text>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="24.26" x2="183.7327" y1="343.02" y2="343.02"/>
+      <line style="stroke:#2980B9;stroke-width:0.5;" x1="24.26" x2="183.7327" y1="351.02" y2="351.02"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="87.958" x="29.26" y="368.0151">+saveTask()</text>
+    </g>
+    <!--reverse link FramelessWindow to MainWindow-->
+    <g class="link" data-entity-1="ent0013" data-entity-2="ent0014" data-link-type="extension" data-source-line="89" id="lnk17">
+      <path codeLine="89" d="M252.48,124.48 C252.48,142.75 252.48,147.52 252.48,165.84" fill="none" id="FramelessWindow-backto-MainWindow" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="none" points="252.48,106.48,246.48,124.48,258.48,124.48,252.48,106.48" style="stroke:#2980B9;stroke-width:1;"/>
+    </g>
+    <!--reverse link FramelessWindow to TaskEditorWindow-->
+    <g class="link" data-entity-1="ent0013" data-entity-2="ent0016" data-link-type="extension" data-source-line="90" id="lnk18">
+      <path codeLine="90" d="M131.77,124.59 C131.77,176.3 131.77,258.82 131.77,310.6" fill="none" id="FramelessWindow-backto-TaskEditorWindow" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="none" points="131.77,106.59,125.77,124.59,137.77,124.59,131.77,106.59" style="stroke:#2980B9;stroke-width:1;"/>
+    </g>
+    <!--reverse link MainWindow to TaskItemWidget-->
+    <g class="link" data-entity-1="ent0014" data-entity-2="ent0015" data-link-type="composition" data-source-line="93" id="lnk19">
+      <path codeLine="93" d="M269.42,242.92 C269.42,266.67 269.42,286.76 269.42,310.55" fill="none" id="MainWindow-backto-TaskItemWidget" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#2980B9" points="269.42,230.92,265.42,236.92,269.42,242.92,273.42,236.92,269.42,230.92" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="179.42,267.2964,182.3589,258.2513,176.4811,258.2513,179.42,267.2964" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="80.52" x="188.42" y="266.7969">Відображає</text>
+    </g>
+    <!--link MainWindow to TaskEditorWindow-->
+    <g class="link" data-entity-1="ent0014" data-entity-2="ent0016" data-link-type="dependency" data-source-line="94" id="lnk20">
+      <path codeLine="94" d="M222.08,199.12 C189.61,199.12 158.25,199.12 158.25,199.12 C158.25,199.12 158.25,262.37 158.25,304.84" fill="none" id="MainWindow-to-TaskEditorWindow" style="stroke:#2980B9;stroke-width:1;stroke-dasharray:7,7;"/>
+      <polygon fill="#2980B9" points="158.25,310.84,162.25,301.84,158.25,305.84,154.25,301.84,158.25,310.84" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="77.6657,218.9167,84.8567,212.6926,79.8248,209.6545,77.6657,218.9167" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="68.834" x="89.25" y="219.1369">Відкриває</text>
+    </g>
+    <!--link MainWindow to TaskManager-->
+    <g class="link" data-entity-1="ent0014" data-entity-2="ent0009" data-link-type="dependency" data-source-line="97" id="lnk21">
+      <path codeLine="97" d="M316.58,230.99 C316.58,261.72 316.58,303.12 316.58,303.12 C316.58,303.12 362.82,303.12 415.36,303.12" fill="none" id="MainWindow-to-TaskManager" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#2980B9" points="421.36,303.12,412.36,299.12,416.36,303.12,412.36,307.12,421.36,303.12" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="231.948,297.635,226.3763,289.9274,222.91,294.6744,231.948,297.635" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="95.0371" x="236.91" y="299.1869">Використовує</text>
+    </g>
+    <!--link MainWindow to AuthManager-->
+    <g class="link" data-entity-1="ent0014" data-entity-2="ent0010" data-link-type="dependency" data-source-line="98" id="lnk22">
+      <path codeLine="98" d="M364.16,199.12 C563.18,199.12 1111,199.12 1111,199.12 C1111,199.12 1111,246.61 1111,288.4" fill="none" id="MainWindow-to-AuthManager" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#2980B9" points="1111,294.4,1115,285.4,1111,289.4,1107,285.4,1111,294.4" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="671.1847,191.2799,662.5524,187.2881,661.8547,193.1244,671.1847,191.2799" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="109.4844" x="675.22" y="195.1869">Перевіряє сесію</text>
+    </g>
+    <!--link TaskManager to TaskRepository-->
+    <g class="link" data-entity-1="ent0009" data-entity-2="ent0006" data-link-type="dependency" data-source-line="101" id="lnk23">
+      <path codeLine="101" d="M548.72,391.73 C548.72,416.26 548.72,439.93 548.72,464.48" fill="none" id="TaskManager-to-TaskRepository" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#2980B9" points="548.72,470.48,552.72,461.48,548.72,465.48,544.72,461.48,548.72,470.48" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="480.72,427.6764,483.6589,418.6313,477.7811,418.6313,480.72,427.6764" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="58.1445" x="489.72" y="427.1769">Зберігає</text>
+    </g>
+    <!--reverse link TaskManager to Task-->
+    <g class="link" data-entity-1="ent0009" data-entity-2="ent0003" data-link-type="aggregation" data-source-line="102" id="lnk24">
+      <path codeLine="102" d="M442.56,404.01 C442.56,503.45 442.56,708.12 442.56,708.12 C442.56,708.12 537.5,708.12 610,708.12" fill="none" id="TaskManager-backto-Task" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="none" points="442.56,392.01,438.56,398.01,442.56,404.01,446.56,398.01,442.56,392.01" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="391.9716,629.7264,390.1835,620.3854,385.0345,623.2204,391.9716,629.7264" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="43.9512" x="398.56" y="629.8469">Кешує</text>
+    </g>
+    <!--link TaskRepository to Task-->
+    <g class="link" data-entity-1="ent0006" data-entity-2="ent0003" data-link-type="dependency" data-source-line="103" id="lnk25">
+      <path codeLine="103" d="M691,567.65 C691,590.41 691,611.88 691,636.41" fill="none" id="TaskRepository-to-Task" style="stroke:#2980B9;stroke-width:1;stroke-dasharray:7,7;"/>
+      <polygon fill="#2980B9" points="691,642.41,695,633.41,691,637.41,687,633.41,691,642.41" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="599,601.5964,601.9389,592.5513,596.0611,592.5513,599,601.5964" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="82.5322" x="608" y="601.0969">Читає/Пише</text>
+    </g>
+    <!--link AuthManager to AccountRepository-->
+    <g class="link" data-entity-1="ent0010" data-entity-2="ent0007" data-link-type="dependency" data-source-line="106" id="lnk26">
+      <path codeLine="106" d="M1072.94,391.73 C1072.94,419 1072.94,446.65 1072.94,472.52" fill="none" id="AuthManager-to-AccountRepository" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#2980B9" points="1072.94,478.52,1076.94,469.52,1072.94,473.52,1068.94,469.52,1072.94,478.52" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="994.94,431.6964,997.8789,422.6513,992.0011,422.6513,994.94,431.6964" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="68.5039" x="1003.94" y="431.1969">Перевіряє</text>
+    </g>
+    <!--reverse link AuthManager to Account-->
+    <g class="link" data-entity-1="ent0010" data-entity-2="ent0004" data-link-type="aggregation" data-source-line="107" id="lnk27">
+      <path codeLine="107" d="M1170.57,404.01 C1170.57,503.45 1170.57,708.12 1170.57,708.12 C1170.57,708.12 1078.13,708.12 1002.13,708.12" fill="none" id="AuthManager-backto-Account" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="none" points="1170.57,392.01,1166.57,398.01,1170.57,404.01,1174.57,398.01,1170.57,392.01" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="1054.1474,630.2303,1061.1008,623.7418,1055.959,620.8939,1054.1474,630.2303" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="104.5713" x="1065.57" y="630.3569">Поточний юзер</text>
+    </g>
+    <!--link AccountRepository to Account-->
+    <g class="link" data-entity-1="ent0007" data-entity-2="ent0004" data-link-type="dependency" data-source-line="108" id="lnk28">
+      <path codeLine="108" d="M908.67,559.56 C908.67,588.61 908.67,621.94 908.67,652.73" fill="none" id="AccountRepository-to-Account" style="stroke:#2980B9;stroke-width:1;stroke-dasharray:7,7;"/>
+      <polygon fill="#2980B9" points="908.67,658.73,912.67,649.73,908.67,653.73,904.67,649.73,908.67,658.73" style="stroke:#2980B9;stroke-width:1;"/>
+      <polygon fill="#000000" points="816.67,605.7064,819.6089,596.6613,813.7311,596.6613,816.67,605.7064" style="stroke:#000000;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="82.5322" x="825.67" y="605.2069">Читає/Пише</text>
+    </g>
+    <!--link DatabaseManager to TaskRepository-->
+    <g class="link" data-entity-1="ent0011" data-entity-2="ent0006" data-link-type="dependency" data-source-line="111" id="lnk29">
+      <path codeLine="111" d="M725.14,395.98 C725.14,419.57 725.14,441.21 725.14,464.32" fill="none" id="DatabaseManager-to-TaskRepository" style="stroke:#2980B9;stroke-width:1;stroke-dasharray:7,7;"/>
+      <polygon fill="#2980B9" points="725.14,470.32,729.14,461.32,725.14,465.32,721.14,461.32,725.14,470.32" style="stroke:#2980B9;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="113.8579" x="611.14" y="429.2169">Надає з'єднання</text>
+    </g>
+    <!--link DatabaseManager to AccountRepository-->
+    <g class="link" data-entity-1="ent0011" data-entity-2="ent0007" data-link-type="dependency" data-source-line="112" id="lnk30">
+      <path codeLine="112" d="M896.96,395.98 C896.96,422.41 896.96,447.91 896.96,472.45" fill="none" id="DatabaseManager-to-AccountRepository" style="stroke:#2980B9;stroke-width:1;stroke-dasharray:7,7;"/>
+      <polygon fill="#2980B9" points="896.96,478.45,900.96,469.45,896.96,473.45,892.96,469.45,896.96,478.45" style="stroke:#2980B9;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="113.8579" x="782.96" y="433.2769">Надає з'єднання</text>
+    </g>
+    <?plantuml-src XLPFJnj75B_xKup20PFKgTEeQh2G9MWRrL8uj0Hn7k-ExH5cnfqPDw9j9FuaAeSAH8kCr2fgU-gLK2Y41FShp7oZlZUxYyVhDVXWhz_Vt_kzUMzsbjWtziI-joTkp-suNNiA_wxjjJiWzjGDx0M8GEr-1k7G_cE7n6sx7Ni9elsINkUYHnNT84hsHHn99PWYZwg1GdTeB5zmqIP6zLcWw7B1p6QF4QbCHmQAg4krNZH6yMRVi4OanGh_df5gAMz3VYWH-2pHQBtjytykkrAHjGutp6iMbP8l4k7C9_DFgitvn46gcAb9-LUCWZmVReP5hMhhKUbbcBy7HhJDfY2OQJrfpRVePB9c73sEFlFofrAO34Bqc7rQzT8LizbbHB78KD7kCaoQfRgtB6FMrQHi_tAxq05e1tR23URkfJ0IKfvJlPuAy5CXF2OrmeK9H8ORI5CZNwy0ow8TQ6Ac8yLxXajHe7z0simqul9SBgANFyUWNXMwlVJV0Rx5A0Acp5qG-vefGJVOD1IhgRuWOKZQDwmdDJTISORK_Gbd-2qGjsDFYBqWzj0U5T1tuxGPe7n0Q1oZjcpWg-ODCNTJocvWrE_5rB2xxP0mqEYbpPIGCeyz1xwUProR1TJNRoLnEj0iA8sYMcPTZ2App0Y_OHFDKsK1iSjKmAz2KWznJS1vF7VR5LWai2L0S6LF2fXDlSQQ7z6empopkg3q16TNqiG22q94ZPIiszipXRo-wHG2wIl5H4P8hleCHviBJzL7i0EqBg0KJ6JVbAVa_e8QsgIQPVaN5bOuJhgHebuVGnCt_S7-jfkv13cqeOP7VXW5F8ie6ODSyFk11nVSPEho6EhnjguseA6_kYsu3bwvWVi9sdfftn5ew3KCpRdRSg_ikNtdjdFDVGfRaNMPrcjSmBuVEuvHNnkvuTV34bNFWCBeXfuWn3Bbei1RiPPYkeFznACnZLZKDmpRMECnq38M8Hd9rSPjhb_6E4O5wJNzBfdckH5RiyJ-0eoS9JiO20AI22pbRViVt9Ldzchi6Ys3T8ZpW7UfEx8VqZiKk1p0kA3Y0_Y31zok8Dmb4E8zthzNlW-Ou1Gqnz05T-H5M-urF1_FbVAqB_nOgGH45klpzVg2Zktfh3k0ERx2MYRQxNPBGN_kfr42mciP9x1W4QFz5t0UaNhezl1XVPBi6qUi5YjDt2OmmSd4ZJtQBqDu0Gc2LohriHM3SI4Usa5S_z8oX3UQtJmez0it0lZzWPL3tV3-0mmSW0Sq0ROR_DrFeVq-MdCakKsEiE5kGCh9vWcXPD22TLt3wjvwXWVGzwJcq4Uc5AFbRs2tboBFnSaeHRE_eSmT3FKnL73fzkpvtM2pgw4KKk0fcRXX2ecfZpaYwD7w17EyQOUZBR8FlOG8w3KH7Yi9VASMSuY3X3MS-GcxTAzB-QMQaJ8E_esVJMJQNip27EBufZDQ6A6GWLk2_0y0?>
+  </g>
+</svg>
+
+</body>
+</html>
