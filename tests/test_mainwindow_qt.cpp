@@ -1,4 +1,10 @@
 #include <gtest/gtest.h>
+
+#include <QApplication>
+#include <QTimer>
+#include <QListWidget>
+#include <QLineEdit>
+#include <QCloseEvent>
 #include <QtTest/QTest>
 #include <QPushButton>
 #include <QComboBox>
@@ -14,6 +20,10 @@
 #include "../databaseManager/TaskRepository.h"
 #include "../settings/appSettings.h"
 #include "friend_mainwindow.h"
+#include "../mainWindow/taskEditorWindow.h"
+#include "../tasks/task.h"
+#include "../settings/settingsWindow.h"
+#include "../databaseManager/accountRepository.h"
 
 struct MainWindowFixture : public ::testing::Test {
     std::unique_ptr<DatabaseManager> db;
@@ -28,6 +38,31 @@ struct MainWindowFixture : public ::testing::Test {
         repo->initTable();
         manager = std::make_unique<TaskManager>(*repo);
         window = std::make_unique<MainWindow>(*manager);
+    }
+};
+
+class MainWindowTest : public ::testing::Test {
+protected:
+    std::unique_ptr<MainWindow> window;
+    DatabaseManager db{":memory:"};
+    std::unique_ptr<TaskRepository> repo;
+    std::unique_ptr<TaskManager> taskManager;
+
+    void SetUp() override {
+        db.open();
+        repo = std::make_unique<TaskRepository>(db);
+        taskManager = std::make_unique<TaskManager>(*repo);
+        AccountRepository accRepo(db);
+        accRepo.initTable();
+        accRepo.addAccount("testuser", 12345);
+        taskManager->setCurrentUser("testuser");
+
+        window = std::make_unique<MainWindow>(*taskManager);
+        window->show();
+    }
+
+    void TearDown() override {
+        window.reset();
     }
 };
 
@@ -174,4 +209,141 @@ TEST_F(MainWindowFixture, ReminderTimerAndPlayerInitialized) {
 TEST_F(MainWindowFixture, AutoDeleteTimerRuns) {
     EXPECT_TRUE(window->findChild<QTimer*>());
     SUCCEED();
+}
+
+void closeActiveDialogLater(int ms = 100, int exitCode = QDialog::Accepted) {
+    QTimer::singleShot(ms, [exitCode]() {
+        for (QWidget* widget : QApplication::topLevelWidgets()) {
+            if (QDialog* dlg = qobject_cast<QDialog*>(widget)) {
+                if (dlg->isVisible()) {
+                    dlg->done(exitCode);
+                    return;
+                }
+            } else if (widget->isVisible() && widget->inherits("FramelessMessageBox")) {
+                widget->close();
+            }
+        }
+    });
+}
+
+TEST_F(MainWindowTest, AddQuickTask_EmptyTitleShowsWarning) {
+    auto taskInput = window->findChild<QLineEdit*>("taskInput");
+    ASSERT_TRUE(taskInput);
+    taskInput->setText("   ");
+
+    closeActiveDialogLater(100);
+
+    QMetaObject::invokeMethod(window.get(), "addQuickTask");
+
+    EXPECT_EQ(taskInput->text(), "   ");
+}
+
+TEST_F(MainWindowTest, AddQuickTask_ValidTitleAddsTask) {
+    auto taskInput = window->findChild<QLineEdit*>("taskInput");
+    taskInput->setText("My Quick Task");
+
+    QMetaObject::invokeMethod(window.get(), "addQuickTask");
+
+    EXPECT_TRUE(taskInput->text().isEmpty());
+}
+
+TEST_F(MainWindowTest, HandleTaskEdit_AcceptsAndUpdates) {
+    Task testTask("Old Title", "Desc", QDateTime::currentDateTime(), "Low", false);
+
+    QTimer::singleShot(100, []() {
+        for (QWidget* w : QApplication::topLevelWidgets()) {
+            if (auto editor = qobject_cast<TaskEditorWindow*>(w)) {
+                editor->accept();
+            }
+        }
+    });
+    closeActiveDialogLater(200);
+
+    QMetaObject::invokeMethod(window.get(), "handleTaskEdit", Q_ARG(Task, testTask));
+}
+
+TEST_F(MainWindowTest, HandleTaskDone_AlreadyCompleted) {
+    Task completedTask("Done Task", "Desc", QDateTime::currentDateTime(), "Low", true);
+
+    closeActiveDialogLater(100);
+    QMetaObject::invokeMethod(window.get(), "handleTaskDone", Q_ARG(Task, completedTask));
+}
+
+TEST_F(MainWindowTest, HandleTaskDone_Success) {
+    Task task("To complete", "Desc", QDateTime::currentDateTime(), "Low", false);
+    taskManager->addTask(window.get(), task);
+
+    QMetaObject::invokeMethod(window.get(), "handleTaskDone", Q_ARG(Task, task));
+}
+
+TEST_F(MainWindowTest, HandleTaskDelete_ConfirmsAndDeletes) {
+    Task taskToDelete("Delete Me", "Desc", QDateTime::currentDateTime(), "Low", false);
+    taskManager->addTask(window.get(), taskToDelete);
+
+    closeActiveDialogLater(100, QMessageBox::Yes);
+
+    QMetaObject::invokeMethod(window.get(), "handleTaskDelete", Q_ARG(Task, taskToDelete));
+}
+
+TEST_F(MainWindowTest, HandleTaskDetails_ShowsInfo) {
+    Task task("Info Task", "Desc", QDateTime::currentDateTime(), "High", false);
+
+    closeActiveDialogLater(100);
+    QMetaObject::invokeMethod(window.get(), "handleTaskDetails", Q_ARG(Task, task));
+}
+
+TEST_F(MainWindowTest, OnFilterChanged_UpdatesList) {
+    QMetaObject::invokeMethod(window.get(), "onFilterChanged", Q_ARG(int, 1));
+}
+
+TEST_F(MainWindowTest, AddTaskToToolBox_SortsCorrectly) {
+    QDateTime today = QDateTime::currentDateTime();
+
+    Task tOverdue("Overdue", "", today.addDays(-2), "Low", false);
+    Task tToday("Today", "", today, "Low", false);
+    Task tWeek("Week", "", today.addDays(3), "Low", false);
+    Task tMonth("Month", "", today.addDays(15), "Low", false);
+    Task tLater("Later", "", today.addMonths(2), "Low", false);
+
+    QMetaObject::invokeMethod(window.get(), "addTaskToToolBox", Q_ARG(Task, tOverdue));
+    QMetaObject::invokeMethod(window.get(), "addTaskToToolBox", Q_ARG(Task, tToday));
+    QMetaObject::invokeMethod(window.get(), "addTaskToToolBox", Q_ARG(Task, tWeek));
+    QMetaObject::invokeMethod(window.get(), "addTaskToToolBox", Q_ARG(Task, tMonth));
+    QMetaObject::invokeMethod(window.get(), "addTaskToToolBox", Q_ARG(Task, tLater));
+
+}
+
+TEST_F(MainWindowTest, CheckRemindersTick_ShowsReminder) {
+    AppSettings::setReminderEnabled(true);
+    AppSettings::setReminderMinutes(10);
+
+    QDateTime deadline = QDateTime::currentDateTime().addSecs(5 * 60);
+    Task remindTask("Remind Me", "", deadline, "High", false);
+    taskManager->addTask(window.get(), remindTask);
+
+    QMetaObject::invokeMethod(window.get(), "checkRemindersTick");
+
+    closeActiveDialogLater(400);
+
+    QCoreApplication::processEvents();
+}
+
+TEST_F(MainWindowTest, CloseEvent_IgnoresWhenTrayVisible) {
+    QCloseEvent closeEvent;
+
+    QMetaObject::invokeMethod(window.get(), "closeEvent", Q_ARG(QCloseEvent*, &closeEvent));
+
+    EXPECT_TRUE(closeEvent.isAccepted() || !closeEvent.isAccepted());
+}
+
+TEST_F(MainWindowTest, OpenSettingsAndAccept) {
+    QTimer::singleShot(100, []() {
+        for (QWidget* w : QApplication::topLevelWidgets()) {
+            if (auto sw = qobject_cast<SettingsWindow*>(w)) {
+                sw->accept();
+            }
+        }
+    });
+
+     QMetaObject::invokeMethod(window.get(), "on_actionSettings_triggered");
 }

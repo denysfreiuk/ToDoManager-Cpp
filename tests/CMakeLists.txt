@@ -76,10 +76,28 @@ target_include_directories(QtEx_tests PRIVATE
 )
 
 # ======================================================
-# === Enable GTest Discovery
+# === Enable GTest (Метод парсингу вихідного коду)
 # ======================================================
 include(GoogleTest)
-gtest_discover_tests(QtEx_tests
-        PROPERTIES
-        ENVIRONMENT "TEST_MODE=1;QT_QPA_PLATFORM=offscreen"
+
+# 1. Отримуємо абсолютні шляхи
+get_target_property(QT_QMAKE_EXECUTABLE Qt6::qmake LOCATION)
+get_filename_component(QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}" DIRECTORY)
+get_filename_component(QT_PLUGIN_DIR "${QT_BIN_DIR}/../plugins" ABSOLUTE)
+get_filename_component(MINGW_BIN_DIR "${CMAKE_CXX_COMPILER}" DIRECTORY)
+
+set(FULL_TEST_PATH "${QT_BIN_DIR};${MINGW_BIN_DIR};$ENV{PATH}")
+string(REPLACE ";" "\\;" ESCAPED_TEST_PATH "${FULL_TEST_PATH}")
+
+# 2. Читаємо тести з коду, НЕ запускаючи програму
+gtest_add_tests(
+        TARGET QtEx_tests
+        TEST_LIST All_Qt_Tests
 )
+
+# 3. Налаштовуємо змінні ТІЛЬКИ для етапу безпосереднього запуску тестів
+if(All_Qt_Tests)
+    set_tests_properties(${All_Qt_Tests} PROPERTIES
+            ENVIRONMENT "TEST_MODE=1;QT_QPA_PLATFORM=offscreen;QT_PLUGIN_PATH=${QT_PLUGIN_DIR};PATH=${ESCAPED_TEST_PATH}"
+    )
+endif()
