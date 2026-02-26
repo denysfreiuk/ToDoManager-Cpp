@@ -1,4 +1,4 @@
-*.txt
+
 !CMakeLists.txt
 CMakeLists.txt.user
 cmake-build-debug
