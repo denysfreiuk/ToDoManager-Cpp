@@ -18,8 +18,9 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: '6.10.2'
-          arch: 'win64_mingw'
+          version: '6.5.3'
+          arch: 'win64_msvc2019_64'
+          modules: 'qtmultimedia'
           cache: 'true'
 
       - name: Create Build Directory
