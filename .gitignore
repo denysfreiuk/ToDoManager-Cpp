@@ -4,7 +4,7 @@ CMakeLists.txt.user
 cmake-build-debug
 build
 .idea
-
+docs
 
 # Prerequisites
 *.d
