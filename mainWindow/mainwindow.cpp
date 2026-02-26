@@ -27,11 +27,24 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
       taskManager(manager)
 {
     ui->setupUi(this);
+
+    setupUI();
+    setupTrayIcon();
+    setupTimers();
+    setupConnections();
+
+    taskManager.addObserver(this);
+    applySettings();
+    startOrStopReminders();
+    loadTasks();
+    enforceAutoDelete();
+}
+
+void MainWindow::setupUI()
+{
     initToolBoxSections();
     updateToolBoxTitles();
     setWindowTitle("ToDo Manager");
-
-    taskManager.addObserver(this);
 
     QScreen *screen = QGuiApplication::primaryScreen();
     QRect screenGeometry = screen->availableGeometry();
@@ -39,6 +52,34 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
     move(screenGeometry.topLeft());
     isMaximized = true;
 
+    snapPreview = new SnapPreviewWindow(this);
+
+    if (AppSettings::theme() == AppSettings::Theme::Light) {
+        ui->btnMaximize->setIcon(QIcon(":/resources/icons/icons-for-window/maximize-black.png"));
+        ui->btnMinimize->setIcon(QIcon(":/resources/icons/icons-for-window/window-minimize-black.png"));
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-black.png"));
+    } else {
+        ui->btnMaximize->setIcon(QIcon(":/resources/icons/icons-for-window/maximize-white.png"));
+        ui->btnMinimize->setIcon(QIcon(":/resources/icons/icons-for-window/window-minimize-white.png"));
+        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-white.png"));
+    }
+
+    ui->todayList->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->weekList->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->monthList->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->laterList->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->otherList->setSelectionMode(QAbstractItemView::NoSelection);
+
+    ui->viewFilterBox->addItems({"All Tasks", "Overdue", "Completed", "Uncompleted"});
+
+    setupTitleBar();
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
+    setMouseTracking(true);
+    ui->centralwidget->setMouseTracking(true);
+}
+
+void MainWindow::setupTrayIcon()
+{
     trayIcon = new QSystemTrayIcon(this);
     trayMenu = new QMenu(this);
 
@@ -63,6 +104,7 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
     }
 
     statusMenu->addActions(statusGroup->actions());
+    connect(statusGroup, &QActionGroup::triggered, this, &MainWindow::onStatusTriggered);
 
     bool dark = (AppSettings::theme() == AppSettings::Theme::Dark);
 
@@ -94,37 +136,15 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
         this->showNormal();
         this->activateWindow();
     });
-
     connect(addTaskAction, &QAction::triggered, this, &MainWindow::openTaskEditor);
     connect(todayAction, &QAction::triggered, this, [this]() {
         ui->toolBox->setCurrentIndex(0);
         this->showNormal();
         this->activateWindow();
     });
-
     connect(settingsAction, &QAction::triggered, this, &MainWindow::onSettingsClicked);
     connect(themeAction, &QAction::triggered, this, &MainWindow::onThemeButtonClicked);
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
-
-    connect(statusGroup, &QActionGroup::triggered, this, [this](QAction *act) {
-        if (act->text().contains("Active"))
-            AppSettings::setUserStatus(AppSettings::UserStatus::Active);
-        else if (act->text().contains("Busy"))
-            AppSettings::setUserStatus(AppSettings::UserStatus::Busy);
-        else
-            AppSettings::setUserStatus(AppSettings::UserStatus::Away);
-
-        trayIcon->showMessage("Status changed to:",
-            AppSettings::userStatusEmoji() + " Now you are " + AppSettings::userStatusName(),
-            QSystemTrayIcon::Information, 2500);
-
-        if (AppSettings::userStatus() == AppSettings::UserStatus::Busy)
-            reminderTimer->stop();
-        else
-            startOrStopReminders();
-
-        updateTrayTooltip();
-    });
 
     connect(trayIcon, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
         if (reason == QSystemTrayIcon::Trigger) {
@@ -132,43 +152,13 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
             else hide();
         }
     });
+}
 
-    connect(this, &MainWindow::themeChanged, this, [this](AppSettings::Theme) {
-    applyTrayTheme();
-    updateTrayTooltip();
-});
-
+void MainWindow::setupTimers()
+{
     QTimer *trayUpdateTimer = new QTimer(this);
     connect(trayUpdateTimer, &QTimer::timeout, this, &MainWindow::updateTrayTooltip);
     trayUpdateTimer->start(60000);
-
-    snapPreview = new SnapPreviewWindow(this);
-
-    if (AppSettings::theme() == AppSettings::Theme::Light) {
-        ui->btnMaximize->setIcon(QIcon(":/resources/icons/icons-for-window/maximize-black.png"));
-        ui->btnMinimize->setIcon(QIcon(":/resources/icons/icons-for-window/window-minimize-black.png"));
-        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-black.png"));
-    } else {
-        ui->btnMaximize->setIcon(QIcon(":/resources/icons/icons-for-window/maximize-white.png"));
-        ui->btnMinimize->setIcon(QIcon(":/resources/icons/icons-for-window/window-minimize-white.png"));
-        ui->btnClose->setIcon(QIcon(":/resources/icons/icons-for-window/close-white.png"));
-    }
-
-    ui->todayList->setSelectionMode(QAbstractItemView::NoSelection);
-    ui->weekList->setSelectionMode(QAbstractItemView::NoSelection);
-    ui->monthList->setSelectionMode(QAbstractItemView::NoSelection);
-    ui->laterList->setSelectionMode(QAbstractItemView::NoSelection);
-    ui->otherList->setSelectionMode(QAbstractItemView::NoSelection);
-
-    connect(ui->quickAddButton, &QPushButton::clicked, this, &MainWindow::addQuickTask);
-    connect(ui->addTaskButton,  &QPushButton::clicked, this, &MainWindow::openTaskEditor);
-    connect(ui->settingsButton, &QPushButton::clicked, this, &MainWindow::onSettingsClicked);
-    connect(ui->themeButton,    &QPushButton::clicked, this, &MainWindow::onThemeButtonClicked);
-    connect(this, &FramelessWindow::windowMaximizedChanged, this, &MainWindow::updateMaximizeIcon);
-
-    ui->viewFilterBox->addItems({"All Tasks", "Overdue", "Completed", "Uncompleted"});
-    connect(ui->viewFilterBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &MainWindow::onFilterChanged);
 
     reminderTimer = new QTimer(this);
     connect(reminderTimer, &QTimer::timeout, this, &MainWindow::checkRemindersTick);
@@ -182,18 +172,45 @@ MainWindow::MainWindow(TaskManager &manager, QWidget *parent)
         enforceAutoDelete();
         loadTasks();
     });
-
-    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
-    setMouseTracking(true);
-    ui->centralwidget->setMouseTracking(true);
-
-    startOrStopReminders();
-    applySettings();
-    setupTitleBar();
-    loadTasks();
-    enforceAutoDelete();
-
     autoDeleteTimer->start(60 * 1000);
+}
+
+void MainWindow::setupConnections()
+{
+    connect(this, &MainWindow::themeChanged, this, [this](AppSettings::Theme) {
+        applyTrayTheme();
+        updateTrayTooltip();
+    });
+
+    connect(ui->quickAddButton, &QPushButton::clicked, this, &MainWindow::addQuickTask);
+    connect(ui->addTaskButton,  &QPushButton::clicked, this, &MainWindow::openTaskEditor);
+    connect(ui->settingsButton, &QPushButton::clicked, this, &MainWindow::onSettingsClicked);
+    connect(ui->themeButton,    &QPushButton::clicked, this, &MainWindow::onThemeButtonClicked);
+    connect(this, &FramelessWindow::windowMaximizedChanged, this, &MainWindow::updateMaximizeIcon);
+
+    connect(ui->viewFilterBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &MainWindow::onFilterChanged);
+}
+
+void MainWindow::onStatusTriggered(QAction *act)
+{
+    if (act->text().contains("Active"))
+        AppSettings::setUserStatus(AppSettings::UserStatus::Active);
+    else if (act->text().contains("Busy"))
+        AppSettings::setUserStatus(AppSettings::UserStatus::Busy);
+    else
+        AppSettings::setUserStatus(AppSettings::UserStatus::Away);
+
+    trayIcon->showMessage("Status changed to:",
+        AppSettings::userStatusEmoji() + " Now you are " + AppSettings::userStatusName(),
+        QSystemTrayIcon::Information, 2500);
+
+    if (AppSettings::userStatus() == AppSettings::UserStatus::Busy)
+        reminderTimer->stop();
+    else
+        startOrStopReminders();
+
+    updateTrayTooltip();
 }
 
 MainWindow::~MainWindow()
@@ -370,43 +387,45 @@ void MainWindow::checkRemindersTick() {
 
     auto tasks = taskManager.loadTasks();
     for (const auto &task : tasks) {
-        if (task.isCompleted())
-            continue;
+        processSingleTaskReminder(task, now, remindBeforeMin);
+    }
+}
 
-        const QDateTime deadline = task.getDeadline();
-        if (!deadline.isValid())
-            continue;
+void MainWindow::processSingleTaskReminder(const Task& task, const QDateTime& now, int remindBeforeMin) {
+    if (task.isCompleted())
+        return;
 
-        const qint64 minutesLeft = now.secsTo(deadline) / 60;
+    const QDateTime deadline = task.getDeadline();
+    if (!deadline.isValid())
+        return;
 
-        if (minutesLeft < 0)
-            continue;
+    const qint64 minutesLeft = now.secsTo(deadline) / 60;
+    if (minutesLeft < 0)
+        return;
 
-        const QString key = task.getTitle() + "|" + deadline.toString(Qt::ISODate);
+    const QString key = task.getTitle() + "|" + deadline.toString(Qt::ISODate);
 
-        if (minutesLeft <= remindBeforeMin && !remindedKeys.contains(key)) {
-            remindedKeys.insert(key);
+    if (minutesLeft <= remindBeforeMin && !remindedKeys.contains(key)) {
+        remindedKeys.insert(key);
 
-            if (reminderPlayer && !reminderPlayer->source().isEmpty()) {
-                reminderPlayer->stop();
-                reminderPlayer->play();
-            }
-            QTimer::singleShot(300, this, [=]() {
-                const QString msg = QString(
-                        "Task: <b>%1</b><br>"
-                        "Deadline: %2<br>"
-                        "Time left: %3 min")
-                        .arg(task.getTitle())
-                        .arg(deadline.toString("dd.MM.yyyy hh:mm"))
-                        .arg(QString::number(minutesLeft));
-
-                FramelessMessageBox::information(this, "Reminder", msg);
-            });
+        if (reminderPlayer && !reminderPlayer->source().isEmpty()) {
+            reminderPlayer->stop();
+            reminderPlayer->play();
         }
 
-        if (minutesLeft > remindBeforeMin) {
-            remindedKeys.remove(key);
-        }
+        QTimer::singleShot(300, this, [=]() {
+            const QString msg = QString(
+                    "Task: <b>%1</b><br>"
+                    "Deadline: %2<br>"
+                    "Time left: %3 min")
+                    .arg(task.getTitle())
+                    .arg(deadline.toString("dd.MM.yyyy hh:mm"))
+                    .arg(QString::number(minutesLeft));
+
+            FramelessMessageBox::information(this, "Reminder", msg);
+        });
+    } else if (minutesLeft > remindBeforeMin) {
+        remindedKeys.remove(key);
     }
 }
 
@@ -418,29 +437,29 @@ void MainWindow::enforceAutoDelete() {
     const auto tasks = taskManager.loadTasks();
 
     for (const auto &t : tasks) {
-        if (!t.isCompleted()) continue;
-
-        const QDateTime dl = t.getDeadline();
-        bool del = false;
-
-        switch (mode) {
-            case AppSettings::AutoDeletePeriod::Immediately:
-                del = true;
-            break;
-            case AppSettings::AutoDeletePeriod::After1Day:
-                if (dl.isValid()) del = dl.addDays(1) <= now;
-            break;
-            case AppSettings::AutoDeletePeriod::After1Week:
-                if (dl.isValid()) del = dl.addDays(7) <= now;
-            break;
-            case AppSettings::AutoDeletePeriod::AfterDeadline:
-                if (dl.isValid()) del = dl <= now;
-            break;
-        }
-
-        if (del) {
+        if (shouldAutoDeleteTask(t, now, mode)) {
             taskManager.removeTask(this, t.getTitle().toStdString());
         }
+    }
+}
+
+bool MainWindow::shouldAutoDeleteTask(const Task& t, const QDateTime& now, AppSettings::AutoDeletePeriod mode) const {
+    if (!t.isCompleted())
+        return false;
+
+    const QDateTime dl = t.getDeadline();
+
+    switch (mode) {
+        case AppSettings::AutoDeletePeriod::Immediately:
+            return true;
+        case AppSettings::AutoDeletePeriod::After1Day:
+            return dl.isValid() && dl.addDays(1) <= now;
+        case AppSettings::AutoDeletePeriod::After1Week:
+            return dl.isValid() && dl.addDays(7) <= now;
+        case AppSettings::AutoDeletePeriod::AfterDeadline:
+            return dl.isValid() && dl <= now;
+        default:
+            return false;
     }
 }
 

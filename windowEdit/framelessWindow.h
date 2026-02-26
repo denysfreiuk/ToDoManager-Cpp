@@ -83,6 +83,8 @@ protected:
     ResizeRegion currentResizeRegion = None;
     SnapPreviewWindow *snapPreview = nullptr;
 private:
+    void handleResizing(const QPoint &globalPos);
+    void handleDragging(QMouseEvent *event);
     void setResizeCursor(ResizeRegion region);
 };
 
@@ -174,6 +176,10 @@ protected:
     void enterEvent(QEnterEvent *event) override;
     void leaveEvent(QEvent *event) override;
     void showEventFade(QShowEvent *event);
+private:
+    Qt::CursorShape getCursorShapeForRegion(ResizeRegion region) const;
+    void handleResizing(const QPoint &globalPos);
+    void handleDragging(QMouseEvent *event);
 };
 
 /*

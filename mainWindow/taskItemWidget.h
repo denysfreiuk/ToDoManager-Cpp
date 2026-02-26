@@ -39,6 +39,9 @@ private:
     QGraphicsOpacityEffect *btnEffect;
     QPropertyAnimation *fadeAnim;
 
+    void applyDoneState();
+    void applyOverdueState();
+    void applyNormalState();
     void setButtonsVisible(bool visible);
 };
 

@@ -35,11 +35,10 @@ jobs:
         run: |
           mkdir -p public/doxygen
           mkdir -p public/uml
+          mkdir -p public/metrics
           
-          # Копіюємо згенеровану Doxygen документацію у підпапку
+          cp metrics/*.txt public/metrics/
           cp -r docs/html/* public/doxygen/
-          
-          # Копіюємо всі ваші UML діаграми у підпапку
           cp -r uml/* public/uml/
 
       - name: Create Main Index HTML
@@ -88,6 +87,14 @@ jobs:
                       <li> <a href="uml/PackageDiagram.html">Діаграма пакетів (Package Diagram)</a></li>
                       <li> <a href="uml/objectDiagram.html">Діаграма об'єктів (Object Diagram)</a></li>
                       <li> <a href="uml/timingDiagram.html">Часова діаграма (Timing Diagram)</a></li>
+                  </ul>
+          
+                  <h2>Аналіз коду та Метрики (Лабораторна робота)</h2>
+                  <ul>
+                      <li> <a href="metrics/cloc.txt">Cloc: Об'єм коду (ДО рефакторингу)</a></li>
+                      <li> <a href="metrics/clocAfterRefactoring.txt">Cloc: Об'єм коду (ПІСЛЯ рефакторингу)</a></li>
+                      <li> <a href="metrics/lizard.txt">Lizard: Складність коду (ДО рефакторингу)</a></li>
+                      <li> <a href="metrics/lizardAfterRefactoring.txt">Lizard: Складність коду (ПІСЛЯ рефакторингу)</a></li>
                   </ul>
               </div>
           </body>

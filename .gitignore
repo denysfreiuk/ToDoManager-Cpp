@@ -3,8 +3,9 @@
 CMakeLists.txt.user
 cmake-build-debug
 build
+docs/html
 .idea
-docs
+
 
 # Prerequisites
 *.d

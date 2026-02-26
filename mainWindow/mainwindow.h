@@ -68,6 +68,13 @@ private:
     };
     QVector<Section> sections;
 
+    void processSingleTaskReminder(const Task& task, const QDateTime& now, int remindBeforeMin);
+    bool shouldAutoDeleteTask(const Task& t, const QDateTime& now, AppSettings::AutoDeletePeriod mode) const;
+    void setupTrayIcon();
+    void setupUI();
+    void setupConnections();
+    void setupTimers();
+    void onStatusTriggered(QAction* act);
     void applyTrayTheme();
     void updateTrayTooltip();
     void updateMaximizeIcon(bool maxed);

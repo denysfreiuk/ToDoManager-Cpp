@@ -63,81 +63,76 @@ void TaskItemWidget::updateDisplay() {
     ui->titleLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
     QDateTime deadline = task.getDeadline();
-    QDateTime today = QDateTime::currentDateTime();
 
-    if (deadline.isValid())
+    if (deadline.isValid()) {
         ui->labelDeadline->setText(deadline.toString("dd MMM yyyy  hh:mm"));
-    else
+    } else {
         ui->labelDeadline->setText("No deadline");
-
-    bool done = task.isCompleted();
-    bool overdue = (deadline.isValid() && deadline < today && !done);
-
-    if (done) {
-        setProperty("state", "done");
-
-        QString iconPath;
-        if (AppSettings::theme() == AppSettings::Theme::Dark)
-            iconPath = ":/resources/icons/check-white.png";
-        else if (AppSettings::theme() == AppSettings::Theme::Light)
-            iconPath = ":/resources/icons/check-black.png";
-        else
-            iconPath = ":/resources/icons/non-icon.png";
-        ui->labelCheck->setPixmap(QPixmap(iconPath)
-            .scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-        ui->labelCheck->setVisible(true);
-        ui->labelPriority->setVisible(false);
-        ui->doneButton->setVisible(false);
     }
-    else if (overdue) {
-        setProperty("state", "overdue");
-        ui->labelCheck->setVisible(false);
 
-        QString iconPath;
-        if (AppSettings::theme() == AppSettings::Theme::Dark)
-            iconPath = ":/resources/icons/overdue-white.png";
-        else if (AppSettings::theme() == AppSettings::Theme::Light)
-            iconPath = ":/resources/icons/overdue-black.png";
-        else
-            iconPath = ":/resources/icons/non-icon.png";
-        ui->labelPriority->setPixmap(QPixmap(iconPath)
-            .scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-        ui->labelPriority->setVisible(true);
-
-        ui->doneButton->setVisible(true);
-        ui->doneButton->setEnabled(true);
-        ui->doneButton->setToolTip("Task is overdue! Mark as done.");
-
-    }
-    else {
-        setProperty("state", "normal");
-        ui->labelCheck->setVisible(false);
-
-        QString priority = task.getPriority();
-        QString iconPath;
-        if (priority == "Low")      iconPath = ":/resources/icons/priority_low.png";
-        else if (priority == "Medium") iconPath = ":/resources/icons/priority_medium.png";
-        else if (priority == "High")   iconPath = ":/resources/icons/priority_high.png";
-
-        if (!iconPath.isEmpty()) {
-            ui->labelPriority->setPixmap(QPixmap(iconPath)
-                .scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-            ui->labelPriority->setVisible(true);
-        } else {
-            ui->labelPriority->setVisible(false);
-        }
-
-        ui->doneButton->setVisible(true);
-        ui->doneButton->setEnabled(true);
-        ui->doneButton->setToolTip("Mark task as done");
+    if (task.isCompleted()) {
+        applyDoneState();
+    } else if (deadline.isValid() && deadline < QDateTime::currentDateTime()) {
+        applyOverdueState();
+    } else {
+        applyNormalState();
     }
 
     style()->unpolish(this);
     style()->polish(this);
 }
 
+void TaskItemWidget::applyDoneState() {
+    setProperty("state", "done");
+
+    QString iconPath = (AppSettings::theme() == AppSettings::Theme::Dark)
+                       ? ":/resources/icons/check-white.png"
+                       : ":/resources/icons/check-black.png";
+
+    ui->labelCheck->setPixmap(QPixmap(iconPath).scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    ui->labelCheck->setVisible(true);
+    ui->labelPriority->setVisible(false);
+    ui->doneButton->setVisible(false);
+}
+
+void TaskItemWidget::applyOverdueState() {
+    setProperty("state", "overdue");
+    ui->labelCheck->setVisible(false);
+
+    QString iconPath = (AppSettings::theme() == AppSettings::Theme::Dark)
+                       ? ":/resources/icons/overdue-white.png"
+                       : ":/resources/icons/overdue-black.png";
+
+    ui->labelPriority->setPixmap(QPixmap(iconPath).scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    ui->labelPriority->setVisible(true);
+
+    ui->doneButton->setVisible(true);
+    ui->doneButton->setEnabled(true);
+    ui->doneButton->setToolTip("Task is overdue! Mark as done.");
+}
+
+void TaskItemWidget::applyNormalState() {
+    setProperty("state", "normal");
+    ui->labelCheck->setVisible(false);
+
+    QString priority = task.getPriority();
+    QString iconPath;
+
+    if (priority == "Low")         iconPath = ":/resources/icons/priority_low.png";
+    else if (priority == "Medium") iconPath = ":/resources/icons/priority_medium.png";
+    else if (priority == "High")   iconPath = ":/resources/icons/priority_high.png";
+
+    if (!iconPath.isEmpty()) {
+        ui->labelPriority->setPixmap(QPixmap(iconPath).scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        ui->labelPriority->setVisible(true);
+    } else {
+        ui->labelPriority->setVisible(false);
+    }
+
+    ui->doneButton->setVisible(true);
+    ui->doneButton->setEnabled(true);
+    ui->doneButton->setToolTip("Mark task as done");
+}
 void TaskItemWidget::setButtonsVisible(bool visible) {
     fadeAnim->stop();
     fadeAnim->setDuration(250);

@@ -1,0 +1,44 @@
+name: Build and Release ToDo Manager (Windows)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '6.10.2'
+          arch: 'win64_mingw'
+          cache: 'true'
+
+      - name: Create Build Directory
+        run: mkdir build
+
+      - name: Configure CMake
+        working-directory: ${{github.workspace}}/build
+        run: cmake .. -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        working-directory: ${{github.workspace}}/build
+        run: cmake --build . --config Release
+
+      - name: Deploy Qt Dependencies (windeployqt)
+        working-directory: ${{github.workspace}}/build/Release
+        run: windeployqt ToDoManager.exe
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ToDoManager-Windows-Release
+          path: ${{github.workspace}}/build/Release/

@@ -251,87 +251,98 @@ void FramelessWindow::mousePressEvent(QMouseEvent *event)
 
 void FramelessWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    const QPoint globalPos = event->globalPos();
-
     if (isFullscreenMode)
         return QMainWindow::mouseMoveEvent(event);
 
     if (isResizing && !isMaximized) {
-        setResizeCursor(currentResizeRegion);
-        QRect geom = geometry();
-
-        switch (currentResizeRegion) {
-            case Left:        geom.setLeft(globalPos.x()); break;
-            case Right:       geom.setRight(globalPos.x()); break;
-            case Top:         geom.setTop(globalPos.y()); break;
-            case Bottom:      geom.setBottom(globalPos.y()); break;
-            case TopLeft:     geom.setTop(globalPos.y()); geom.setLeft(globalPos.x()); break;
-            case TopRight:    geom.setTop(globalPos.y()); geom.setRight(globalPos.x()); break;
-            case BottomLeft:  geom.setBottom(globalPos.y()); geom.setLeft(globalPos.x()); break;
-            case BottomRight: geom.setBottom(globalPos.y()); geom.setRight(globalPos.x()); break;
-            default: break;
-        }
-
-        geom = geom.normalized();
-        if (geom.width()  < minimumWidth())  geom.setWidth(minimumWidth());
-        if (geom.height() < minimumHeight()) geom.setHeight(minimumHeight());
-        setGeometry(geom);
+        handleResizing(event->globalPos());
         event->accept();
         return;
     }
 
     if (isDragging && (event->buttons() & Qt::LeftButton)) {
-        QScreen *screen = QGuiApplication::screenAt(globalPos);
-        if (!screen)
-            screen = QGuiApplication::primaryScreen();
-
-        QRect avail = screen->availableGeometry();
-
-        if (isMaximized) {
-            const double ratio = double(event->pos().x()) / width();
-            const int newW = int(avail.width()  * 0.8);
-            const int newH = int(avail.height() * 0.75);
-            const int newX = globalPos.x() - int(newW * ratio);
-            const int newY = avail.y() + RESIZE_MARGIN * 3;
-
-            savedGeometryBeforeMaximize = QRect(newX, newY, newW, newH);
-            setGeometry(savedGeometryBeforeMaximize);
-            isMaximized = false;
-            emit windowMaximizedChanged(false);
-            dragOffset = QPoint(int(newW * ratio), RESIZE_MARGIN * 3);
-        }
-
-        QPoint newTopLeft = globalPos - dragOffset;
-
-        const int topLimit = avail.y();
-        const int bottomLimit = avail.bottom();
-
-        if (newTopLeft.y() < topLimit)
-            newTopLeft.setY(topLimit);
-
-        if (globalPos.y() > bottomLimit) {
-            int overflow = globalPos.y() - bottomLimit;
-            newTopLeft.setY(newTopLeft.y() - overflow);
-        }
-
-        move(newTopLeft);
-
-        const int edge = SNAP_EDGE;
-        SnapPreviewWindow::SnapType snap = SnapPreviewWindow::SnapType::None;
-        if (globalPos.y() <= avail.y() + edge)
-            snap = SnapPreviewWindow::SnapType::Top;
-        else if (globalPos.x() <= avail.x() + edge)
-            snap = SnapPreviewWindow::SnapType::Left;
-        else if (globalPos.x() >= avail.x() + avail.width() - edge)
-            snap = SnapPreviewWindow::SnapType::Right;
-
-        snapPreview->showPreview(snap, screen);
+        handleDragging(event);
         event->accept();
         return;
     }
 
     QMainWindow::mouseMoveEvent(event);
     updateCursorShape(event->pos());
+}
+
+
+void FramelessWindow::handleResizing(const QPoint &globalPos)
+{
+    setResizeCursor(currentResizeRegion);
+    QRect geom = geometry();
+
+    switch (currentResizeRegion) {
+        case Left:        geom.setLeft(globalPos.x()); break;
+        case Right:       geom.setRight(globalPos.x()); break;
+        case Top:         geom.setTop(globalPos.y()); break;
+        case Bottom:      geom.setBottom(globalPos.y()); break;
+        case TopLeft:     geom.setTop(globalPos.y()); geom.setLeft(globalPos.x()); break;
+        case TopRight:    geom.setTop(globalPos.y()); geom.setRight(globalPos.x()); break;
+        case BottomLeft:  geom.setBottom(globalPos.y()); geom.setLeft(globalPos.x()); break;
+        case BottomRight: geom.setBottom(globalPos.y()); geom.setRight(globalPos.x()); break;
+        default: break;
+    }
+
+    geom = geom.normalized();
+    if (geom.width()  < minimumWidth())  geom.setWidth(minimumWidth());
+    if (geom.height() < minimumHeight()) geom.setHeight(minimumHeight());
+
+    setGeometry(geom);
+}
+
+void FramelessWindow::handleDragging(QMouseEvent *event)
+{
+    const QPoint globalPos = event->globalPos();
+    QScreen *screen = QGuiApplication::screenAt(globalPos);
+    if (!screen)
+        screen = QGuiApplication::primaryScreen();
+
+    QRect avail = screen->availableGeometry();
+
+    if (isMaximized) {
+        const double ratio = double(event->pos().x()) / width();
+        const int newW = int(avail.width()  * 0.8);
+        const int newH = int(avail.height() * 0.75);
+        const int newX = globalPos.x() - int(newW * ratio);
+        const int newY = avail.y() + RESIZE_MARGIN * 3;
+
+        savedGeometryBeforeMaximize = QRect(newX, newY, newW, newH);
+        setGeometry(savedGeometryBeforeMaximize);
+        isMaximized = false;
+        emit windowMaximizedChanged(false);
+        dragOffset = QPoint(int(newW * ratio), RESIZE_MARGIN * 3);
+    }
+
+    QPoint newTopLeft = globalPos - dragOffset;
+    const int topLimit = avail.y();
+    const int bottomLimit = avail.bottom();
+
+    if (newTopLeft.y() < topLimit)
+        newTopLeft.setY(topLimit);
+
+    if (globalPos.y() > bottomLimit) {
+        int overflow = globalPos.y() - bottomLimit;
+        newTopLeft.setY(newTopLeft.y() - overflow);
+    }
+
+    move(newTopLeft);
+
+    const int edge = SNAP_EDGE;
+    SnapPreviewWindow::SnapType snap = SnapPreviewWindow::SnapType::None;
+
+    if (globalPos.y() <= avail.y() + edge)
+        snap = SnapPreviewWindow::SnapType::Top;
+    else if (globalPos.x() <= avail.x() + edge)
+        snap = SnapPreviewWindow::SnapType::Left;
+    else if (globalPos.x() >= avail.x() + avail.width() - edge)
+        snap = SnapPreviewWindow::SnapType::Right;
+
+    snapPreview->showPreview(snap, screen);
 }
 
 void FramelessWindow::mouseReleaseEvent(QMouseEvent *event)
@@ -514,12 +525,28 @@ FramelessDialog::ResizeRegion FramelessDialog::detectResizeRegion(const QPoint &
     return None;
 }
 
+Qt::CursorShape FramelessDialog::getCursorShapeForRegion(ResizeRegion region) const
+{
+    switch (region) {
+        case TopLeft:
+        case BottomRight: return Qt::SizeFDiagCursor;
+        case TopRight:
+        case BottomLeft:  return Qt::SizeBDiagCursor;
+        case Left:
+        case Right:       return Qt::SizeHorCursor;
+        case Top:
+        case Bottom:      return Qt::SizeVerCursor;
+        default:          return Qt::ArrowCursor;
+    }
+}
+
 void FramelessDialog::updateCursorShape(const QPoint &pos)
 {
     if (!resizeEnabled) {
         unsetCursor();
         return;
     }
+
     if (isDragging || isResizing)
         return;
 
@@ -530,18 +557,8 @@ void FramelessDialog::updateCursorShape(const QPoint &pos)
         return;
     lastRegion = region;
 
-    Qt::CursorShape newShape = Qt::ArrowCursor;
-    switch (region) {
-        case TopLeft:
-        case BottomRight: newShape = Qt::SizeFDiagCursor; break;
-        case TopRight:
-        case BottomLeft:  newShape = Qt::SizeBDiagCursor; break;
-        case Left:
-        case Right:       newShape = Qt::SizeHorCursor;   break;
-        case Top:
-        case Bottom:      newShape = Qt::SizeVerCursor;   break;
-        default:          newShape = Qt::ArrowCursor;     break;
-    }
+    Qt::CursorShape newShape = getCursorShapeForRegion(region);
+
     if (cursor().shape() != newShape)
         setCursor(newShape);
 }
@@ -577,54 +594,66 @@ void FramelessDialog::mousePressEvent(QMouseEvent *event)
 
 void FramelessDialog::mouseMoveEvent(QMouseEvent *event)
 {
-    const QPoint globalPos = event->globalPos();
-
     if (isResizing) {
-        QRect geom = geometry();
-        switch (currentResizeRegion) {
-            case Left:        geom.setLeft(globalPos.x()); break;
-            case Right:       geom.setRight(globalPos.x()); break;
-            case Top:         geom.setTop(globalPos.y()); break;
-            case Bottom:      geom.setBottom(globalPos.y()); break;
-            case TopLeft:     geom.setTop(globalPos.y()); geom.setLeft(globalPos.x()); break;
-            case TopRight:    geom.setTop(globalPos.y()); geom.setRight(globalPos.x()); break;
-            case BottomLeft:  geom.setBottom(globalPos.y()); geom.setLeft(globalPos.x()); break;
-            case BottomRight: geom.setBottom(globalPos.y()); geom.setRight(globalPos.x()); break;
-            default: break;
-        }
-
-        geom = geom.normalized();
-
-        if (geom.width()  < minimumWidth())  geom.setWidth(minimumWidth());
-        if (geom.height() < minimumHeight()) geom.setHeight(minimumHeight());
-
-        setGeometry(geom);
+        handleResizing(event->globalPos());
         event->accept();
         return;
     }
 
     if (isDragging && (event->buttons() & Qt::LeftButton)) {
-        QScreen *screen = QGuiApplication::screenAt(globalPos);
-        if (!screen)
-            screen = QGuiApplication::primaryScreen();
-
-        QRect avail = screen->availableGeometry();
-        QPoint newTopLeft = globalPos - dragOffset;
-
-        if (newTopLeft.y() < avail.y())
-            newTopLeft.setY(avail.y());
-        if (globalPos.y() > avail.bottom()) {
-            int overflow = globalPos.y() - avail.bottom();
-            newTopLeft.setY(newTopLeft.y() - overflow);
-        }
-
-        move(newTopLeft);
+        handleDragging(event);
         event->accept();
         return;
     }
 
     updateCursorShape(event->pos());
     QDialog::mouseMoveEvent(event);
+}
+
+// === Нові допоміжні функції для FramelessDialog ===
+
+void FramelessDialog::handleResizing(const QPoint &globalPos)
+{
+    QRect geom = geometry();
+    switch (currentResizeRegion) {
+        case Left:        geom.setLeft(globalPos.x()); break;
+        case Right:       geom.setRight(globalPos.x()); break;
+        case Top:         geom.setTop(globalPos.y()); break;
+        case Bottom:      geom.setBottom(globalPos.y()); break;
+        case TopLeft:     geom.setTop(globalPos.y()); geom.setLeft(globalPos.x()); break;
+        case TopRight:    geom.setTop(globalPos.y()); geom.setRight(globalPos.x()); break;
+        case BottomLeft:  geom.setBottom(globalPos.y()); geom.setLeft(globalPos.x()); break;
+        case BottomRight: geom.setBottom(globalPos.y()); geom.setRight(globalPos.x()); break;
+        default: break;
+    }
+
+    geom = geom.normalized();
+
+    if (geom.width()  < minimumWidth())  geom.setWidth(minimumWidth());
+    if (geom.height() < minimumHeight()) geom.setHeight(minimumHeight());
+
+    setGeometry(geom);
+}
+
+void FramelessDialog::handleDragging(QMouseEvent *event)
+{
+    const QPoint globalPos = event->globalPos();
+    QScreen *screen = QGuiApplication::screenAt(globalPos);
+    if (!screen)
+        screen = QGuiApplication::primaryScreen();
+
+    QRect avail = screen->availableGeometry();
+    QPoint newTopLeft = globalPos - dragOffset;
+
+    if (newTopLeft.y() < avail.y())
+        newTopLeft.setY(avail.y());
+
+    if (globalPos.y() > avail.bottom()) {
+        int overflow = globalPos.y() - avail.bottom();
+        newTopLeft.setY(newTopLeft.y() - overflow);
+    }
+
+    move(newTopLeft);
 }
 
 void FramelessDialog::mouseReleaseEvent(QMouseEvent *event)
