@@ -21,7 +21,7 @@ jobs:
           version: '6.6.3'
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_mingw'
+          arch: 'win64_msvc2019_64'
           modules: 'qtmultimedia'
           aqtversion: '==2.2.0'
           cache: true
